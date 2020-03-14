@@ -13,14 +13,3 @@ body {
   margin: 5px auto;
   width: 60%;
 }
-
-.divisionBox {
-  margin: 10px auto;
-  border: 1px solid #000;
-  width: 100%;
-}
-
-.matchBox {
-  margin: 5px;
-  width: 100%;
-}
