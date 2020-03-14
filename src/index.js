@@ -1,55 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
-const cruzeiro = {
-  name: "Cruzeiro",
-  color1: "blue",
-  color2: "white"
-}
-const atleticoMG = {
-  name: "Atlético-MG",
-  color1: "black",
-  color2: "white"
-}
-
-function Attendance(props) {
-  return (
-    <div className = {"attendance"} > Attendance: 77777 </div>
-  );
-}
-
-function Team(props) {
-  const colors = {
-    background: props.team.color1,
-    color: props.team.color2,
-  };
-
-  return (
-    <div
-      style = {colors}
-      className = {"team "+props.side}
-      onClick = { props.squareOnClick }
-    >
-      {props.team.name}
-    </div>
-  );
-}
-
-function Scoreboard(props) {  
-  return (
-    <div className = {"scoreboard"}>
-      <div className = {"leftScoreboard"} > <b>6</b> &nbsp;</div>
-      <div className = {"rightScoreboard"} > <b>1</b> </div>
-    </div>
-  );
-}
-
-function MatchStory(props) {
-  return (
-    <div className = {"matchStory"} > 88' GOAL: Ortigoza </div>
-  );
-}
+import Attendance from './components/attendance';
+import Team from './components/team';
+import Scoreboard from './components/scoreboard';
+import MatchStory from './components/matchStory';
+import * as Teams from './components/teams';
 
 class Match extends React.Component {
   constructor(props){
@@ -89,9 +45,9 @@ class Match extends React.Component {
         className = {"matchBox"}
       >
         {this.renderAttendance()}
-        {this.renderTeam("home", cruzeiro)}
+        {this.renderTeam("home", Teams.cruzeiro)}
         {this.renderScoreboard()}
-        {this.renderTeam("away", atleticoMG)}
+        {this.renderTeam("away", Teams.atleticoMG)}
         {this.renderMatchStory()}
       </div>
     );

@@ -1,0 +1,13 @@
+
+.scoreboard {
+  display: inline-block;
+  color: rgb(226, 214, 44);
+}
+
+.leftScoreboard {
+  display: inline-block;
+}
+
+.rightScoreboard {
+  display: inline-block;
+}

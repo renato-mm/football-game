@@ -1,0 +1,15 @@
+
+.team {
+  display: inline-block;
+  margin: 0 5px 0;
+  width: 20%;
+  padding: 1px 5px;
+}
+
+.home {
+  text-align: right;
+}
+
+.away {
+  text-align: left;
+}
