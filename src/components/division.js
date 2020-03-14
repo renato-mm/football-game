@@ -22,9 +22,6 @@ export default class Division extends React.Component {
         className = {"divisionBox"}
       >
         {this.renderMatch()}
-        {this.renderMatch()}
-        {this.renderMatch()}
-        {this.renderMatch()}
       </div>
     );
   }

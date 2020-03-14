@@ -22,9 +22,6 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           {this.renderDivision()}
-          {this.renderDivision()}
-          {this.renderDivision()}
-          {this.renderDivision()}
         </div>
       </div>
     );

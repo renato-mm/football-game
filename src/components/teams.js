@@ -2,11 +2,47 @@
 export const cruzeiro = {
   name: "Cruzeiro",
   color1: "blue",
-  color2: "white"
+  color2: "white",
+  formation: "433",
+  players: [{name: "Fábio", power: 50, position: "G"}, 
+            {name: "Rafael", power: 37, position: "G"},
+            {name: "Ceará", power: 35, position: "D"},
+            {name: "Dedé", power: 47, position: "D"},
+            {name: "Egídio", power: 40, position: "D"},
+            {name: "Léo", power: 41, position: "D"},
+            {name: "Manoel", power: 38, position: "D"},
+            {name: "Mayke", power: 41, position: "D"},
+            {name: "Éverton Ribeiro", power: 50, position: "M"},
+            {name: "Henrique", power: 40, position: "M"},
+            {name: "Lucas Silva", power: 41, position: "M"},
+            {name: "Nilton", power: 37, position: "M"},
+            {name: "Luan", power: 37, position: "A"},
+            {name: "Marcelo Moreno", power: 43, position: "A"},
+            {name: "Marquinhos", power: 38, position: "A"},
+            {name: "Ricardo Goulart", power: 49, position: "A"},
+            {name: "Willian", power: 42, position: "A"}]
 }
 
 export const atleticoMG = {
   name: "Atlético-MG",
   color1: "black",
-  color2: "white"
+  color2: "white",
+  formation: "433",
+  players: [{name: "Victor", power: 50, position: "G"}, 
+            {name: "Giovanni", power: 34, position: "G"},
+            {name: "Júnior César", power: 39, position: "D"},
+            {name: "Leonardo Silva", power: 43, position: "D"},
+            {name: "Marcos Rocha", power: 43, position: "D"},
+            {name: "Rafael Marques", power: 38, position: "D"},
+            {name: "Réver", power: 45, position: "D"},
+            {name: "Josué", power: 37, position: "M"},
+            {name: "Leandro Donizete", power: 40, position: "M"},
+            {name: "Pierre", power: 40, position: "M"},
+            {name: "Richarlyson", power: 36, position: "M"},
+            {name: "Ronaldinho Gaúcho", power: 50, position: "M"},
+            {name: "Alecsandro", power: 37, position: "A"},
+            {name: "Bernard", power: 45, position: "A"},
+            {name: "Diego Tardelli", power: 47, position: "A"},
+            {name: "Jô", power: 44, position: "A"},
+            {name: "Luan", power: 43, position: "A"}]
 }

@@ -3,3 +3,8 @@
   margin: 5px;
   width: 100%;
 }
+
+.teamModal {
+  position: absolute;
+  border: 1px solid #000;
+}
