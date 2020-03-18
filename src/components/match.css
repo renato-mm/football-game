@@ -5,19 +5,44 @@
 }
 
 .teamModal {
-  position: fixed;
-  margin: 5% 10%;
+  position: absolute;
+  margin: 10px 145px;
   width: 30%;
+  border: 1px solid #000;
+  min-height: 300px;
+  width: 350px;
+}
+
+.teamModalCloseButton{
+  float: right;
 }
 
 .teamModalPlayers {
-  border: 1px solid #000;
+  min-height: 200px;
 }
 
-.teamModalPlayers table{
-  display: inline-block;
+.teamModalPlayersTable{
+  border: 1px solid #000;
+  float: left;
+  background-color: white;
+  color: black;
+}
+
+.teamModalReservesTable{
+  border: 1px solid #000;
+  float: right;
+  background-color: white;
+  color: black;
+}
+
+.teamModalSubButton{
+  margin: 10px 12px;
+  min-height: 80px;
+  min-width: 100px;
+  float: right;
 }
 
 .teamModalHistoryTable{
-  font-size: 70%;
+  font-size: 80%;
+  height: 150px;
 }
