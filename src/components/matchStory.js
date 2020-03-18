@@ -3,7 +3,7 @@ import './matchStory.css';
 
 export default function MatchStory(props) {
   return (
-    <div className = {"matchStory"} > 90' GOAL: Everton </div>
+    <div className = {"matchStory"} > {props.text} </div>
   );
 }
 

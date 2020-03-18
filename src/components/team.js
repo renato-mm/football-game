@@ -5,17 +5,10 @@ export default class Team extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      showTeam: false,
       team: props.team,
       side: props.side,
       click: props.teamClick
     };
-  }
-
-  showTeam(){
-    this.setState({
-      showTeam: !this.state.showTeam,
-    })
   }
 
   render(){

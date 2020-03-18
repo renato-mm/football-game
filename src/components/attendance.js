@@ -3,6 +3,6 @@ import './attendance.css';
 
 export default function Attendance(props) {
   return (
-    <div className = {"attendance"} > Attendance: 77777 </div>
+    <div className = {"attendance"} > Attendance: {props.attendance} </div>
   );
 }

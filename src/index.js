@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Division from './components/division';
 
@@ -7,7 +8,7 @@ class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      squarePos: 290,
+      //squarePos: 290,
     };
   }
 

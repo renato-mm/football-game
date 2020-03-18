@@ -5,6 +5,19 @@
 }
 
 .teamModal {
-  position: absolute;
+  position: fixed;
+  margin: 5% 10%;
+  width: 30%;
+}
+
+.teamModalPlayers {
   border: 1px solid #000;
+}
+
+.teamModalPlayers table{
+  display: inline-block;
+}
+
+.teamModalHistoryTable{
+  font-size: 70%;
 }
