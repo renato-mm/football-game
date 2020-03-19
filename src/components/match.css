@@ -13,12 +13,22 @@
   width: 350px;
 }
 
+.teamModalHeader{
+  text-align: center;
+  background-color: #ddd;
+  color: black;
+  border: 1px solid #000;
+}
+
 .teamModalCloseButton{
   float: right;
+  margin-right: 1px;
+  cursor: pointer;
 }
 
 .teamModalPlayers {
-  min-height: 200px;
+  min-height: 150px;
+  font-size: 90%;
 }
 
 .teamModalPlayersTable{
@@ -37,12 +47,22 @@
 
 .teamModalSubButton{
   margin: 10px 12px;
-  min-height: 80px;
-  min-width: 100px;
+  height: 70px;
+  width: 90px;
   float: right;
 }
 
 .teamModalHistoryTable{
   font-size: 80%;
   height: 150px;
+  overflow-y: scroll;
+  display: block;
+}
+
+.yellowCard{
+  color: yellow;
+}
+
+.redCard{
+  color: red;
 }

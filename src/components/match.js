@@ -5,23 +5,35 @@ import Team from './team';
 import Scoreboard from './scoreboard';
 import MatchStory from './matchStory';
 import * as Teams from './teams';
+import { IconContext } from "react-icons";
+import { FaRegWindowClose } from "react-icons/fa";
+import { GiSoccerBall } from "react-icons/gi";
+import {AiTwotoneBook} from "react-icons/ai";
 
 const attendance = 18500;
+const goalIcon = <GiSoccerBall />;
+const yellowCard = <IconContext.Provider value={{className: "yellowCard"}}>
+  <AiTwotoneBook />
+</IconContext.Provider>;
+const redCard = <IconContext.Provider value={{className: "redCard"}}>
+  <AiTwotoneBook />
+</IconContext.Provider>;
+const closeIcon = <FaRegWindowClose />;
 const history = [
-  {time: 9,  stat:'G',    team:'home', playerID: '2108', player:'Éverton Ribeiro'},
-  {time: 15, stat:'CA',   team:'home', playerID: '2109', player:'Henrique'},
-  {time: 16, stat:'CA',   team:'home', playerID: '2108', player:'Éverton Ribeiro'},
-  {time: 25, stat:'CA',   team:'away', playerID: '0609', player:'Pierre'},
-  {time: 28, stat:'G',    team:'home', playerID: '2108', player:'Henrique'},
-  {time: 33, stat:'G',    team:'home', playerID: '2113', player:'Marcelo Moreno'},
-  {time: 35, stat:'CA',   team:'away', playerID: '0602', player:'Júnior César'},
-  {time: 44, stat:'CA',   team:'home', playerID: '2104', player:'Egídio'},
-  {time: 45, stat:'G',    team:'home', playerID: '2110', player:'Lucas Silva'},
-  {time: 56, stat:'G',    team:'home', playerID: '2115', player:'Ricardo Goulart'},
-  {time: 60, stat:'G',    team:'away', playerID: '0606', player:'Réver'},
-  {time: 77, stat:'CV',   team:'away', playerID: '0603', player:'Leonardo Silva'},
-  {time: 77, stat:'CV',   team:'home', playerID: '2115', player:'Ricardo Goulart'},
-  {time: 89, stat:'G',    team:'home', playerID: '2116', player:'Willian'}
+  {time: 9,  stat:'G',  text: goalIcon, team:'home', playerID: '2108', player:'Éverton Ribeiro'},
+  {time: 15, stat:'CA', text: yellowCard, team:'home', playerID: '2109', player:'Henrique'},
+  {time: 16, stat:'CA', text: yellowCard, team:'home', playerID: '2108', player:'Éverton Ribeiro'},
+  {time: 25, stat:'CA', text: goalIcon, team:'away', playerID: '0609', player:'Pierre'},
+  {time: 28, stat:'G',  text: goalIcon, team:'home', playerID: '2108', player:'Henrique'},
+  {time: 33, stat:'G',  text: goalIcon, team:'home', playerID: '2113', player:'Marcelo Moreno'},
+  {time: 35, stat:'CA', text: yellowCard, team:'away', playerID: '0602', player:'Júnior César'},
+  {time: 44, stat:'CA', text: yellowCard, team:'home', playerID: '2104', player:'Egídio'},
+  {time: 45, stat:'G',  text: goalIcon, team:'home', playerID: '2110', player:'Lucas Silva'},
+  {time: 56, stat:'G',  text: goalIcon, team:'home', playerID: '2115', player:'Ricardo Goulart'},
+  {time: 60, stat:'G',  text: goalIcon, team:'away', playerID: '0606', player:'Réver'},
+  {time: 77, stat:'CV', text: redCard, team:'away', playerID: '0603', player:'Leonardo Silva'},
+  {time: 77, stat:'CV', text: redCard, team:'home', playerID: '2115', player:'Ricardo Goulart'},
+  {time: 89, stat:'G',  text: goalIcon, team:'home', playerID: '2116', player:'Willian'}
 ]
 
 function TeamModal(props) {
@@ -64,7 +76,7 @@ function TeamModal(props) {
     hist.push(
       <tr>
         <td>{history[j].time.toString().padStart(2, '0')}'</td>
-        <td>&nbsp;{history[j].stat}:&nbsp;</td>
+        <td>&nbsp;{history[j].text}&nbsp;</td>
         <td>{history[j].player}</td>
       </tr>);
   }
@@ -74,19 +86,22 @@ function TeamModal(props) {
       style = {colors}
       className = {"teamModal"}
     >
-      <button class = {"teamModalCloseButton"} onClick = { props.close }>X</button>
-      <table class = {"teamModalHistoryTable"}>
+      <div className = {"teamModalHeader"}>
+        <b>{props.score}</b>
+        <div className = {"teamModalCloseButton"} onClick = { props.close }>{closeIcon}</div>
+      </div>
+      <table className = {"teamModalHistoryTable"}>
         {hist}
       </table>
       <b>{props.team.name}</b>
-      <div class = {"teamModalPlayers"}>
-        <table class = {"teamModalPlayersTable"}>
+      <div className = {"teamModalPlayers"}>
+        <table className = {"teamModalPlayersTable"}>
           {players}
         </table>
-        <table class = {"teamModalReservesTable"}>
+        <table className = {"teamModalReservesTable"}>
           {reserves}
         </table>
-        <button class = {"teamModalSubButton"}><b>Substitute</b></button>
+        <button className = {"teamModalSubButton"}><b>Substitute</b></button>
       </div>
     </div>
   );
@@ -113,10 +128,17 @@ export default class Match extends React.Component {
     );
   }
 
-  renderModal(side, team) {
-    return (
-      <Team side = {side} team = {team} />
-    );
+  renderModal(side) {
+    let modal = null;
+    if(side === "home" && this.state.showHomeTeam){
+      const scoreboard = this.state.homeTeam.name+" "+this.state.homeScore+" - "+this.state.awayScore+" "+this.state.awayTeam.name;
+      modal = <TeamModal team = {this.state.homeTeam} history = {this.state.history} score = {scoreboard} close = {() => this.switchModal("home")}/>;
+    }
+    else if(side === "away" && this.state.showAwayTeam){
+      const scoreboard = this.state.homeTeam.name+" "+this.state.homeScore+" - "+this.state.awayScore+" "+this.state.awayTeam.name;
+      modal = <TeamModal team = {this.state.awayTeam} history = {this.state.history} score = {scoreboard} close = {() => this.switchModal("away")}/>;
+    }
+    return modal;
   }
 
   renderTeam(side, team) {
@@ -157,8 +179,6 @@ export default class Match extends React.Component {
   }
   
   render(){
-    const homeTeam = this.state.showHomeTeam ? <TeamModal team = {this.state.homeTeam} history = {this.state.history} close = {() => this.switchModal("home")}/> : null;
-    const awayTeam = this.state.showAwayTeam ? <TeamModal team = {this.state.awayTeam} history = {this.state.history} close = {() => this.switchModal("away")}/> : null;
     const matchStoryText = this.state.history[this.state.history.length - 1];
     return (
       <div
@@ -166,10 +186,10 @@ export default class Match extends React.Component {
       >
         {this.renderAttendance(this.state.attendance)}
         {this.renderTeam("home", Teams.cruzeiro)}
-        {homeTeam}
+        {this.renderModal("home")}
         {this.renderScoreboard(this.state.homeScore, this.state.awayScore)}
         {this.renderTeam("away", Teams.atleticoMG)}
-        {awayTeam}
+        {this.renderModal("away")}
         {this.renderMatchStory(matchStoryText.time+"'  "+matchStoryText.stat+": "+matchStoryText.player)}
       </div>
     );
