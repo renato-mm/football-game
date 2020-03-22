@@ -1,6 +1,7 @@
 import React from 'react';
 import './division.css';
 import Match from './match';
+import * as Teams from './teams';
 
 export default class Division extends React.Component {
   constructor(props){
@@ -10,9 +11,13 @@ export default class Division extends React.Component {
     };
   }
 
-  renderMatch() {
+  startMatches(){
+    //
+  }
+
+  renderMatch(home, away) {
     return (
-      <Match />
+      <Match homeTeam = {home} awayTeam = {away}/>
     );
   }
   
@@ -21,7 +26,11 @@ export default class Division extends React.Component {
       <div
         className = {"divisionBox"}
       >
-        {this.renderMatch()}
+        <button onClick = {this.startMatches()}>Start matches</button>
+        <div>
+          {this.renderMatch(Teams.cruzeiro, Teams.atleticoMG)}
+          {this.renderMatch(Teams.atleticoMG, Teams.cruzeiro)}
+        </div>
       </div>
     );
   }

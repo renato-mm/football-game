@@ -4,7 +4,6 @@ import Attendance from './attendance';
 import Team from './team';
 import Scoreboard from './scoreboard';
 import MatchStory from './matchStory';
-import * as Teams from './teams';
 import { IconContext } from "react-icons";
 import { FaRegWindowClose } from "react-icons/fa";
 import { GiSoccerBall } from "react-icons/gi";
@@ -20,20 +19,20 @@ const redCard = <IconContext.Provider value={{className: "redCard"}}>
 </IconContext.Provider>;
 const closeIcon = <FaRegWindowClose />;
 const history = [
-  {time: 9,  stat:'G',  text: goalIcon, team:'home', playerID: '2108', player:'Éverton Ribeiro'},
-  {time: 15, stat:'CA', text: yellowCard, team:'home', playerID: '2109', player:'Henrique'},
-  {time: 16, stat:'CA', text: yellowCard, team:'home', playerID: '2108', player:'Éverton Ribeiro'},
-  {time: 25, stat:'CA', text: goalIcon, team:'away', playerID: '0609', player:'Pierre'},
-  {time: 28, stat:'G',  text: goalIcon, team:'home', playerID: '2108', player:'Henrique'},
-  {time: 33, stat:'G',  text: goalIcon, team:'home', playerID: '2113', player:'Marcelo Moreno'},
-  {time: 35, stat:'CA', text: yellowCard, team:'away', playerID: '0602', player:'Júnior César'},
-  {time: 44, stat:'CA', text: yellowCard, team:'home', playerID: '2104', player:'Egídio'},
-  {time: 45, stat:'G',  text: goalIcon, team:'home', playerID: '2110', player:'Lucas Silva'},
-  {time: 56, stat:'G',  text: goalIcon, team:'home', playerID: '2115', player:'Ricardo Goulart'},
-  {time: 60, stat:'G',  text: goalIcon, team:'away', playerID: '0606', player:'Réver'},
-  {time: 77, stat:'CV', text: redCard, team:'away', playerID: '0603', player:'Leonardo Silva'},
-  {time: 77, stat:'CV', text: redCard, team:'home', playerID: '2115', player:'Ricardo Goulart'},
-  {time: 89, stat:'G',  text: goalIcon, team:'home', playerID: '2116', player:'Willian'}
+  {time: 9,  stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2108', player:'Éverton Ribeiro'},
+  {time: 15, stat:'CA', text: yellowCard, teamID:'cruzeiro1921', playerID: '2109', player:'Henrique'},
+  {time: 16, stat:'CA', text: yellowCard, teamID:'cruzeiro1921', playerID: '2108', player:'Éverton Ribeiro'},
+  {time: 25, stat:'CA', text: goalIcon, teamID:'atletico1906', playerID: '0609', player:'Pierre'},
+  {time: 28, stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2108', player:'Henrique'},
+  {time: 33, stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2113', player:'Marcelo Moreno'},
+  {time: 35, stat:'CA', text: yellowCard, teamID:'atletico1906', playerID: '0602', player:'Júnior César'},
+  {time: 44, stat:'CA', text: yellowCard, teamID:'cruzeiro1921', playerID: '2104', player:'Egídio'},
+  {time: 45, stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2110', player:'Lucas Silva'},
+  {time: 56, stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2115', player:'Ricardo Goulart'},
+  {time: 60, stat:'G',  text: goalIcon, teamID:'atletico1906', playerID: '0606', player:'Réver'},
+  {time: 77, stat:'CV', text: redCard, teamID:'atletico1906', playerID: '0603', player:'Leonardo Silva'},
+  {time: 77, stat:'CV', text: redCard, teamID:'cruzeiro1921', playerID: '2115', player:'Ricardo Goulart'},
+  {time: 89, stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2116', player:'Willian'}
 ]
 
 function TeamModal(props) {
@@ -113,12 +112,13 @@ export default class Match extends React.Component {
     this.state = {
       showHomeTeam: false,
       showAwayTeam: false,
-      homeTeam: Teams.cruzeiro,
-      awayTeam: Teams.atleticoMG,
+      homeTeam: props.homeTeam,
+      awayTeam: props.awayTeam,
       history: history,
       attendance: attendance,
       homeScore: 0,
-      awayScore: 0
+      awayScore: 0,
+      timeout: setTimeout(() => this.updateMatch(this.state.history), 1000),
     };
   }
 
@@ -160,7 +160,7 @@ export default class Match extends React.Component {
   }
 
   switchModal(side){
-    this.updateMatch(this.state.history);
+    //this.updateMatch(this.state.history);
     if(side === "home"){
       this.setState({showHomeTeam: !this.state.showHomeTeam,})
     }
@@ -170,25 +170,24 @@ export default class Match extends React.Component {
   }
 
   updateMatch(newHistory){
-    const homeSc = (newHistory.filter(e => e.stat === 'G' && e.team === 'home')).length;
-    const awaySc = (newHistory.filter(e => e.stat === 'G' && e.team === 'away')).length;
+    const homeSc = (newHistory.filter(e => e.stat === 'G' && e.teamID === this.state.homeTeam.id)).length;
+    const awaySc = (newHistory.filter(e => e.stat === 'G' && e.teamID === this.state.awayTeam.id)).length;
     this.setState({
       homeScore: homeSc,
       awayScore: awaySc
     });
+    //clearInterval(this.state.interval);
   }
   
   render(){
     const matchStoryText = this.state.history[this.state.history.length - 1];
     return (
-      <div
-        className = {"matchBox"}
-      >
+      <div className = {"matchBox"} >
         {this.renderAttendance(this.state.attendance)}
-        {this.renderTeam("home", Teams.cruzeiro)}
+        {this.renderTeam("home", this.state.homeTeam)}
         {this.renderModal("home")}
         {this.renderScoreboard(this.state.homeScore, this.state.awayScore)}
-        {this.renderTeam("away", Teams.atleticoMG)}
+        {this.renderTeam("away", this.state.awayTeam)}
         {this.renderModal("away")}
         {this.renderMatchStory(matchStoryText.time+"'  "+matchStoryText.stat+": "+matchStoryText.player)}
       </div>

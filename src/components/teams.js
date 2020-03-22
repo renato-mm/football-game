@@ -1,5 +1,6 @@
 
 export const cruzeiro = {
+  id: "cruzeiro1921",
   name: "Cruzeiro",
   color1: "blue",
   color2: "white",
@@ -24,6 +25,7 @@ export const cruzeiro = {
 }
 
 export const atleticoMG = {
+  id: "atletico1906",
   name: "Atlético-MG",
   color1: "black",
   color2: "white",
