@@ -3,13 +3,26 @@ import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Division from './components/division';
+import Standings from './components/standings';
+
+const divHistory = [
+  {teamID: 'cruzeiro1921', color1: "blue", color2: "white", team: 'Cruzeiro', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
+  {teamID: 'atletico1906', color1: "black", color2: "white", team: 'Atlético-MG', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0}
+]
 
 class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      //squarePos: 290,
+      screen: "matches",
+      divisionHistory: [divHistory],
     };
+  }
+
+  renderStandings() {
+    return (
+      <Standings division1 = {this.state.divisionHistory[0]}/>
+    );
   }
 
   renderDivision() {
@@ -18,75 +31,23 @@ class Game extends React.Component {
     );
   }
 
+  disabledButton(button){
+    return (this.state.screen === button) ? ' disabled' : '';
+  }
+
   render() {
+    const screenBoard = (this.state.screen === 'matches') ? this.renderDivision() : this.renderStandings();
     return (
       <div className="game">
         <div className="game-board">
-          {this.renderDivision()}
+          <button onClick={()=>this.setState({screen:"matches"})} disabled={this.disabledButton("matches")}>Matches</button>
+          <button onClick={()=>this.setState({screen:"standings"})} disabled={this.disabledButton("standings")}>Standings</button>
+          {screenBoard}
         </div>
       </div>
     );
   }
 }
-
-/*const maxHeight = 150;
-const minHeight = 20;
-const maxGap = 150;
-const minGap = 50;
-
-function Square(props) {
-  const squarePos = {
-    top: props.position,
-    left: "30px",
-  };
-  
-  return (
-    <div
-      style = {squarePos}
-      className = {"square"}
-      onClick = { props.squareOnClick }
-    >
-    </div>
-  );
-}*/
-
-/*function Barrier(props) {
-  const barrierTop = {
-    height: props.height+"px",
-    top: "20px",
-    left: props.left+"px",
-  };
-  const barrierGap = {
-    height: props.gap+"px",
-    top: (props.height+20)+"px",
-    left: props.left+"px",
-  };
-  const barrierBottom = {
-    height: 300-(props.height+props.gap)+"px",
-    top: (props.height+props.gap+20)+"px",
-    left: props.left+"px",
-  };
-  
-  return (
-    <div>
-      <div
-        style = {barrierTop}
-        className = {"barrier"}
-      >
-      </div>
-      <div
-        style = {barrierGap}
-        className = {"gap"}
-      >
-      </div>
-      <div
-        style = {barrierBottom}
-        className = {"barrier"}
-      >
-      </div>
-    </div>
-  );
-}*/
 
 /*class Game extends React.Component {
   constructor(props){

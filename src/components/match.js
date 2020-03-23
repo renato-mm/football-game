@@ -2,24 +2,13 @@ import React from 'react';
 import './match.css';
 import Attendance from './attendance';
 import Team from './team';
+import TeamModal from './teamModal';
 import Scoreboard from './scoreboard';
 import MatchStory from './matchStory';
 import runMatch from './matchFunctions';
-import { IconContext } from "react-icons";
-import { FaRegWindowClose } from "react-icons/fa";
-import { GiSoccerBall } from "react-icons/gi";
-import {AiTwotoneBook} from "react-icons/ai";
 
 const attendance = 18500;
-const goalIcon = <GiSoccerBall />;
-const yellowCard = <IconContext.Provider value={{className: "yellowCard"}}>
-  <AiTwotoneBook />
-</IconContext.Provider>;
-const redCard = <IconContext.Provider value={{className: "redCard"}}>
-  <AiTwotoneBook />
-</IconContext.Provider>;
-const closeIcon = <FaRegWindowClose />;
-const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: 0, playerID: '0', player:'0'}]
+const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}]
   /*
   {time: 9,  stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2108', player:'Éverton Ribeiro'},
   {time: 15, stat:'CA', text: yellowCard, teamID:'cruzeiro1921', playerID: '2109', player:'Henrique'},
@@ -36,77 +25,6 @@ const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: 0, playe
   {time: 77, stat:'CV', text: redCard, teamID:'cruzeiro1921', playerID: '2115', player:'Ricardo Goulart'},
   {time: 89, stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2116', player:'Willian'}
   */
-
-function TeamModal(props) {
-  if(props.show === false){
-    return null;
-  }
-
-  const colors = {
-    background: props.team.color1,
-    color: props.team.color2,
-  };
-
-  const teamPlys = props.team.players;
-  const players = [];
-  const reserves = [];
-
-  [['G',1],['D',4],['M',3],['A',3]].forEach(pos => {
-    const plys = teamPlys.filter(e=>e.position === pos[0]);
-    plys.sort((e1,e2)=>e1.power<e2.power);
-    for(let j = 0; j < pos[1]; j++){
-      players.push(
-        <tr>
-          <td>{plys[j].position}</td>
-          <td>&nbsp;{plys[j].name}&nbsp;</td>
-          <td>{plys[j].power}</td>
-        </tr>);
-    }
-    for(let j = pos[1]; j < plys.length; j++){
-      reserves.push(
-        <tr>
-          <td>{plys[j].position}</td>
-          <td>&nbsp;{plys[j].name}&nbsp;</td>
-          <td>{plys[j].power}</td>
-        </tr>);
-    }
-  });
-
-  const hist = []
-  for(let j = 0; j < props.history.length; j++){
-    hist.push(
-      <tr>
-        <td>{props.history[j].time.toString().padStart(2, '0')}'</td>
-        <td>&nbsp;{props.history[j].text}&nbsp;</td>
-        <td>{props.history[j].player}</td>
-      </tr>);
-  }
-
-  return (
-    <div
-      style = {colors}
-      className = {"teamModal"}
-    >
-      <div className = {"teamModalHeader"}>
-        <b>{props.score}</b>
-        <div className = {"teamModalCloseButton"} onClick = { props.close }>{closeIcon}</div>
-      </div>
-      <table className = {"teamModalHistoryTable"}>
-        {hist}
-      </table>
-      <b>{props.team.name}</b>
-      <div className = {"teamModalPlayers"}>
-        <table className = {"teamModalPlayersTable"}>
-          {players}
-        </table>
-        <table className = {"teamModalReservesTable"}>
-          {reserves}
-        </table>
-        <button className = {"teamModalSubButton"}><b>Substitute</b></button>
-      </div>
-    </div>
-  );
-}
 
 export default class Match extends React.Component {
   constructor(props){

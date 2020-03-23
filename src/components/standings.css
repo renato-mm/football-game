@@ -1,0 +1,12 @@
+
+.standings{
+  margin: 10px auto;
+  border: 1px solid #000;
+  width: 100%;
+}
+
+.standingsTable{
+  margin: 10px auto;
+  border: 1px solid #000;
+  width: 40%;
+}
