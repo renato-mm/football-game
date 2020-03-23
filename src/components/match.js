@@ -4,6 +4,7 @@ import Attendance from './attendance';
 import Team from './team';
 import Scoreboard from './scoreboard';
 import MatchStory from './matchStory';
+import runMatch from './matchFunctions';
 import { IconContext } from "react-icons";
 import { FaRegWindowClose } from "react-icons/fa";
 import { GiSoccerBall } from "react-icons/gi";
@@ -18,7 +19,8 @@ const redCard = <IconContext.Provider value={{className: "redCard"}}>
   <AiTwotoneBook />
 </IconContext.Provider>;
 const closeIcon = <FaRegWindowClose />;
-const history = [
+const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: 0, playerID: '0', player:'0'}]
+  /*
   {time: 9,  stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2108', player:'Éverton Ribeiro'},
   {time: 15, stat:'CA', text: yellowCard, teamID:'cruzeiro1921', playerID: '2109', player:'Henrique'},
   {time: 16, stat:'CA', text: yellowCard, teamID:'cruzeiro1921', playerID: '2108', player:'Éverton Ribeiro'},
@@ -33,7 +35,7 @@ const history = [
   {time: 77, stat:'CV', text: redCard, teamID:'atletico1906', playerID: '0603', player:'Leonardo Silva'},
   {time: 77, stat:'CV', text: redCard, teamID:'cruzeiro1921', playerID: '2115', player:'Ricardo Goulart'},
   {time: 89, stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2116', player:'Willian'}
-]
+  */
 
 function TeamModal(props) {
   if(props.show === false){
@@ -71,12 +73,12 @@ function TeamModal(props) {
   });
 
   const hist = []
-  for(let j = 0; j < history.length; j++){
+  for(let j = 0; j < props.history.length; j++){
     hist.push(
       <tr>
-        <td>{history[j].time.toString().padStart(2, '0')}'</td>
-        <td>&nbsp;{history[j].text}&nbsp;</td>
-        <td>{history[j].player}</td>
+        <td>{props.history[j].time.toString().padStart(2, '0')}'</td>
+        <td>&nbsp;{props.history[j].text}&nbsp;</td>
+        <td>{props.history[j].player}</td>
       </tr>);
   }
 
@@ -118,8 +120,28 @@ export default class Match extends React.Component {
       attendance: attendance,
       homeScore: 0,
       awayScore: 0,
-      timeout: setTimeout(() => this.updateMatch(this.state.history), 1000),
+      interval: setInterval(() => this.matchPlay(), 50),
+      playCallBack : props.playCallBack,
+      eventsProcessed: 0,
+      timeBetweenEvents: 100,
     };
+  }
+
+  matchPlay() {
+    let elapsedTime = this.state.playCallBack(false)
+    if ( this.state.eventsProcessed < 90 && (this.state.eventsProcessed + 1) * this.state.timeBetweenEvents < elapsedTime ) {
+      let newEventsProcessed = this.state.eventsProcessed + 1
+      let newHistory = this.state.history.slice()
+      let result = runMatch(this.state.homeTeam, this.state.awayTeam, newHistory, newEventsProcessed)
+      result.forEach(e => newHistory.push(e))
+      this.setState( {eventsProcessed : newEventsProcessed, history : newHistory } )
+    }
+    if (this.state.eventsProcessed >= 90) {
+      this.state.playCallBack(true)
+      clearInterval(this.state.interval)
+    }
+    this.updateMatch()
+
   }
 
   renderAttendance(attend) {
@@ -169,9 +191,9 @@ export default class Match extends React.Component {
     }
   }
 
-  updateMatch(newHistory){
-    const homeSc = (newHistory.filter(e => e.stat === 'G' && e.teamID === this.state.homeTeam.id)).length;
-    const awaySc = (newHistory.filter(e => e.stat === 'G' && e.teamID === this.state.awayTeam.id)).length;
+  updateMatch(){
+    const homeSc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.state.homeTeam.id)).length;
+    const awaySc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.state.awayTeam.id)).length;
     this.setState({
       homeScore: homeSc,
       awayScore: awaySc
