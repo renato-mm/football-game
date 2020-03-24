@@ -4,6 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Division from './components/division';
 import Standings from './components/standings';
+import TeamHome from './components/teamHome';
+import * as Teams from './components/teams';
+
 
 const divHistory = [
   {teamID: 'cruzeiro1921', color1: "blue", color2: "white", team: 'Cruzeiro', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
@@ -19,15 +22,23 @@ class Game extends React.Component {
     };
   }
 
+  renderDivision() {
+    return (
+      <Division />
+    );
+  }
+
   renderStandings() {
     return (
       <Standings division1 = {this.state.divisionHistory[0]}/>
     );
   }
 
-  renderDivision() {
+  renderTeamHome(team, opponnent) {
+    const teamStandings = this.state.divisionHistory[0].filter(e=>e.teamID === team.id)[0];
+    const opponnentStandings = this.state.divisionHistory[0].filter(e=>e.teamID === opponnent.id)[0];
     return (
-      <Division />
+      <TeamHome team = {team} opponnent = {opponnent} teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}/>
     );
   }
 
@@ -36,12 +47,26 @@ class Game extends React.Component {
   }
 
   render() {
-    const screenBoard = (this.state.screen === 'matches') ? this.renderDivision() : this.renderStandings();
+    let screenBoard = null;
+    switch(this.state.screen){
+      case "matches":
+        screenBoard = this.renderDivision();
+        break;
+      case "standings":
+        screenBoard = this.renderStandings();
+        break;
+      case "teamHome":
+        screenBoard = this.renderTeamHome(Teams.cruzeiro, Teams.atleticoMG);
+        break;
+      default:
+        screenBoard = null;
+    }
     return (
       <div className="game">
         <div className="game-board">
           <button onClick={()=>this.setState({screen:"matches"})} disabled={this.disabledButton("matches")}>Matches</button>
           <button onClick={()=>this.setState({screen:"standings"})} disabled={this.disabledButton("standings")}>Standings</button>
+          <button onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
           {screenBoard}
         </div>
       </div>
