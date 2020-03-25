@@ -8,7 +8,7 @@ import TeamHome from './components/teamHome';
 import * as Teams from './components/teams';
 
 
-const divHistory = [
+const currDivs = [
   {teamID: 'cruzeiro1921', color1: "blue", color2: "white", team: 'Cruzeiro', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
   {teamID: 'atletico1906', color1: "black", color2: "white", team: 'Atlético-MG', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0}
 ]
@@ -17,8 +17,14 @@ class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      screen: "matches",
-      divisionHistory: [divHistory],
+      screen: "matches", // a string that represents the current game screen
+      currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
+      divisionHistory: [], // an array of objects that contains each season championship winner (team and coach), cup winner (team and coach) and top scorer(s)
+      teams: [], // an array of objects containing info about the teams, like current division and players
+      topScorers: [], // an array of objects that contains each season top 10 scorers
+      headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
+      coaches: [], // an array of objects containing info about each coach
+      gamePlayers: [], // an array of objects containing info about each player's coach
     };
   }
 
@@ -30,13 +36,13 @@ class Game extends React.Component {
 
   renderStandings() {
     return (
-      <Standings division1 = {this.state.divisionHistory[0]}/>
+      <Standings division1 = {this.state.currentDivisions[0]}/>
     );
   }
 
   renderTeamHome(team, opponnent) {
-    const teamStandings = this.state.divisionHistory[0].filter(e=>e.teamID === team.id)[0];
-    const opponnentStandings = this.state.divisionHistory[0].filter(e=>e.teamID === opponnent.id)[0];
+    const teamStandings = this.state.currentDivisions[0].filter(e=>e.teamID === team.id)[0];
+    const opponnentStandings = this.state.currentDivisions[0].filter(e=>e.teamID === opponnent.id)[0];
     return (
       <TeamHome team = {team} opponnent = {opponnent} teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}/>
     );
