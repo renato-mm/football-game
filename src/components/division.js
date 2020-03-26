@@ -58,7 +58,7 @@ export default class Division extends React.Component {
         <button onClick = {() => this.startMatches()}>Start: {this.state.elapsedTime.toString()}</button>
         <div>
           {this.renderMatch(Teams.cruzeiro, Teams.atleticoMG)}
-          {this.renderMatch(Teams.atleticoMG, Teams.cruzeiro)}
+          {this.renderMatch(Teams.flamengo, Teams.liverpool)}
         </div>
       </div>
     );

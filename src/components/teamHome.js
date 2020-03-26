@@ -13,19 +13,18 @@ export default function TeamHome(props) {
     background: props.team.color2,
     color: props.team.color1,
   };
-  const starter = <GoPrimitiveDot />;
-  const reserve = <GoDash />;
   const oppColors = {
     background: props.opponnent.color1,
     color: props.opponnent.color2,
   };
+  const starter = [null, <GoPrimitiveDot />, <GoDash />];
 
   const teamPlayers = [];
   for(let j = 0; j < props.team.players.length; j++){
     const nat = props.team.players[j].nationality === props.team.nationality ? ' ' : props.team.players[j].nationality;
     teamPlayers.push(
       <tr>
-        <td>{props.team.players[j].starting ? starter : reserve}</td>
+        <td>{starter[props.team.players[j].starting]}</td>
         <td>&nbsp;<b>{props.team.players[j].position}</b></td>
         <td>&nbsp;<b>{props.team.players[j].name}</b>&nbsp;</td>
         <td>&nbsp;<b>{props.team.players[j].power}</b>&nbsp;</td>
@@ -77,7 +76,9 @@ export default function TeamHome(props) {
           </div>
           <div className = {"row"}>
             <table style={colorsPlayers} className = {"teamHomePlayers"}>
-              {teamPlayers}
+              <tbody>
+                {teamPlayers}
+              </tbody>
             </table>
           </div>
         </div>
@@ -86,7 +87,9 @@ export default function TeamHome(props) {
           <div style={oppColors} className = {"row nextMatchInfo"}> {props.opponnent.name} <div>HOME - Fixture #4</div></div>
           <div className = {"row"}>
             <table className = {"teamHomeHeadToHead"}>
-              {headToHead}
+              <tbody>
+                {headToHead}
+              </tbody>
             </table>
           </div>
           <div className = {"row"}>

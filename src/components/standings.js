@@ -9,6 +9,8 @@ export default function Standings(props) {
     const colors = {
       background: props.division1[j].color1,
       color: props.division1[j].color2,
+      border: '1px solid #000',
+      'border-collapse': 'collapse',
     };
     division1.push(
       <tr style={colors}>
@@ -25,18 +27,26 @@ export default function Standings(props) {
     <div className = {"standings"} >
       <div className = {"row"}>
         <table className = {"standingsTable"}>
-          {division1}
+          <tbody>
+            {division1}
+          </tbody>
         </table>
         <table className = {"standingsTable"}>
-          {division1}
+          <tbody>
+            {division1}
+          </tbody>
         </table>
       </div>
       <div className = {"row"}>
         <table className = {"standingsTable"}>
-          {division1}
+          <tbody>
+            {division1}
+          </tbody>
         </table>
         <table className = {"standingsTable"}>
-          {division1}
+          <tbody>
+            {division1}
+          </tbody>
         </table>
       </div>
     </div>

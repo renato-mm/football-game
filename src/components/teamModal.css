@@ -5,7 +5,7 @@
   width: 30%;
   border: 1px solid #000;
   min-height: 300px;
-  width: 350px;
+  min-width: 350px;
 }
 
 .teamModalHeader{

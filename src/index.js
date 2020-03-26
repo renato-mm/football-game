@@ -10,7 +10,9 @@ import * as Teams from './components/teams';
 
 const currDivs = [
   {teamID: 'cruzeiro1921', color1: "blue", color2: "white", team: 'Cruzeiro', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
-  {teamID: 'atletico1906', color1: "black", color2: "white", team: 'Atlético-MG', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0}
+  {teamID: 'atletico1906', color1: "black", color2: "white", team: 'Atlético-MG', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
+  {teamID: 'flamengo1895', color1: "red", color2: "black", team: 'Flamengo', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
+  {teamID: 'liverpool1892', color1: "red", color2: "white", team: 'Liverpool', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0}
 ]
 
 class Game extends React.Component {
@@ -41,8 +43,8 @@ class Game extends React.Component {
   }
 
   renderTeamHome(team, opponnent) {
-    const teamStandings = this.state.currentDivisions[0].filter(e=>e.teamID === team.id)[0];
-    const opponnentStandings = this.state.currentDivisions[0].filter(e=>e.teamID === opponnent.id)[0];
+    const teamStandings = this.state.currentDivisions[team.division - 1].filter(e=>e.teamID === team.id)[0];
+    const opponnentStandings = this.state.currentDivisions[opponnent.division - 1].filter(e=>e.teamID === opponnent.id)[0];
     return (
       <TeamHome team = {team} opponnent = {opponnent} teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}/>
     );
