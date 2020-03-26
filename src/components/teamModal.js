@@ -24,7 +24,7 @@ export default function TeamModal(props) {
     color: props.team.color2,
   };
 
-  const teamPlys = props.team.players;
+  const teamPlys = props.team.players.filter(e=>e.injured === 0 && e.suspended === 0);
   const players = [];
   const reserves = [];
 

@@ -2,6 +2,8 @@ import React from 'react';
 import './teamHome.css';
 import { GoPrimitiveDot } from "react-icons/go";
 import { GoDash } from "react-icons/go";
+import { FaPlusSquare } from "react-icons/fa";
+import { AiOutlineStop } from "react-icons/ai";
 
 export default function TeamHome(props) {
 
@@ -22,9 +24,10 @@ export default function TeamHome(props) {
   const teamPlayers = [];
   for(let j = 0; j < props.team.players.length; j++){
     const nat = props.team.players[j].nationality === props.team.nationality ? ' ' : props.team.players[j].nationality;
+    const start = props.team.players[j].injured ? <FaPlusSquare /> : props.team.players[j].suspended ? <AiOutlineStop /> : starter[props.team.players[j].starting];
     teamPlayers.push(
       <tr>
-        <td>{starter[props.team.players[j].starting]}</td>
+        <td>{start}</td>
         <td>&nbsp;<b>{props.team.players[j].position}</b></td>
         <td>&nbsp;<b>{props.team.players[j].name}</b>&nbsp;</td>
         <td>&nbsp;<b>{props.team.players[j].power}</b>&nbsp;</td>

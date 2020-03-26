@@ -44,7 +44,7 @@ export default function runMatch(home, away, history, time){
     } else {
       let eventSuccess = false
       let enemyGK = enemy.players.filter( e => e.position === "G" && e.starting === 1 )[0]
-      historyElements.push({time: time,  stat:'Defend',  text: "Defend", teamID: enemy.id, playerID: enemyGK.id, player: enemyGK.name})
+      historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: enemy.id, playerID: enemyGK.id, player: enemyGK.name})
     }
   } else {
     let event = "Pass Attempt"
