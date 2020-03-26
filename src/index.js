@@ -3,12 +3,30 @@ import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Division from './components/division';
+import Standings from './components/standings';
+import TeamHome from './components/teamHome';
+import * as Teams from './components/teams';
+
+
+const currDivs = [
+  {teamID: 'cruzeiro1921', color1: "blue", color2: "white", team: 'Cruzeiro', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
+  {teamID: 'atletico1906', color1: "black", color2: "white", team: 'Atlético-MG', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
+  {teamID: 'flamengo1895', color1: "red", color2: "black", team: 'Flamengo', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
+  {teamID: 'liverpool1892', color1: "red", color2: "white", team: 'Liverpool', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0}
+]
 
 class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      //squarePos: 290,
+      screen: "matches", // a string that represents the current game screen
+      currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
+      divisionHistory: [], // an array of objects that contains each season championship winner (team and coach), cup winner (team and coach) and top scorer(s)
+      teams: [], // an array of objects containing info about the teams, like current division and players
+      topScorers: [], // an array of objects that contains each season top 10 scorers
+      headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
+      coaches: [], // an array of objects containing info about each coach
+      gamePlayers: [], // an array of objects containing info about each player's coach
     };
   }
 
@@ -18,75 +36,51 @@ class Game extends React.Component {
     );
   }
 
+  renderStandings() {
+    return (
+      <Standings division1 = {this.state.currentDivisions[0]}/>
+    );
+  }
+
+  renderTeamHome(team, opponnent) {
+    const teamStandings = this.state.currentDivisions[team.division - 1].filter(e=>e.teamID === team.id)[0];
+    const opponnentStandings = this.state.currentDivisions[opponnent.division - 1].filter(e=>e.teamID === opponnent.id)[0];
+    return (
+      <TeamHome team = {team} opponnent = {opponnent} teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}/>
+    );
+  }
+
+  disabledButton(button){
+    return (this.state.screen === button) ? ' disabled' : '';
+  }
+
   render() {
+    let screenBoard = null;
+    switch(this.state.screen){
+      case "matches":
+        screenBoard = this.renderDivision();
+        break;
+      case "standings":
+        screenBoard = this.renderStandings();
+        break;
+      case "teamHome":
+        screenBoard = this.renderTeamHome(Teams.cruzeiro, Teams.atleticoMG);
+        break;
+      default:
+        screenBoard = null;
+    }
     return (
       <div className="game">
         <div className="game-board">
-          {this.renderDivision()}
+          <button onClick={()=>this.setState({screen:"matches"})} disabled={this.disabledButton("matches")}>Matches</button>
+          <button onClick={()=>this.setState({screen:"standings"})} disabled={this.disabledButton("standings")}>Standings</button>
+          <button onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
+          {screenBoard}
         </div>
       </div>
     );
   }
 }
-
-/*const maxHeight = 150;
-const minHeight = 20;
-const maxGap = 150;
-const minGap = 50;
-
-function Square(props) {
-  const squarePos = {
-    top: props.position,
-    left: "30px",
-  };
-  
-  return (
-    <div
-      style = {squarePos}
-      className = {"square"}
-      onClick = { props.squareOnClick }
-    >
-    </div>
-  );
-}*/
-
-/*function Barrier(props) {
-  const barrierTop = {
-    height: props.height+"px",
-    top: "20px",
-    left: props.left+"px",
-  };
-  const barrierGap = {
-    height: props.gap+"px",
-    top: (props.height+20)+"px",
-    left: props.left+"px",
-  };
-  const barrierBottom = {
-    height: 300-(props.height+props.gap)+"px",
-    top: (props.height+props.gap+20)+"px",
-    left: props.left+"px",
-  };
-  
-  return (
-    <div>
-      <div
-        style = {barrierTop}
-        className = {"barrier"}
-      >
-      </div>
-      <div
-        style = {barrierGap}
-        className = {"gap"}
-      >
-      </div>
-      <div
-        style = {barrierBottom}
-        className = {"barrier"}
-      >
-      </div>
-    </div>
-  );
-}*/
 
 /*class Game extends React.Component {
   constructor(props){
