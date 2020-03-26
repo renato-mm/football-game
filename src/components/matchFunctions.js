@@ -4,16 +4,47 @@
 // 'match.js' has a history example on line 22
 // 'teams.js' has two samples of players list, but the function only receives the ones that are currently playing
 
+function randomInt(l, h) {
+  let c = Math.floor(Math.random() * (h - l)) + l
+  return c
+}
+
+function runChance(chances) {
+  if (typeof(chances) === typeof([])) {
+    let chances_sum = chances.slice()
+    let total = chances_sum.reduce((a, b) => a + b, 0)
+    let c = randomInt(0, total)
+    let i
+    let sc = 0
+    for (i = 0; i < chances.length; i++) {
+      sc += chances[i]
+      if (c < sc) {
+        return i
+      }
+    }
+  } else if (typeof(chances) === typeof(50)) {
+    let c = randomInt(0, chances)
+    if (c < chances) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
 export default function runMatch(home, away, history, time){
   //{time: 0,  stat:'S',  text: goalIcon, teamID:'cruzeiro1921', playerID: '0', player:'0'}
   let teams = [home, away]
-  let event_chance = {"A" : 50, "M" : 40, "D" : 10, "G" : 1}
+  let event_chance = {"A" : 50, "M" : 20, "D" : 10, "G" : 1}
+  let pass_choice = {"A": [50, 40, 10], "M": [50, 20, 30], "D": [20, 30, 50], "G": [5, 15, 80]}
+  let pass_options = ["A", "M", "D", "G"]
+  let inverse_positions = {"A" : "D", "M": "M", "D": "A", "G": "A"}
   let player
   let possession
   let enemy
   let lastH = history[history.length - 1]
   if (lastH.text === "Match Start"){
-    let p = Math.floor(Math.random() * 2)
+    let p = randomInt(1,2)
     possession = teams[p]
     let e = 0
     if (p === 1) {
@@ -31,12 +62,13 @@ export default function runMatch(home, away, history, time){
 
   let historyElements = []
   //let historyElement = {time: time,  stat:'N',  text: "Error", teamID: possession.id, playerID: '0', player:'0'}
-
-  let event_roll = Math.floor(Math.random() * 100)
-  let success_roll = Math.floor(Math.random() * 100)
+  let goal_add_chance = (1 + player.power/50) * 5
+  let pass_add_chance = (1 + player.power/50) * 10
+  let event_roll = randomInt(0, 100)
+  let success_roll = randomInt(0, 100)
   if (event_roll < event_chance[player.position]) {
     let event = "Goal Attempt"
-    if (success_roll < 10) {
+    if (success_roll < 10 + goal_add_chance) {
       let eventSuccess = true
       historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession.id, playerID: player.id, player: player.name})
       let ePlayer = enemy.players.filter( e => e.position === "A" && e.starting === 1 )[0]
@@ -48,18 +80,20 @@ export default function runMatch(home, away, history, time){
     }
   } else {
     let event = "Pass Attempt"
-    if (success_roll < 70) {
+    if (success_roll < 70 + pass_add_chance) {
       let eventSuccess = true
-      let possessionPS = possession.players.filter( e => e.starting === 1 )
+      let pc = pass_choice[player.position]
+      let pc_choice = pass_options[runChance(pc)]
+      let possessionPS = possession.players.filter( e => e.position === pc_choice && e.starting === 1 )
       let l = possessionPS.length
-      let r = Math.floor(Math.random() * l)
+      let r = randomInt(0, l)
       let possessionP = possessionPS[r]
       historyElements.push({time: time,  stat:'Pass',  text: "Pass", teamID: possession.id, playerID: possessionP.id, player: possessionP.name})
     } else {
       let eventSuccess = false
-      let enemyPS = enemy.players.filter( e => e.starting === 1 )
+      let enemyPS = enemy.players.filter( e => e.position === inverse_positions[player.position] && e.starting === 1 )
       let l = enemyPS.length
-      let r = Math.floor(Math.random() * l)
+      let r = randomInt(0, l)
       let enemyP = enemyPS[r]
       historyElements.push({time: time,  stat:'Steal',  text: "Steal", teamID: enemy.id, playerID: enemyP.id, player: enemyP.name})
     }
