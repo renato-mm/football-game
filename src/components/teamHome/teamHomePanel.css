@@ -1,0 +1,28 @@
+
+.panel{
+  display: block;
+}
+
+.nextMatch{
+  display: block;
+  margin: 5px -15px;
+}
+
+.nextMatch span{
+  float: right;
+}
+
+.nextMatchInfo{
+  display: block;
+  padding-left: 5px;
+}
+
+.teamHomePanelMenu{
+  font-size: smaller;
+  margin: 10px -15px;
+}
+
+.teamHomePanelMenuActive{
+  background-color: #777;
+  color: white;
+}

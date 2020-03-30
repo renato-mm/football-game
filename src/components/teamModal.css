@@ -1,11 +1,12 @@
 
 .teamModal {
   position: absolute;
-  margin: 10px 145px;
   width: 30%;
   border: 1px solid #000;
   min-height: 300px;
   min-width: 350px;
+  top: 20%;
+  left: 30%;
 }
 
 .teamModalHeader{

@@ -1,0 +1,25 @@
+
+.teamHomePanelPlayer{
+  display: block;
+  margin: 10px -15px;
+}
+.teamHomePanelPlayer span{
+  font-size: 150%;
+}
+
+.teamHomePanelPlayerInfo{
+  font-size: 90%;
+  width: 50%;
+  margin: 10px 0;
+}
+
+.teamHomePanelPlayerHistory{
+  font-size: 90%;
+  width: 50%;
+  margin: 10px 0;
+  border: 1px solid #000;
+}
+
+.teamHomePanelContract{
+  margin: 50px 0;
+}

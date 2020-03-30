@@ -1,0 +1,51 @@
+
+.teamHomeMenu{
+  display: inline-flex;
+  font-size: smaller;
+}
+
+.teamHomeMenuFreefoot{
+  position: relative;
+}
+
+.teamHomeMenuFormation{
+  position: relative;
+}
+
+.teamHomeMenuFormation table{
+  text-align: center;
+}
+
+.teamHomeMenuTeam{
+  position: relative;
+}
+
+.teamHomeMenuPlayer{
+  position: relative;
+}
+
+.teamHomeMenuChampionship{
+  position: relative;
+}
+
+.teamHomeMenuCoach{
+  position: relative;
+}
+
+.teamHomeMenuTable{
+  position: absolute;
+  background-color: white;
+  color: black;
+  z-index: 1;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+.teamHomeMenuTable tr{
+  border: 1px solid #000;
+  border-collapse: collapse;
+}
+
+.teamHomeMenuTable td{
+  padding: 0px 5px;
+}
