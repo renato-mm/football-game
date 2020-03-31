@@ -27,3 +27,8 @@
   display: block;
   margin: 15px -15px;
 }
+
+.teamHomeMoralBar{
+  border: 2px solid #000;
+  height: 2em;
+}

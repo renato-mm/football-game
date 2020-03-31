@@ -10,16 +10,19 @@
 .teamHomePanelPlayerInfo{
   font-size: 90%;
   width: 50%;
-  margin: 10px 0;
+  margin: 10px auto;
 }
 
 .teamHomePanelPlayerHistory{
   font-size: 90%;
   width: 50%;
-  margin: 10px 0;
+  margin: 10px auto;
+}
+
+.teamHomePanelPlayerHistory tbody{
   border: 1px solid #000;
 }
 
 .teamHomePanelContract{
-  margin: 50px 0;
+  margin: 10px auto;
 }

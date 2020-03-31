@@ -1,5 +1,6 @@
 import React from 'react';
 import './teamHomePanelMatch.css'
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 export default function TeamHomePanelMatch(props){
 
@@ -24,6 +25,24 @@ export default function TeamHomePanelMatch(props){
     </tr>
   </tbody>);
 
+  const cashFormat = (value) =>
+  new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(value);
+
+  const moralColor = (moral) => {
+    if(moral > 60){
+      return 'success';
+    }
+    else if(moral > 30){
+      return "warning";
+    }
+    else{
+      return "danger";
+    }
+  }
+
   return (
     <div>
       <div className = {"row"}>
@@ -38,11 +57,11 @@ export default function TeamHomePanelMatch(props){
       </div>
       <div className = {"row teamHomeCash"}>
         <div> Cash </div>
-        <div> {props.cash} </div>
+        <div> {cashFormat(props.cash)} </div>
       </div>
       <div className = {"row teamHomeMoral"}>
-        <div> Moral </div>
-        <div> {props.moral} </div>
+        Moral
+        <div> <ProgressBar className = {"teamHomeMoralBar"} variant={moralColor(props.moral)} now={props.moral} /> </div>
       </div>
     </div>
   );

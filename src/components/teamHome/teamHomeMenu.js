@@ -13,6 +13,7 @@ export default class TeamHomeMenu extends React.Component {
     this.state = {
       showModal: false,
       modal: '',
+      formationSelected: props.formationSelected,
     };
   }
 
@@ -31,7 +32,7 @@ export default class TeamHomeMenu extends React.Component {
 
   renderFormation(){
     if(this.state.showModal && this.state.modal === "formation"){
-      return <Formation />;
+      return <Formation formationSelected={this.state.formationSelected}/>;
     }
     else{
       return null;

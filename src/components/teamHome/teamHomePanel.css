@@ -15,6 +15,11 @@
 .nextMatchInfo{
   display: block;
   padding-left: 5px;
+  margin: 0px -15px 10px;
+}
+
+.teamHomePanel{
+  height: 290px;
 }
 
 .teamHomePanelMenu{
@@ -23,6 +28,7 @@
 }
 
 .teamHomePanelMenuActive{
+  border: 2px inset;
   background-color: #777;
   color: white;
 }

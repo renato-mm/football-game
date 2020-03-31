@@ -1,0 +1,37 @@
+
+.teamHomePanelOpponnentName{
+  margin: 0px -15px 10px;
+  height: 30px;
+}
+
+.teamHomePanelOpponnentName span{
+  font-size: 1.6em;
+  width: 100%;
+  text-align: center;
+}
+
+.teamHomeOpponnentMoralBar .progress{
+  width: 100%;
+  border: 2px solid #000;
+  height: 2em;
+}
+
+.teamHomeOpponnentCoach{
+  margin: 50px -10px;
+  width: 100%;
+}
+
+.teamHomeOpponnentCoach span{
+  padding-left: 20px;
+}
+
+.teamHomeOpponnentButtons{
+  height: 100px;
+  float: right;
+}
+
+.teamHomeOpponnentButtons button{
+  height: 80px;
+  width: 90px;
+  margin: 10px 5px;
+}

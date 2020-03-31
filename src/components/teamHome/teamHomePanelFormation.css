@@ -1,0 +1,10 @@
+
+.teamHomePanelFormation{
+  padding-top: 150px;
+  text-align: center;
+}
+
+.teamHomePanelFormation button{
+  height: 5em;
+  width: 6em
+}

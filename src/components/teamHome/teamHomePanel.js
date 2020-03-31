@@ -8,7 +8,6 @@ import Opponnent from './teamHomePanelOpponnent';
 
 export default class TeamHomePanel extends React.Component {
   constructor(props){
-    console.log(props.panel)
     super(props);
     this.state = {
       team: props.team,
@@ -28,6 +27,7 @@ export default class TeamHomePanel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      team: nextProps.team,
       panel: nextProps.panel,
       selectedPlayer: nextProps.player,
     });  
@@ -44,7 +44,6 @@ export default class TeamHomePanel extends React.Component {
   }
 
   renderPlayer(){
-    console.log(this.state.selectedPlayer)
     return <Player player={this.state.selectedPlayer} />;
   }
 
@@ -53,11 +52,11 @@ export default class TeamHomePanel extends React.Component {
   }
 
   renderFormation(){
-    return <Formation />;
+    return <Formation players={this.state.team.players} auto={false}/>;
   }
 
   renderOpponnent(){
-    return <Opponnent />;
+    return <Opponnent opponnent={this.state.opponnent} />;
   }
 
   selectedButton(button){
@@ -90,7 +89,9 @@ export default class TeamHomePanel extends React.Component {
         <div className = {"panel"}>
           <div className = {"row nextMatch"}> Next Match <span>Current Year</span></div>
           <div style={this.state.oppColors} className = {"row nextMatchInfo"}> {this.state.opponnentStandings.team} <div>HOME - Fixture #4</div></div>
-          {screenPanel}
+          <div className = {"teamHomePanel"}>
+            {screenPanel}
+          </div>
         </div>
         <div className = {"teamHomePanelMenu"}>
           <button onClick={()=>this.state.changePanel("match")} className={this.selectedButton("match")}>Match</button>

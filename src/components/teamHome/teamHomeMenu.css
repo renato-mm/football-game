@@ -2,6 +2,7 @@
 .teamHomeMenu{
   display: inline-flex;
   font-size: smaller;
+  cursor: default;
 }
 
 .teamHomeMenuFreefoot{
@@ -44,6 +45,10 @@
 .teamHomeMenuTable tr{
   border: 1px solid #000;
   border-collapse: collapse;
+}
+
+.teamHomeMenuTable tr:hover{
+  background-color: #0011ff7a;
 }
 
 .teamHomeMenuTable td{

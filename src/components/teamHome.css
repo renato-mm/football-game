@@ -3,6 +3,7 @@
   margin: 10px auto;
   border: 1px solid #000;
   padding: 0 0px;
+  height: 450px
 }
 
 .teamHomeHeader{
@@ -15,4 +16,10 @@
 .teamHomePlayers{
   font-size: 80%;
   width: 95%;
+  cursor: default;
+}
+
+.teamHomePlayers tbody{
+  border: 1px solid #000;
+  border-collapse: collapse;
 }

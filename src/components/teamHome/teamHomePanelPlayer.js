@@ -1,16 +1,24 @@
 import React from 'react';
 import './teamHomePanelPlayer.css'
+import ReactCountryFlag from "react-country-flag";
 
 export default function TeamHomePanelPlayer(props){
 
   if(props.player === null)
     return null;
 
+  const inj = (props.player.injured > 0) ? <div> Injured for {props.player.injured} matches </div> : null;
+  const sus = (props.player.suspended > 0) ? <div> Suspended for {props.player.suspended} matches </div> : null;
+
+  const CountryCodes = require('country-code-info');
+  const country = CountryCodes.findCountry({'fifa': props.player.nationality});
+  const countryName = country.name;
+
   return (
     <div>
       <div className = {"row teamHomePanelPlayer"}>
         <div> <span>{props.player.name}</span> </div>
-        <div> Flag {props.player.nationality} </div>
+        <div> <ReactCountryFlag countryCode={country.a2} svg style={{width: '3em', height: '3em',}}/> {countryName} </div>
       </div>
       <table className = {"teamHomePanelPlayerInfo"}>
         <tbody>
@@ -24,8 +32,10 @@ export default function TeamHomePanelPlayer(props){
           </tr>
         </tbody>
       </table>
-      History
       <table className = {"teamHomePanelPlayerHistory"}>
+        <thead>
+          <td colSpan="2">History</td>
+        </thead>
         <tbody>
           <tr>
             <td>Matches</td>
@@ -45,6 +55,9 @@ export default function TeamHomePanelPlayer(props){
           </tr>
         </tbody>
       </table>
+      <div className = {"row"}>
+        <i><b>{inj}{sus}</b></i>
+      </div>
       <div className = {"row"}>
         <button className = {"teamHomePanelContract"}>
           Renew Contract

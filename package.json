@@ -38,12 +38,14 @@
   },
   "devDependencies": {
     "acorn": "^7.1.1",
+    "country-code-info": "^0.2.0",
     "d3": "^5.15.0",
     "eslint-plugin-flowtype": "^2.50.3",
     "gh-pages": "^2.2.0",
     "jquery": "^3.4.1",
     "minimist": "^1.2.5",
     "popper.js": "^1.16.1",
+    "react-country-flag": "^2.0.1",
     "typescript": "^3.8.3"
   },
   "homepage": "https://renato-mm.github.io/football-game/"
