@@ -1,0 +1,34 @@
+
+.teamHomeHeadToHead{
+  font-size: 90%;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.teamHomeHeadToHead tr{
+  border: 1px solid #000;
+  border-collapse: collapse;
+}
+
+.teamHomeLastHeadtoHead{
+  margin: 50px 0;
+}
+
+.teamHomeLastHeadtoHead span{
+  margin-left: 40px;
+}
+
+.teamHomeCash{
+  display: block;
+  margin: 10px -15px;
+}
+
+.teamHomeMoral{
+  display: block;
+  margin: 15px -15px;
+}
+
+.teamHomeMoralBar{
+  border: 2px solid #000;
+  height: 2em;
+}
