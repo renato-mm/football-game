@@ -21,14 +21,14 @@ export function selectFormation(players, formation){
   }
   let count = 0;
   const teamPlys = players;
-  [['G',gk],['D',def],['M',mid],['A',fwd]].forEach(pos => {
+  [['G',gk],['D',def],['M',mid],['F',fwd]].forEach(pos => {
     const plys = teamPlys.filter(e=>e.position === pos[0] && e.injured === 0 && e.suspended === 0);
     if(plys.length < pos[1]){
       count++;
     }
   });
   if(count === 0){
-    [['G',gk],['D',def],['M',mid],['A',fwd]].forEach(pos => {
+    [['G',gk],['D',def],['M',mid],['F',fwd]].forEach(pos => {
       const plys = teamPlys.filter(e=>e.position === pos[0] && e.injured === 0 && e.suspended === 0);
       if(plys.length < pos[1]){
         return;

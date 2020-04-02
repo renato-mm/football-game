@@ -28,7 +28,7 @@ export default function TeamModal(props) {
   const players = [];
   const reserves = [];
 
-  ['G','D','M','A'].forEach(pos => {
+  ['G','D','M','F'].forEach(pos => {
     const plys = teamPlys.filter(e=>e.position === pos);
     plys.sort((e1,e2)=>e1.name>e2.name);
     for(let j = 0; j < plys.length; j++){

@@ -20,6 +20,7 @@ class Game extends React.Component {
     super(props);
     this.state = {
       screen: "matches", // a string that represents the current game screen
+      season: 2020,
       currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
       divisionHistory: [], // an array of objects that contains each season championship winner (team and coach), cup winner (team and coach) and top scorer(s)
       teams: [], // an array of objects containing info about the teams, like current division and players
@@ -46,12 +47,20 @@ class Game extends React.Component {
     const teamStandings = this.state.currentDivisions[team.division - 1].filter(e=>e.teamID === team.id)[0];
     const opponnentStandings = this.state.currentDivisions[opponnent.division - 1].filter(e=>e.teamID === opponnent.id)[0];
     return (
-      <TeamHome team = {team} opponnent = {opponnent} teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}/>
+      <TeamHome team = {team} opponnent = {opponnent}
+      teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}
+      showStandings={(code)=>this.showStandings(code)} season = {this.state.season}/>
     );
   }
 
   disabledButton(button){
     return (this.state.screen === button) ? ' disabled' : '';
+  }
+
+  showStandings(code){
+    if(code === 'C' || code === 'c'){
+      this.setState({screen:"standings"});
+    }
   }
 
   render() {
@@ -64,7 +73,7 @@ class Game extends React.Component {
         screenBoard = this.renderStandings();
         break;
       case "teamHome":
-        screenBoard = this.renderTeamHome(Teams.cruzeiro, Teams.atleticoMG);
+        screenBoard = this.renderTeamHome(Teams.flamengo, Teams.atleticoMG);
         break;
       default:
         screenBoard = null;

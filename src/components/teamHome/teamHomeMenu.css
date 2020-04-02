@@ -5,6 +5,12 @@
   cursor: default;
 }
 
+.teamHomeMenuActive button{
+  border: 2px inset;
+  background-color: #777;
+  color: white;
+}
+
 .teamHomeMenuFreefoot{
   position: relative;
 }

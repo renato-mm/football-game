@@ -7,27 +7,30 @@ import { GoPrimitiveDot } from "react-icons/go";
 import { GoDash } from "react-icons/go";
 import { FaPlusSquare } from "react-icons/fa";
 import { AiOutlineStop } from "react-icons/ai";
-import ReactCountryFlag from "react-country-flag";
+import countryInfo from "./countryFunctions";
 
 export default class TeamHome extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       team: props.team,
-      opponnent: props.opponnent,
-      teamStandings: props.teamStandings,
-      opponnentStandings: props.opponnentStandings,
-      colors: {
-        background: props.team.color1,
-        color: props.team.color2,
-      },
-      colorsPlayers: {
-        background: props.team.color2,
-        color: props.team.color1,
-      },
       panel: "match",
       selectedPlayer: null,
     };
+    this.season = props.season;
+    this.opponnent = props.opponnent;
+    this.teamStandings = props.teamStandings;
+    this.opponnentStandings = props.opponnentStandings;
+    this.colors = {
+      background: props.team.color1,
+      color: props.team.color2,
+    };
+    this.colorsPlayers = {
+      background: props.team.color2,
+      color: props.team.color1,
+    };
+    this.showStandings = props.showStandings;
+    this.countryInfo = countryInfo(props.team.nationality);
   }
 
   selectPlayer(player, event){
@@ -56,12 +59,12 @@ export default class TeamHome extends React.Component {
     const starter = [null, <GoPrimitiveDot />, <GoDash />];
     const teamPlayers = [];
     const teamPlys = this.state.team.players;
-    ['G','D','M','A'].forEach(pos => {
+    ['G','D','M','F'].forEach(pos => {
       const plys = teamPlys.filter(e=>e.position === pos);
       plys.sort((e1,e2)=>e1.name>e2.name);
       const players = [];
       for(let j = 0; j < plys.length; j++){
-        const colors = this.state.selectedPlayer === plys[j] ? this.state.colors : this.state.colorsPlayers;
+        const colors = this.state.selectedPlayer === plys[j] ? this.colors : this.colorsPlayers;
         const nat = plys[j].nationality === this.state.team.nationality ? ' ' : plys[j].nationality;
         const start = plys[j].injured ? <FaPlusSquare /> : plys[j].suspended ? <AiOutlineStop /> : starter[plys[j].starting];
         players.push(
@@ -76,8 +79,11 @@ export default class TeamHome extends React.Component {
             <td><b>{plys[j].salaryRenewed ? '+' : ' '}</b></td>
           </tr>);
       }
+      const bodyColor = {
+        border: '1px solid '+this.state.team.color1
+      }
       teamPlayers.push(
-        <tbody>
+        <tbody style={bodyColor}>
           {players}
         </tbody>
       )
@@ -88,7 +94,8 @@ export default class TeamHome extends React.Component {
   renderMenu(){
     return(
       <TeamHomeMenu
-      formationSelected={(key) => this.formationSelected(key)}/>
+      formationSelected={(key) => this.formationSelected(key)}
+      showStandings={this.showStandings}/>
     );
   }
 
@@ -101,11 +108,12 @@ export default class TeamHome extends React.Component {
   renderPanel(){
     return(
       <TeamHomePanel
+      season={this.season}
       team={this.state.team}
-      opponnent={this.state.opponnent}
-      teamStandings={this.state.teamStandings}
-      opponnentStandings={this.state.opponnentStandings}
-      colors={this.state.colors}
+      opponnent={this.opponnent}
+      teamStandings={this.teamStandings}
+      opponnentStandings={this.opponnentStandings}
+      colors={this.colors}
       player={this.state.selectedPlayer}
       panel={this.state.panel}
       changePanel={panel=>this.changePanel(panel)}/>
@@ -124,7 +132,7 @@ export default class TeamHome extends React.Component {
       })
     }
     else if(key === 'C' || key === 'c'){
-      // Show standings
+      this.showStandings(key);
     }
     else if(key === 'Enter' && this.state.panel === 'formation'){
       // Begin matches
@@ -132,12 +140,10 @@ export default class TeamHome extends React.Component {
   }
 
   render(){
-    const CountryCodes = require('country-code-info');
-    const country = CountryCodes.findCountry({'fifa': this.state.team.nationality});
-    const countryName = country.name;
+    
     return (
       <div
-        style={this.state.colors}
+        style={this.colors}
         className = {"teamHome"}
         onKeyPress = {(event) => this.formationSelected(event.key)}
         tabIndex="0">
@@ -147,11 +153,13 @@ export default class TeamHome extends React.Component {
         {this.renderMenu()}
         <div className = {"row col-md-12"}>
           <div className = {"col-md-6"}>
-            <div className = {"row"}> {this.state.team.coach} </div>
-            <div className = {"row"}>
+            <div className = {"row teamHomeCoach"}> <b>{this.state.team.coach}</b> </div>
+            <div className = {"row teamHomeInfo"}>
+              {this.countryInfo[1]}
               <div>
-                <ReactCountryFlag countryCode={country.a2} svg style={{width: '3em', height: '3em',}}/>
-                &nbsp;{countryName}&nbsp;&nbsp; Division {this.state.team.division}</div>
+                {this.countryInfo[0]} 
+                <span>Division {this.state.team.division}</span>
+              </div>
             </div>
             <div className = {"row"}>
               <table className = {"teamHomePlayers"}>

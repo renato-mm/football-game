@@ -11,18 +11,19 @@ export default class TeamHomePanel extends React.Component {
     super(props);
     this.state = {
       team: props.team,
-      opponnent: props.opponnent,
-      teamStandings: props.teamStandings,
-      opponnentStandings: props.opponnentStandings,
-      colors: props.colors,
-      oppColors: {
-        background: props.opponnent.color1,
-        color: props.opponnent.color2,
-      },
       panel: props.panel,
       selectedPlayer: props.player,
-      changePanel: props.changePanel,
     };
+    this.season = props.season;
+    this.opponnent = props.opponnent;
+    this.teamStandings = props.teamStandings;
+    this.opponnentStandings = props.opponnentStandings;
+    this.colors = props.colors;
+    this.oppColors = {
+      background: props.opponnent.color1,
+      color: props.opponnent.color2,
+    };
+    this.changePanel = props.changePanel;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,10 +36,10 @@ export default class TeamHomePanel extends React.Component {
 
   renderMatch(){
     return <Match
-    teamStandings={this.state.teamStandings}
-    opponnentStandings={this.state.opponnentStandings}
-    colors={this.state.colors}
-    oppColors={this.state.oppColors}
+    teamStandings={this.teamStandings}
+    opponnentStandings={this.opponnentStandings}
+    colors={this.colors}
+    oppColors={this.oppColors}
     cash={this.state.team.cash}
     moral={this.state.team.moral} />;
   }
@@ -56,7 +57,7 @@ export default class TeamHomePanel extends React.Component {
   }
 
   renderOpponnent(){
-    return <Opponnent opponnent={this.state.opponnent} />;
+    return <Opponnent opponnent={this.opponnent} />;
   }
 
   selectedButton(button){
@@ -87,18 +88,18 @@ export default class TeamHomePanel extends React.Component {
     return (
       <div>
         <div className = {"panel"}>
-          <div className = {"row nextMatch"}> Next Match <span>Current Year</span></div>
-          <div style={this.state.oppColors} className = {"row nextMatchInfo"}> {this.state.opponnentStandings.team} <div>HOME - Fixture #4</div></div>
+          <div className = {"row nextMatch"}> Opponnent <span>{this.season}</span></div>
+          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.opponnentStandings.team} <div>HOME - Fixture #4</div></div>
           <div className = {"teamHomePanel"}>
             {screenPanel}
           </div>
         </div>
         <div className = {"teamHomePanelMenu"}>
-          <button onClick={()=>this.state.changePanel("match")} className={this.selectedButton("match")}>Match</button>
-          <button onClick={()=>this.state.changePanel("player")} className={this.selectedButton("player")}>Player</button>
-          <button onClick={()=>this.state.changePanel("finance")} className={this.selectedButton("finance")}>Finance</button>
-          <button onClick={()=>this.state.changePanel("formation")} className={this.selectedButton("formation")}>Formation</button>
-          <button onClick={()=>this.state.changePanel("opponnent")} className={this.selectedButton("opponnent")}>Opponnent</button>
+          <button onClick={()=>this.changePanel("match")} className={this.selectedButton("match")}>Match</button>
+          <button onClick={()=>this.changePanel("player")} className={this.selectedButton("player")}>Player</button>
+          <button onClick={()=>this.changePanel("finance")} className={this.selectedButton("finance")}>Finance</button>
+          <button onClick={()=>this.changePanel("formation")} className={this.selectedButton("formation")}>Formation</button>
+          <button onClick={()=>this.changePanel("opponnent")} className={this.selectedButton("opponnent")}>Opponnent</button>
         </div>
       </div>
     );
