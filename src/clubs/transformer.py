@@ -96,8 +96,10 @@ o = open('clubs.js', "w+")
 first_line = "export let all_info = {"
 l = len(first_line)
 o.write(first_line)
-club_test = open(team_paths[0], 'r')
-ds = file_to_dict(club_test)
+ds = []
+for i in range(len(team_paths)):
+    club_test = open(team_paths[i], 'r')
+    ds += file_to_dict(club_test)
 first_switch = True
 for e in ds:
     e.print_self()
