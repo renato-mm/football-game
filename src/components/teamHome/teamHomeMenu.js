@@ -6,23 +6,21 @@ import Team from './teamHomeMenuTeam';
 import Player from './teamHomeMenuPlayer';
 import Championship from './teamHomeMenuChampionship';
 import Coach from './teamHomeMenuCoach';
+import onClickOutside from "react-onclickoutside";
 
-export default class TeamHomeMenu extends React.Component {
+class TeamHomeMenu extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      showModal: false,
-      modal: '',
-      formationSelected: props.formationSelected,
+      showMenu: false,
+      menu: '',
     };
-  }
-
-  selectedButton(button){
-    return (this.state.panel === button) ? 'teamHomePanelMenuActive' : '';
+    this.formationSelected = props.formationSelected;
+    this.showStandings = props.showStandings;
   }
 
   renderFreefoot(){
-    if(this.state.showModal && this.state.modal === "freefoot"){
+    if(this.state.showMenu && this.state.menu === "freefoot"){
       return <Freefoot />;
     }
     else{
@@ -31,8 +29,8 @@ export default class TeamHomeMenu extends React.Component {
   }
 
   renderFormation(){
-    if(this.state.showModal && this.state.modal === "formation"){
-      return <Formation formationSelected={this.state.formationSelected}/>;
+    if(this.state.showMenu && this.state.menu === "formation"){
+      return <Formation formationSelected={this.formationSelected}/>;
     }
     else{
       return null;
@@ -40,7 +38,7 @@ export default class TeamHomeMenu extends React.Component {
   }
 
   renderTeam(){
-    if(this.state.showModal && this.state.modal === "team"){
+    if(this.state.showMenu && this.state.menu === "team"){
       return <Team />;
     }
     else{
@@ -49,7 +47,7 @@ export default class TeamHomeMenu extends React.Component {
   }
 
   renderPlayer(){
-    if(this.state.showModal && this.state.modal === "player"){
+    if(this.state.showMenu && this.state.menu === "player"){
       return <Player />;
     }
     else{
@@ -58,8 +56,8 @@ export default class TeamHomeMenu extends React.Component {
   }
 
   renderChampionship(){
-    if(this.state.showModal && this.state.modal === "championship"){
-      return <Championship />;
+    if(this.state.showMenu && this.state.menu === "championship"){
+      return <Championship showStandings={this.showStandings}/>;
     }
     else{
       return null;
@@ -67,7 +65,7 @@ export default class TeamHomeMenu extends React.Component {
   }
 
   renderCoach(){
-    if(this.state.showModal && this.state.modal === "coach"){
+    if(this.state.showMenu && this.state.menu === "coach"){
       return <Coach />;
     }
     else{
@@ -75,48 +73,60 @@ export default class TeamHomeMenu extends React.Component {
     }
   }
 
-  switchModal(menu){
-    if(this.state.showModal){
-      if(menu === this.state.modal){
-        this.setState({showModal: !this.state.showModal,})
+  switchMenu(menu, event){
+    if(this.state.showMenu){
+      if(menu === this.state.menu && event === null){
+        this.setState({showMenu: !this.state.showMenu,})
       }
       else{
-        this.setState({modal: menu,})
+        this.setState({menu: menu,})
       }
     }
-    else{
-      this.setState({showModal: !this.state.showModal, modal: menu,})
+    else if(event === null){
+      this.setState({showMenu: !this.state.showMenu, menu: menu,})
     }
   }
+
+  isMenuActive(menu){
+    return (this.state.showMenu && this.state.menu === menu) ? ' teamHomeMenuActive' : '';
+  }
+
+  handleClickOutside = () => {
+    if(this.state.showMenu){
+      this.setState({showMenu: !this.state.showMenu, menu: '',})
+    }
+  };
 
   render(){
     return (
       <div className = {"teamHomeMenu"}>
-        <div className = {"teamHomeMenuFreefoot"} onClick={() => this.switchModal("freefoot")}>
-          <button>Freefoot</button>
+        <div className = {"teamHomeMenuFreefoot"+this.isMenuActive("freefoot")} onClick={() => this.switchMenu("freefoot", null)}>
+          <button onMouseOver={(event)=>this.switchMenu("freefoot", event)}>Freefoot</button>
           {this.renderFreefoot()}
         </div>
-        <div className = {"teamHomeMenuFormation"} onClick={() => this.switchModal("formation")}>
-          <button>Formation</button>
+        <div className = {"teamHomeMenuFormation"+this.isMenuActive("formation")} onClick={() => this.switchMenu("formation", null)}>
+          <button onMouseOver={(event)=>this.switchMenu("formation", event)}>Formation</button>
           {this.renderFormation()}
         </div>
-        <div className = {"teamHomeMenuTeam"} onClick={() => this.switchModal("team")}>
-          <button>Team</button>
+        <div className = {"teamHomeMenuTeam"+this.isMenuActive("team")} onClick={() => this.switchMenu("team", null)}>
+          <button onMouseOver={(event)=>this.switchMenu("team", event)}>Team</button>
           {this.renderTeam()}
         </div>
-        <div className = {"teamHomeMenuPlayer"} onClick={() => this.switchModal("player")}>
-          <button>Player</button>
+        <div className = {"teamHomeMenuPlayer"+this.isMenuActive("player")} onClick={() => this.switchMenu("player", null)}>
+          <button onMouseOver={(event)=>this.switchMenu("player", event)}>Player</button>
           {this.renderPlayer()}
         </div>
-        <div className = {"teamHomeMenuChampionship"} onClick={() => this.switchModal("championship")}>
-          <button>Championship</button>
+        <div className = {"teamHomeMenuChampionship"+this.isMenuActive("championship")} onClick={() => this.switchMenu("championship", null)}>
+          <button onMouseOver={(event)=>this.switchMenu("championship", event)}>Championship</button>
           {this.renderChampionship()}
         </div>
-        <div className = {"teamHomeMenuCoach"} onClick={() => this.switchModal("coach")}>
-          <button>Coach</button>
+        <div className = {"teamHomeMenuCoach"+this.isMenuActive("coach")} onClick={() => this.switchMenu("coach", null)}>
+          <button onMouseOver={(event)=>this.switchMenu("coach", event)}>Coach</button>
           {this.renderCoach()}
         </div>
       </div>
     );
   }
 }
+
+export default onClickOutside(TeamHomeMenu);

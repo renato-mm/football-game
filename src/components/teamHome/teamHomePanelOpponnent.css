@@ -8,6 +8,7 @@
   font-size: 1.6em;
   width: 100%;
   text-align: center;
+  border: 1px solid black;
 }
 
 .teamHomeOpponnentMoralBar .progress{

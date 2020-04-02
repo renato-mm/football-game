@@ -46,6 +46,7 @@
     "minimist": "^1.2.5",
     "popper.js": "^1.16.1",
     "react-country-flag": "^2.0.1",
+    "react-onclickoutside": "^6.9.0",
     "typescript": "^3.8.3"
   },
   "homepage": "https://renato-mm.github.io/football-game/"

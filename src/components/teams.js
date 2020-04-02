@@ -23,18 +23,18 @@ export const cruzeiro = {
             {id: '2109', name: "Henrique", power: 35, position: "M", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '2110', name: "Lucas Silva", power: 36, position: "M", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '2111', name: "Nilton", power: 32, position: "M", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '2112', name: "Luan", power: 32, position: "A", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '2113', name: "Marcelo Moreno", power: 38, position: "A", starting: 1, nationality: 'BOL', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '2114', name: "Marquinhos", power: 33, position: "A", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '2115', name: "Ricardo Goulart", power: 44, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '2116', name: "Willian", power: 37, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
+            {id: '2112', name: "Luan", power: 32, position: "F", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '2113', name: "Marcelo Moreno", power: 38, position: "F", starting: 1, nationality: 'BOL', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '2114', name: "Marquinhos", power: 33, position: "F", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '2115', name: "Ricardo Goulart", power: 44, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '2116', name: "Willian", power: 37, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
 }
 
 export const atleticoMG = {
   id: "atletico1906",
   name: "Atlético-MG",
   fullName: "Clube Atlético Mineiro",
-  nationalty: 'BRA',
+  nationality: 'BRA',
   coachId: 'cuca',
   coach: 'Cuca',
   moral: 95,
@@ -54,19 +54,21 @@ export const atleticoMG = {
             {id: '0809', name: "Pierre", power: 35, position: "M", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '0810', name: "Richarlyson", power: 31, position: "M", starting: 0, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '0811', name: "Ronaldinho Gaúcho", power: 45, position: "M", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '0812', name: "Alecsandro", power: 32, position: "A", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '0813', name: "Bernard", power: 40, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '0814', name: "Diego Tardelli", power: 42, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '0815', name: "Jô", power: 39, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '0816', name: "Luan", power: 38, position: "A", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
+            {id: '0812', name: "Alecsandro", power: 32, position: "F", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '0813', name: "Bernard", power: 40, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '0814', name: "Diego Tardelli", power: 42, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '0815', name: "Jô", power: 39, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '0816', name: "Luan", power: 38, position: "F", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
 }
 
 export const flamengo = {
   id: "flamengo1895",
   name: "Flamengo",
   fullName: "Clube de Regatas Flamengo",
-  nationalty: 'BRA',
+  nationality: 'BRA',
   coachId: 'jorgeJesus',
+  coach: 'Jorge Jesus',
+  moral: 95,
   cash: 27000000,
   color1: "red",
   color2: "black",
@@ -84,23 +86,25 @@ export const flamengo = {
             {id: '9510', name: "Giorgian De Arrascaeta", power: 40, position: "M", starting: 1, nationality: 'URU', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '9511', name: "Thiago Maia", power: 36, position: "M", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '9512', name: "Willian Arão", power: 32, position: "M", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9513', name: "Bruno Henrique", power: 44, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9514', name: "Gabigol", power: 45, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9515', name: "Michael", power: 37, position: "A", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9516', name: "Pedro", power: 37, position: "A", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
+            {id: '9513', name: "Bruno Henrique", power: 44, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '9514', name: "Gabigol", power: 45, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '9515', name: "Michael", power: 37, position: "F", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '9516', name: "Pedro", power: 37, position: "F", starting: 2, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
 }
 
 export const liverpool = {
   id: "liverpool1892",
   name: "Liverpool",
   fullName: "Liverpool Football Club",
-  nationalty: 'ENG',
+  nationality: 'ENG',
   coachId: 'jurgKlopp',
+  coach: 'Jurgen Klopp',
+  moral: 100,
   cash: 120000000,
   color1: "red",
   color2: "white",
   division: 1,
-  players: [{id: '9200', name: "Adrián", power: 34, position: "G", starting: 2, nationality: 'SPA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}, 
+  players: [{id: '9200', name: "Adrián", power: 34, position: "G", starting: 2, nationality: 'ESP', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}, 
             {id: '9201', name: "Alisson", power: 50, position: "G", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '9202', name: "Andrew Robertson", power: 45, position: "D", starting: 1, nationality: 'SCO', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '9203', name: "Dejan Lovren", power: 39, position: "D", starting: 2, nationality: 'CRO', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
@@ -113,8 +117,8 @@ export const liverpool = {
             {id: '9210', name: "Jordan Henderson", power: 43, position: "M", starting: 1, nationality: 'ENG', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '9211', name: "Naby Keita", power: 42, position: "M", starting: 2, nationality: 'GUI', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
             {id: '9212', name: "Georginio Wijnaldum", power: 43, position: "M", starting: 1, nationality: 'NED', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9213', name: "Divock Origi", power: 41, position: "A", starting: 2, nationality: 'BEL', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9214', name: "Mohamed Salah", power: 49, position: "A", starting: 1, nationality: 'EGY', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9215', name: "Roberto Firmino", power: 45, position: "A", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
-            {id: '9216', name: "Sadio Mané", power: 49, position: "A", starting: 1, nationality: 'SEN', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
+            {id: '9213', name: "Divock Origi", power: 41, position: "F", starting: 2, nationality: 'BEL', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '9214', name: "Mohamed Salah", power: 49, position: "F", starting: 1, nationality: 'EGY', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '9215', name: "Roberto Firmino", power: 45, position: "F", starting: 1, nationality: 'BRA', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0},
+            {id: '9216', name: "Sadio Mané", power: 49, position: "F", starting: 1, nationality: 'SEN', salary: 55000, salaryRenewed: false, injured: 0, suspended: 0, behavior: 'FP', seasonGoals: 0, matches: 0, goals: 0, redCards: 0, injuries: 0}]
 }

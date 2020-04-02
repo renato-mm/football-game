@@ -3,7 +3,12 @@
   margin: 10px auto;
   border: 1px solid #000;
   padding: 0 0px;
-  height: 450px
+  height: 450px;
+  cursor: default;
+}
+
+.teamHome button{
+  cursor: default;
 }
 
 .teamHomeHeader{
@@ -11,6 +16,25 @@
   color: black;
   border-bottom: 1px solid #000;
   padding-left: 1px;
+}
+
+.teamHomeCoach{
+  margin-left: 60px;
+  font-size: 1.5em;
+}
+
+.teamHomeInfo{
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.teamHomeInfo div{
+  margin-left: 5px;
+  padding-top: 5px;
+}
+
+.teamHomeInfo span{
+  margin-left: 70px;
 }
 
 .teamHomePlayers{

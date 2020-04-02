@@ -1,6 +1,6 @@
 import React from 'react';
 import './teamHomePanelPlayer.css'
-import ReactCountryFlag from "react-country-flag";
+import countryInfo from "../countryFunctions";
 
 export default function TeamHomePanelPlayer(props){
 
@@ -10,15 +10,13 @@ export default function TeamHomePanelPlayer(props){
   const inj = (props.player.injured > 0) ? <div> Injured for {props.player.injured} matches </div> : null;
   const sus = (props.player.suspended > 0) ? <div> Suspended for {props.player.suspended} matches </div> : null;
 
-  const CountryCodes = require('country-code-info');
-  const country = CountryCodes.findCountry({'fifa': props.player.nationality});
-  const countryName = country.name;
+  const countryInfos = countryInfo(props.player.nationality);
 
   return (
     <div>
       <div className = {"row teamHomePanelPlayer"}>
         <div> <span>{props.player.name}</span> </div>
-        <div> <ReactCountryFlag countryCode={country.a2} svg style={{width: '3em', height: '3em',}}/> {countryName} </div>
+        <div> {countryInfos[1]} {countryInfos[0]} </div>
       </div>
       <table className = {"teamHomePanelPlayerInfo"}>
         <tbody>
