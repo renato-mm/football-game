@@ -5,6 +5,7 @@ import Player from './teamHomePanelPlayer';
 import Finance from './teamHomePanelFinance';
 import Formation from './teamHomePanelFormation';
 import Opponnent from './teamHomePanelOpponnent';
+import NewSalary from './teamHomePanelNewSalary';
 
 export default class TeamHomePanel extends React.Component {
   constructor(props){
@@ -24,6 +25,9 @@ export default class TeamHomePanel extends React.Component {
       color: props.opponnent.color2,
     };
     this.changePanel = props.changePanel;
+    this.renewContract = props.renewContract;
+    this.changeFocus = props.changeFocus;
+    this.showOpponnentInfo = props.showOpponnentInfo;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,11 +49,13 @@ export default class TeamHomePanel extends React.Component {
   }
 
   renderPlayer(){
-    return <Player player={this.state.selectedPlayer} />;
+    return <Player 
+            player={this.state.selectedPlayer}
+            changePanel={this.changePanel}/>;
   }
 
   renderFinance(){
-    return <Finance />;
+    return <Finance finances={this.state.team.finances} season={this.season}/>;
   }
 
   renderFormation(){
@@ -57,7 +63,15 @@ export default class TeamHomePanel extends React.Component {
   }
 
   renderOpponnent(){
-    return <Opponnent opponnent={this.opponnent} />;
+    return <Opponnent opponnent={this.opponnent} showOpponnentInfo={this.showOpponnentInfo}/>;
+  }
+
+  renderNewSalary(){
+    return <NewSalary
+            salary={this.state.selectedPlayer.salary}
+            renewContract={this.renewContract}
+            changePanel={this.changePanel}
+            changeFocus={this.changeFocus}/>;
   }
 
   selectedButton(button){
@@ -81,6 +95,9 @@ export default class TeamHomePanel extends React.Component {
         break;
       case "opponnent":
         screenPanel = this.renderOpponnent();
+        break;
+      case "newSalary":
+        screenPanel = this.renderNewSalary();
         break;
       default:
         screenPanel = null;

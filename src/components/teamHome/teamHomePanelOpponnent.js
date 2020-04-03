@@ -34,7 +34,7 @@ export default function TeamHomePanelOpponnent(props){
       </div>
       <div className = {"row teamHomeOpponnentButtons"}>
         <button> Fixtures </button>
-        <button> Rooster </button>
+        <button onClick={()=>props.showOpponnentInfo()}> Rooster </button>
       </div>
     </div>
   );

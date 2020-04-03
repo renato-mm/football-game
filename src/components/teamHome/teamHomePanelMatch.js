@@ -26,9 +26,12 @@ export default function TeamHomePanelMatch(props){
   </tbody>);
 
   const cashFormat = (value) =>
-  new Intl.NumberFormat('en-GB', {
+  new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'EUR'
+    currency: 'EUR',
+    currencyDisplay: "name",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(value);
 
   const moralColor = (moral) => {

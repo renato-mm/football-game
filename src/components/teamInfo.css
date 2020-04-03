@@ -1,0 +1,96 @@
+
+.teamInfo{
+  margin: 10px auto;
+  border: 1px solid #000;
+  padding: 0 0px;
+  height: 450px;
+  cursor: default;
+}
+
+.teamInfo button{
+  cursor: default;
+}
+
+.teamInfoHeader{
+  background-color: #ddd;
+  color: black;
+  border-bottom: 1px solid #000;
+  padding-left: 1px;
+}
+
+.teamInfoSelection{
+  cursor: default;
+  margin: 5px auto;
+}
+
+.teamInfoSelection select{
+  width: 70%;
+}
+
+.teamInfoSelection span{
+  margin-left: 20px;
+}
+
+.teamInfoPlayers{
+  font-size: 80%;
+  width: 95%;
+  cursor: default;
+  border: 5px inset gray;
+  margin: 5px auto;
+}
+
+.teamInfoPlayer{
+  height: 150px;
+  margin: 10px auto;
+}
+
+.teamInfoMoralBar{
+  margin: 5px auto;
+  border: 2px solid #000;
+  height: 2em;
+}
+
+.teamInfoSupButtons{
+  height: 80px;
+  text-align: center;
+  font-size: 85%;
+}
+
+.teamInfoSupButtons button{
+  padding: 0px;
+  height: 60px;
+  width: 70px;
+  margin: 10px 15px;
+}
+
+.teamInfoInfButtons{
+  height: 80px;
+  text-align: center;
+  font-size: 85%;
+}
+
+.teamInfoInfButtons button{
+  padding: 0px;
+  height: 60px;
+  width: 70px;
+}
+
+.teamInfoInfButtons button span{
+  display: block;
+}
+
+.teamInfoIconSize{
+  font-size: 2em;
+}
+
+.teamInfoCash{
+  color: rgb(128, 128, 0);
+}
+
+.teamInfoGreenBuy{
+  color: rgb(15, 92, 15);
+}
+
+.teamInfoGreenCheck{
+  color: green;
+}

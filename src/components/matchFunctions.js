@@ -35,14 +35,10 @@ function runChance(chances) {
 export default function runMatch(home, away, history, time){
   //{time: 0,  stat:'S',  text: goalIcon, teamID:'cruzeiro1921', playerID: '0', player:'0'}
   let teams = [home, away]
-<<<<<<< HEAD
-  let event_chance = {"A" : 50, "M" : 20, "D" : 10, "G" : 1}
-  let pass_choice = {"A": [50, 40, 10], "M": [50, 20, 30], "D": [20, 30, 50], "G": [5, 15, 80]}
-  let pass_options = ["A", "M", "D", "G"]
-  let inverse_positions = {"A" : "D", "M": "M", "D": "A", "G": "A"}
-=======
-  let event_chance = {"F" : 50, "M" : 40, "D" : 10, "G" : 1}
->>>>>>> futren/master
+  let event_chance = {"F" : 50, "M" : 20, "D" : 10, "G" : 1}
+  let pass_choice = {"F": [50, 40, 10], "M": [50, 20, 30], "D": [20, 30, 50], "G": [5, 15, 80]}
+  let pass_options = ["F", "M", "D", "G"]
+  let inverse_positions = {"F" : "D", "M": "M", "D": "F", "G": "F"}
   let player
   let possession
   let enemy

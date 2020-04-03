@@ -1,0 +1,16 @@
+
+.playerInfo{
+  font-size: 90%;
+  width: 60%;
+  margin: 10px auto;
+}
+
+.playerHistory{
+  font-size: 90%;
+  width: 60%;
+  margin: 10px auto;
+}
+
+.playerHistory tbody{
+  border: 1px solid gray;
+}

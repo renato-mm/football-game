@@ -1,5 +1,7 @@
 import React from 'react';
 import './teamHomePanelFormation.css'
+import { IconContext } from "react-icons";
+import { FaCheck } from "react-icons/fa";
 
 export default function TeamHomePanelFormation(props) {
 
@@ -12,10 +14,13 @@ export default function TeamHomePanelFormation(props) {
       }
     }
 
+    const check = <IconContext.Provider value={{className: "teamHomePanelFormationGreenCheck"}}>
+      <FaCheck />
+    </IconContext.Provider>;
     
     return (
       <div className = {"teamHomePanelFormation"}>
-        <button disabled={disabled ? 'disabled' : ''}> Ready! </button>
+        <button disabled={disabled ? 'disabled' : ''}> {check} Ready! </button>
       </div>
     );
 

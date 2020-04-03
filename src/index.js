@@ -5,6 +5,7 @@ import './index.css';
 import Division from './components/division';
 import Standings from './components/standings';
 import TeamHome from './components/teamHome';
+import TeamInfo from './components/teamInfo';
 import * as Teams from './components/teams';
 
 
@@ -28,6 +29,7 @@ class Game extends React.Component {
       headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
       coaches: [], // an array of objects containing info about each coach
       gamePlayers: [], // an array of objects containing info about each player's coach
+      selectedTeam: null,
     };
   }
 
@@ -53,6 +55,14 @@ class Game extends React.Component {
     );
   }
 
+  renderTeamInfo(team) {
+    return (
+      <TeamInfo
+      team = {team}
+      showTeamInfo = {()=>null}/>
+    );
+  }
+
   disabledButton(button){
     return (this.state.screen === button) ? ' disabled' : '';
   }
@@ -61,6 +71,13 @@ class Game extends React.Component {
     if(code === 'C' || code === 'c'){
       this.setState({screen:"standings"});
     }
+  }
+
+  showTeamInfo(team){
+    this.setState({
+      screen: "teamInfo",
+      selectedTeam: team
+    });
   }
 
   render() {
@@ -75,6 +92,9 @@ class Game extends React.Component {
       case "teamHome":
         screenBoard = this.renderTeamHome(Teams.flamengo, Teams.atleticoMG);
         break;
+      case "teamInfo":
+        screenBoard = this.renderTeamInfo(Teams.atleticoMG/*this.state.selectedTeam*/);
+        break;
       default:
         screenBoard = null;
     }
@@ -84,6 +104,7 @@ class Game extends React.Component {
           <button onClick={()=>this.setState({screen:"matches"})} disabled={this.disabledButton("matches")}>Matches</button>
           <button onClick={()=>this.setState({screen:"standings"})} disabled={this.disabledButton("standings")}>Standings</button>
           <button onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
+          <button onClick={()=>this.setState({screen:"teamInfo"})} disabled={this.disabledButton("teamInfo")}>Team Info</button>
           {screenBoard}
         </div>
       </div>

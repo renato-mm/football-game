@@ -3,24 +3,9 @@
   display: block;
   margin: 10px -15px;
 }
+
 .teamHomePanelPlayer span{
   font-size: 150%;
-}
-
-.teamHomePanelPlayerInfo{
-  font-size: 90%;
-  width: 50%;
-  margin: 10px auto;
-}
-
-.teamHomePanelPlayerHistory{
-  font-size: 90%;
-  width: 50%;
-  margin: 10px auto;
-}
-
-.teamHomePanelPlayerHistory tbody{
-  border: 1px solid #000;
 }
 
 .teamHomePanelContract{
