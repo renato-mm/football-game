@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import GameInitializer from './components/gameInitializer';
+import {base_info} from './clubs/clubs';
+import {InfoHandler} from './components/infoHandler';
 import Division from './components/division';
 import Standings from './components/standings';
 import TeamHome from './components/teamHome';
@@ -20,7 +23,7 @@ class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      screen: "matches", // a string that represents the current game screen
+      screen: "Start", // a string that represents the current game screen
       season: 2020,
       currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
       divisionHistory: [], // an array of objects that contains each season championship winner (team and coach), cup winner (team and coach) and top scorer(s)
@@ -30,6 +33,7 @@ class Game extends React.Component {
       coaches: [], // an array of objects containing info about each coach
       gamePlayers: [], // an array of objects containing info about each player's coach
       selectedTeam: null,
+      infoHandler: new InfoHandler(base_info),
     };
   }
 
@@ -80,7 +84,7 @@ class Game extends React.Component {
     });
   }
 
-  render() {
+  renderGame() {
     let screenBoard = null;
     switch(this.state.screen){
       case "matches":
@@ -109,6 +113,25 @@ class Game extends React.Component {
         </div>
       </div>
     );
+  }
+
+  renderStart() {
+    return (
+      <div className="game">
+        <div className="game-board">
+          <GameInitializer handler = {this.state.infoHandler}/>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    let screenBoard = null;
+    if (this.state.screen === "Start") {
+      return this.renderStart()
+    } else {
+      return this.renderGame()
+    }
   }
 }
 

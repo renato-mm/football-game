@@ -1,60 +1,70 @@
 import React from 'react';
 import './gameInitializer.css';
 
-export default class Division extends React.Component {
+export default class GameInitializer extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      gameStarted = false
+      screen: "Start",
+      gameStarted: false,
+      teamsIn: this.props.handler.initialization("Teams In", 0),
+      teamsOut: this.props.handler.initialization("Teams Out", 0),
     };
   }
 
-  startMatches(){
-    if (this.state.matchesStarted === 0) {
-      let d = new Date()
-      let t = d.getTime()
-      this.setState( {matchesStarted: 1, startTime: t} )
-    }
-  }
-
-  matchPlay(matchDone){
-    console.log(matchDone)
-    if (this.state.matchesStarted === 1) {
-      if (!matchDone) {
-        this.setState( { matchesDone : 0 } )
-      }
-      let d = new Date()
-      let t = d.getTime()
-      let elapsedTime = t - this.state.startTime
-      this.setState( {elapsedTime: elapsedTime} )
-      if (elapsedTime % 100 === 0) {
-        if (this.state.matchesDone) {
-          this.setState( { matchesStarted : 2 } )
-        } else {
-          this.setState( { matchesDone : 1 } )
-        }
-      }
-      return elapsedTime 
-    }
-  }
-
-  renderMatch(home, away) {
+  renderStart(){
     return (
-      <Match homeTeam = {home} awayTeam = {away} playCallBack = {(p1) => this.matchPlay(p1)}/>
+      <div className = {"startBox"}>
+        <button onClick = {() => this.setState({screen: "New Game"})}> New Game </button>
+        <button onClick = {() => this.setState({screen: "Load Game"})}> Load Game </button>
+      </div>
     );
   }
-  
-  render(){
+
+  getTeams() {
+    let TO = this.props.handler.initialization("Teams Out", 0)
+    let TI = this.props.handler.initialization("Teams In", 0)
+    this.setState({teamsIn: TI, teamsOut: TO})
+  }
+
+  renderNew(){
     return (
-      <div
-        className = {"divisionBox"}
-      >
-        <button onClick = {() => this.startMatches()}>Start: {this.state.elapsedTime.toString()}</button>
-        <div>
-          {this.renderMatch(Teams.cruzeiro, Teams.atleticoMG)}
-          {this.renderMatch(Teams.flamengo, Teams.liverpool)}
+      <div className = {"newBox"}>
+        <div className = {"teamsIn"}>
+          {this.state.teamsIn.map((e) => {
+            let color1 = "background-color:" + e.color1 + ";"
+            let color2 = "color:" + e.color2 + ";"
+            let color = color1 + color2
+            return (
+              <button style = {{backgroundColor:e.color1, color:e.color2}} className = {"selectionButton"} key = {e.id} onClick = {() => {this.props.handler.initialization("Remove", [e.id]); this.getTeams()}}> {e.name} </button>
+            )
+          })}
+        </div>
+        <div className = {"teamsOut"}>
+          {this.state.teamsOut.map((e) => {
+            let color1 = "background-color:" + e.color1 + ";"
+            let color2 = "color:" + e.color2 + ";"
+            let color = color1 + color2
+            return (
+              <button style = {{backgroundColor:e.color1, color:e.color2}} className = {"selectionButton"} key = {e.id} onClick = {() => {this.props.handler.initialization("Add", [e.id]); this.getTeams()}}> {e.name} </button>
+            )
+          })}
         </div>
       </div>
     );
+  }
+
+  renderLoad(){
+    return (null)
+  }
+  
+  render(){
+    if (this.state.screen === "Start") {
+      return this.renderStart()
+    } else if (this.state.screen === "New Game") {
+      return this.renderNew()
+    } else if (this.state.screen === "Load Game") {
+      return this.renderLoad()
+    }
   }
 }

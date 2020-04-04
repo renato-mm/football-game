@@ -93,7 +93,7 @@ def file_to_dict(f):
 
 
 o = open('clubs.js', "w+")
-first_line = "export let all_info = {"
+first_line = "export let base_info = {"
 l = len(first_line)
 o.write(first_line)
 ds = []
