@@ -7,8 +7,9 @@ export default class Team extends React.Component {
     this.state = {
       team: props.team,
       side: props.side,
-      click: props.teamClick
+      click: props.handleShow
     };
+    this.handleShow = props.handleShow;
   }
 
   render(){
@@ -20,7 +21,7 @@ export default class Team extends React.Component {
       <div
         style = {colors}
         className = {"team "+this.state.side}
-        onClick = {this.state.click}
+        onClick = {this.handleShow}
       >
         {this.state.team.name}
       </div>

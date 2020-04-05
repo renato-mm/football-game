@@ -1,18 +1,19 @@
 import React from 'react';
 
-export default function TeamHomeMenuTeam(){
+export default function TeamHomeMenuTeam(props){
 
-  const list = [];
-  ["Ask Loan / Pay Debt", "Stadium", "History"].forEach(e => {
-    list.push(
-      <tr>
-        <td>{e}</td>
-      </tr>);
-  })
   return (
     <table className = {"teamHomeMenuTable"}>
       <tbody>
-        {list}
+        <tr onClick={()=>props.handleShow('bankModalShow')}>
+          <td>Ask Loan / Pay Debt</td>
+        </tr>
+        <tr onClick={()=>props.handleShow('bankModalShow')}>
+          <td>Stadium</td>
+        </tr>
+        <tr onClick={()=>props.handleShow('bankModalShow')}>
+          <td>History</td>
+        </tr>
       </tbody>
     </table>
   );

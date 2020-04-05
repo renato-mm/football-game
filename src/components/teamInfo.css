@@ -78,19 +78,3 @@
 .teamInfoInfButtons button span{
   display: block;
 }
-
-.teamInfoIconSize{
-  font-size: 2em;
-}
-
-.teamInfoCash{
-  color: rgb(128, 128, 0);
-}
-
-.teamInfoGreenBuy{
-  color: rgb(15, 92, 15);
-}
-
-.teamInfoGreenCheck{
-  color: green;
-}

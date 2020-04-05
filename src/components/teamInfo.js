@@ -1,19 +1,12 @@
 import React from 'react';
 import './teamInfo.css';
-import { IconContext } from "react-icons";
-import { FaCheck } from "react-icons/fa";
+import * as Icons from './teamInfoIcons';
 import { FaPlusSquare } from "react-icons/fa";
-import { FaRegEye } from "react-icons/fa";
-import { FaRegListAlt } from "react-icons/fa";
-import { FaSearch } from "react-icons/fa";
 import { AiOutlineStop } from "react-icons/ai";
-import { AiOutlineBank } from "react-icons/ai";
-import { GoCalendar } from "react-icons/go";
-import { GiCash } from "react-icons/gi";
-import { GiMoneyStack } from "react-icons/gi";
 import countryInfo from "./countryFunctions";
 import PlayerInfo from './teamHome/playerInfo';
 import ProgressBar from 'react-bootstrap/ProgressBar'
+import FixturesInfo from './teamHome/fixturesInfo';
 
 export default class TeamInfo extends React.Component {
   constructor(props){
@@ -22,6 +15,7 @@ export default class TeamInfo extends React.Component {
       team: props.team,
       panel: "match",
       selectedPlayer: null,
+      teamInfoFixturesModalShow: false,
     };
     this.colors = {
       background: props.team.color1,
@@ -34,31 +28,10 @@ export default class TeamInfo extends React.Component {
     this.countryInfo = countryInfo(props.team.nationality);
     this.division = props.team.division > 0 ? "Division "+props.team.division : "No division";
     this.showTeamInfo = props.showTeamInfo;
-    this.cash = <IconContext.Provider value={{className: "teamInfoIconSize teamInfoCash"}}>
-      <GiCash />
-    </IconContext.Provider>;
-    this.calendar = <IconContext.Provider value={{className: "teamInfoIconSize"}}>
-      <GoCalendar />
-    </IconContext.Provider>;
-    this.search = <IconContext.Provider value={{className: "teamInfoIconSize"}}>
-      <FaSearch />
-    </IconContext.Provider>;
-    this.buy = <IconContext.Provider value={{className: "teamInfoIconSize teamInfoGreenBuy"}}>
-      <GiMoneyStack />
-    </IconContext.Provider>;
-    this.bank = <IconContext.Provider value={{className: "teamInfoIconSize"}}>
-      <AiOutlineBank />
-    </IconContext.Provider>;
-    this.eye = <IconContext.Provider value={{className: "teamInfoIconSize"}}>
-      <FaRegEye />
-    </IconContext.Provider>;
-    this.list = <IconContext.Provider value={{className: "teamInfoIconSize"}}>
-      <FaRegListAlt />
-    </IconContext.Provider>;
-    this.check = <IconContext.Provider value={{className: "teamInfoIconSize teamInfoGreenCheck"}}>
-      <FaCheck />
-    </IconContext.Provider>;
   }
+
+  handleClose = () => this.setState({teamInfoFixturesModalShow: false,});
+  handleShow = () => this.setState({teamInfoFixturesModalShow: true,});
 
   selectPlayer(player){
     this.setState({
@@ -139,26 +112,30 @@ export default class TeamInfo extends React.Component {
           <div className = {"col-md-5"}>
             <ProgressBar className = {"teamInfoMoralBar"} variant={this.moralColor(this.state.team.moral)} now={this.state.team.moral} />
             <div className = {"teamInfoSupButtons"}>
-              <button> {this.cash} Finances </button>
-              <button> {this.calendar} Calendar </button>
+              <button> {Icons.cash} Finances </button>
+              <button onClick={()=>this.handleShow()}> {Icons.calendar} Calendar </button>
             </div>
             <div className = {"teamInfoPlayer"}>
               <PlayerInfo player={this.state.selectedPlayer}/>
             </div>
             <div className = {"teamInfoInfButtons"}>
               <div>
-                <button> {this.search} <span>Search</span> </button>
-                <button> {this.buy} <span>Buy</span> </button>
-                <button> {this.bank} <span>Loan</span> </button>
+                <button> {Icons.search} <span>Search</span> </button>
+                <button> {Icons.buy} <span>Buy</span> </button>
+                <button> {Icons.bank} <span>Loan</span> </button>
               </div>
               <div>
-                <button disabled={this.state.selectedPlayer ? "" : "disabled"}> {this.eye} <span>Observed</span> </button>
-                <button> {this.list} <span>List</span> </button>
-                <button onClick={()=>this.showTeamInfo()}> {this.check} <span>Close</span> </button>
+                <button disabled={this.state.selectedPlayer ? "" : "disabled"}> {Icons.eye} <span>Observed</span> </button>
+                <button> {Icons.list} <span>List</span> </button>
+                <button onClick={()=>this.showTeamInfo()}> {Icons.check} <span>Close</span> </button>
               </div>
             </div>
           </div>
         </div>
+        <FixturesInfo
+        fixtures={this.state.team.calendar}
+        handleClose={this.handleClose}
+        show={this.state.teamInfoFixturesModalShow}/>
       </div>
     );
   }

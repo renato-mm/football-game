@@ -1,4 +1,5 @@
 import React from 'react';
+import Modal from 'react-bootstrap/Modal'
 import './teamModal.css';
 import { IconContext } from "react-icons";
 import { FaRegWindowClose } from "react-icons/fa";
@@ -15,9 +16,9 @@ const redCard = <IconContext.Provider value={{className: "redCard"}}>
 const closeIcon = <FaRegWindowClose />;
 
 export default function TeamModal(props) {
-  if(props.show === false){
-    return null;
-  }
+
+  const show = props.show;
+  const handleClose = props.handleClose;
 
   const colors = {
     background: props.team.color1,
@@ -57,33 +58,38 @@ export default function TeamModal(props) {
   }
 
   return (
-    <div
-      style = {colors}
-      className = {"teamModal"}
-    >
-      <div className = {"teamModalHeader"}>
-        <b>{props.score}</b>
-        <div className = {"teamModalCloseButton"} onClick = { props.close }>{closeIcon}</div>
-      </div>
-      <table className = {"teamModalHistoryTable"}>
-        <tbody>
-          {hist}
-        </tbody>
-      </table>
-      <b>{props.team.name}</b>
-      <div className = {"teamModalPlayers"}>
-        <table className = {"teamModalPlayersTable"}>
-          <tbody>
-            {players}
-          </tbody>
-        </table>
-        <table className = {"teamModalReservesTable"}>
-          <tbody>
-            {reserves}
-          </tbody>
-        </table>
-        <button className = {"teamModalSubButton"}><b>Substitute</b></button>
-      </div>
-    </div>
+    <Modal show={show} onHide={handleClose} animation={false} centered>
+      <Modal.Body>
+        <div
+          style = {colors}
+          className = {"teamModal"}
+        >
+          <div className = {"teamModalHeader"}>
+            <b>{props.score}</b>
+            </div>
+          <table className = {"teamModalHistoryTable"}>
+            <tbody>
+              {hist}
+            </tbody>
+          </table>
+          <b>{props.team.name}</b>
+          <div className = {"teamModalPlayers"}>
+            <table className = {"teamModalPlayersTable"}>
+              <tbody>
+                {players}
+              </tbody>
+            </table>
+            <table className = {"teamModalReservesTable"}>
+              <tbody>
+                {reserves}
+              </tbody>
+            </table>
+            <div className = {"teamModalSubButton"}>
+              <button><b>Substitute</b></button>
+            </div>
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
   );
 }

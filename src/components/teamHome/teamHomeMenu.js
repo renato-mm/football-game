@@ -7,6 +7,8 @@ import Player from './teamHomeMenuPlayer';
 import Championship from './teamHomeMenuChampionship';
 import Coach from './teamHomeMenuCoach';
 import onClickOutside from "react-onclickoutside";
+import FixturesInfo from './fixturesInfo';
+import Bank from './bank';
 
 class TeamHomeMenu extends React.Component {
   constructor(props){
@@ -14,10 +16,16 @@ class TeamHomeMenu extends React.Component {
     this.state = {
       showMenu: false,
       menu: '',
+      teamFixturesModalShow: false,
+      bankModalShow: false,
     };
+    this.team = props.team;
     this.formationSelected = props.formationSelected;
     this.showStandings = props.showStandings;
   }
+
+  handleClose = (modal) => this.setState({[modal]: false,});
+  handleShow = (modal) => this.setState({[modal]: true,});
 
   renderFreefoot(){
     if(this.state.showMenu && this.state.menu === "freefoot"){
@@ -39,7 +47,7 @@ class TeamHomeMenu extends React.Component {
 
   renderTeam(){
     if(this.state.showMenu && this.state.menu === "team"){
-      return <Team />;
+      return <Team handleShow={(modal)=>this.handleShow(modal)} />;
     }
     else{
       return null;
@@ -57,7 +65,7 @@ class TeamHomeMenu extends React.Component {
 
   renderChampionship(){
     if(this.state.showMenu && this.state.menu === "championship"){
-      return <Championship showStandings={this.showStandings}/>;
+      return <Championship showStandings={this.showStandings} handleShow={()=>this.handleShow('teamFixturesModalShow')}/>;
     }
     else{
       return null;
@@ -99,6 +107,7 @@ class TeamHomeMenu extends React.Component {
 
   render(){
     return (
+      <>
       <div className = {"teamHomeMenu"}>
         <div className = {"teamHomeMenuFreefoot"+this.isMenuActive("freefoot")} onClick={() => this.switchMenu("freefoot", null)}>
           <button onMouseOver={(event)=>this.switchMenu("freefoot", event)}>Freefoot</button>
@@ -125,6 +134,14 @@ class TeamHomeMenu extends React.Component {
           {this.renderCoach()}
         </div>
       </div>
+      <FixturesInfo
+      fixtures={this.team.calendar}
+      handleClose={()=>this.handleClose('teamFixturesModalShow')}
+      show={this.state.teamFixturesModalShow}/>
+      <Bank
+      handleClose={()=>this.handleClose('bankModalShow')}
+      show={this.state.bankModalShow}/>
+      </>
     );
   }
 }
