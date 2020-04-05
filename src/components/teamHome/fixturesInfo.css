@@ -1,0 +1,9 @@
+
+.fixturesInfo{
+  width: 100%;
+}
+
+.fixturesInfo tr{
+  border: 1px solid black;
+  border-collapse: collapse;
+}

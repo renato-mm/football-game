@@ -1,8 +1,14 @@
 import React from 'react';
 import './teamHomePanelOpponnent.css'
 import ProgressBar from 'react-bootstrap/ProgressBar'
+import FixturesInfo from './fixturesInfo';
 
 export default function TeamHomePanelOpponnent(props){
+
+  const [oppFixturesModalShow, setOppFixturesModalShow] = React.useState(false);
+
+  const handleClose = () => setOppFixturesModalShow(false);
+  const handleShow = () => setOppFixturesModalShow(true);
 
   const oppColors = {
     background: props.opponnent.color1,
@@ -22,7 +28,7 @@ export default function TeamHomePanelOpponnent(props){
   }
   
   return (
-    <div>
+    <>
       <div style={oppColors} className = {"row teamHomePanelOpponnentName"}>
         <span>{props.opponnent.name}</span>
       </div>
@@ -33,10 +39,14 @@ export default function TeamHomePanelOpponnent(props){
         Coach <span>{props.opponnent.coach}</span>
       </div>
       <div className = {"row teamHomeOpponnentButtons"}>
-        <button> Fixtures </button>
+        <button onClick={handleShow}> Fixtures </button>
         <button onClick={()=>props.showOpponnentInfo()}> Rooster </button>
       </div>
-    </div>
+      <FixturesInfo
+      fixtures={props.opponnent.calendar}
+      handleClose={handleClose}
+      show={oppFixturesModalShow}/>
+    </>
   );
   
 }

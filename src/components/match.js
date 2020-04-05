@@ -30,8 +30,8 @@ export default class Match extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      showHomeTeam: false,
-      showAwayTeam: false,
+      modalShow: false,
+      modalTeam: "",
       homeTeam: props.homeTeam,
       awayTeam: props.awayTeam,
       history: history,
@@ -44,6 +44,9 @@ export default class Match extends React.Component {
       timeBetweenEvents: 100,
     };
   }
+
+  handleClose = () => this.setState({modalShow: false, modalTeam: "",});
+  handleShow = (side) => this.setState({modalShow: true, modalTeam: side,});
 
   matchPlay() {
     let elapsedTime = this.state.playCallBack(false)
@@ -68,22 +71,9 @@ export default class Match extends React.Component {
     );
   }
 
-  renderModal(side) {
-    let modal = null;
-    if(side === "home" && this.state.showHomeTeam){
-      const scoreboard = this.state.homeTeam.name+" "+this.state.homeScore+" - "+this.state.awayScore+" "+this.state.awayTeam.name;
-      modal = <TeamModal team = {this.state.homeTeam} history = {this.state.history} score = {scoreboard} close = {() => this.switchModal("home")}/>;
-    }
-    else if(side === "away" && this.state.showAwayTeam){
-      const scoreboard = this.state.homeTeam.name+" "+this.state.homeScore+" - "+this.state.awayScore+" "+this.state.awayTeam.name;
-      modal = <TeamModal team = {this.state.awayTeam} history = {this.state.history} score = {scoreboard} close = {() => this.switchModal("away")}/>;
-    }
-    return modal;
-  }
-
   renderTeam(side, team) {
     return (
-      <Team side = {side} team = {team} teamClick = {() => this.switchModal(side)} />
+      <Team side = {side} team = {team} handleShow = {() => this.handleShow(side)} />
     );
   }
 
@@ -99,16 +89,6 @@ export default class Match extends React.Component {
     );
   }
 
-  switchModal(side){
-    //this.updateMatch(this.state.history);
-    if(side === "home"){
-      this.setState({showHomeTeam: !this.state.showHomeTeam,})
-    }
-    else if(side === "away"){
-      this.setState({showAwayTeam: !this.state.showAwayTeam,})
-    }
-  }
-
   updateMatch(){
     const homeSc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.state.homeTeam.id)).length;
     const awaySc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.state.awayTeam.id)).length;
@@ -121,15 +101,20 @@ export default class Match extends React.Component {
   
   render(){
     const matchStoryText = this.state.history[this.state.history.length - 1];
+    const scoreboard = this.state.homeTeam.name+" "+this.state.homeScore+" - "+this.state.awayScore+" "+this.state.awayTeam.name;
     return (
       <div className = {"matchBox"} >
         {this.renderAttendance(this.state.attendance)}
         {this.renderTeam("home", this.state.homeTeam)}
-        {this.renderModal("home")}
         {this.renderScoreboard(this.state.homeScore, this.state.awayScore)}
         {this.renderTeam("away", this.state.awayTeam)}
-        {this.renderModal("away")}
         {this.renderMatchStory(matchStoryText.time+"'  "+matchStoryText.stat+": "+matchStoryText.player)}
+        <TeamModal
+        team = {this.state.modalTeam === "home" ? this.state.homeTeam : this.state.awayTeam}
+        history = {this.state.history}
+        score = {scoreboard}
+        show = {this.state.modalShow}
+        handleClose = {this.handleClose}/>
       </div>
     );
   }

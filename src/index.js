@@ -30,8 +30,12 @@ class Game extends React.Component {
       coaches: [], // an array of objects containing info about each coach
       gamePlayers: [], // an array of objects containing info about each player's coach
       selectedTeam: null,
+      standingsModalShow: false,
     };
   }
+
+  handleClose = () => this.setState({standingsModalShow: false,});
+  handleShow = () => this.setState({standingsModalShow: true,});
 
   renderDivision() {
     return (
@@ -41,7 +45,10 @@ class Game extends React.Component {
 
   renderStandings() {
     return (
-      <Standings division1 = {this.state.currentDivisions[0]}/>
+      <Standings
+      division1 = {this.state.currentDivisions[0]}
+      handleClose={this.handleClose}
+      show={this.state.standingsModalShow}/>
     );
   }
 
@@ -69,7 +76,7 @@ class Game extends React.Component {
 
   showStandings(code){
     if(code === 'C' || code === 'c'){
-      this.setState({screen:"standings"});
+      this.handleShow()
     }
   }
 
@@ -90,10 +97,10 @@ class Game extends React.Component {
         screenBoard = this.renderStandings();
         break;
       case "teamHome":
-        screenBoard = this.renderTeamHome(Teams.flamengo, Teams.atleticoMG);
+        screenBoard = this.renderTeamHome(Teams.cruzeiro, Teams.liverpool);
         break;
       case "teamInfo":
-        screenBoard = this.renderTeamInfo(Teams.atleticoMG/*this.state.selectedTeam*/);
+        screenBoard = this.renderTeamInfo(Teams.liverpool/*this.state.selectedTeam*/);
         break;
       default:
         screenBoard = null;
@@ -102,10 +109,11 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <button onClick={()=>this.setState({screen:"matches"})} disabled={this.disabledButton("matches")}>Matches</button>
-          <button onClick={()=>this.setState({screen:"standings"})} disabled={this.disabledButton("standings")}>Standings</button>
+          <button onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
           <button onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
           <button onClick={()=>this.setState({screen:"teamInfo"})} disabled={this.disabledButton("teamInfo")}>Team Info</button>
           {screenBoard}
+          {this.renderStandings()}
         </div>
       </div>
     );

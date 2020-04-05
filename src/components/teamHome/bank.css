@@ -1,0 +1,25 @@
+
+.bankMoney{
+  font-size: 1.5em;
+  width: 80%;
+  margin: 10px;
+}
+
+.bankMoney span{
+  float: right;
+}
+
+.bankButtons{
+  width: 100%;
+  margin: 10px 100px;
+}
+
+.bankButtons button{
+  height: 80px;
+  width: 90px;
+  margin: 10px 10px;
+}
+
+.bankButtons button span{
+  font-size: .8em;
+}

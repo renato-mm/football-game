@@ -147,6 +147,7 @@ export default class TeamHome extends React.Component {
   renderMenu(){
     return(
       <TeamHomeMenu
+      team={this.state.team}
       formationSelected={(key) => this.formationSelected(key)}
       showStandings={this.showStandings}/>
     );
