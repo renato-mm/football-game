@@ -115,11 +115,16 @@ class Game extends React.Component {
     );
   }
 
+  startGame() {
+    this.state.infoHandler.initialization("Initialize", [])
+    this.setState({screen: "Matches"})
+  }
+
   renderStart() {
     return (
       <div className="game">
         <div className="game-board">
-          <GameInitializer handler = {this.state.infoHandler}/>
+          <GameInitializer handler = {this.state.infoHandler} startGame = {() => this.startGame()}/>
         </div>
       </div>
     );

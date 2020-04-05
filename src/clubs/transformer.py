@@ -12,7 +12,7 @@ for folder in folders:
 #print(team_paths)
 
 
-current_id = [1, 1001, 2001]
+current_id = [1, 10001, 20001]
 def get_current_id(ind):
     global current_id
     id = current_id[ind-1]
@@ -43,7 +43,10 @@ class jsDict(object):
                 f_switch = False
             else:
                 lll = olll
-            f.write((lll * " ") + key + ": \"" + str(self.d[key]) + "\",\n")
+            if type(self.d[key]) == type(1) or type(self.d[key]) == type([1]):
+                f.write((lll * " ") + key + ": " + str(self.d[key]) + ",\n")
+            else:
+                f.write((lll * " ") + key + ": \"" + str(self.d[key]) + "\",\n")
         #f.write("}\n")
 
 def file_to_dict(f):
@@ -56,24 +59,24 @@ def file_to_dict(f):
     team_dict.register_entry("fullName", cells[0])
     team_dict.register_entry("name", cells[1])
     team_dict.register_entry("nationality", cells[2][:-1:])
-    team_dict.register_entry("id", c_id)
+    team_dict.register_entry("id", int(c_id))
 
     c_id = get_current_id(2)
     coach_dict = jsDict()
     line = f.readline()
     cells = line.split(";")
-    coach_dict.register_entry("id", c_id)
+    coach_dict.register_entry("id", int(c_id))
     coach_dict.register_entry("name", cells[0])
     coach_dict.register_entry("position", 'C')
     coach_dict.register_entry("nationality", cells[1])
-    team_dict.register_entry("coach", c_id)
+    team_dict.register_entry("coach", int(c_id))
     players_dict_list.append(coach_dict)
 
     line = f.readline()
     cells = line.split(";")
     team_dict.register_entry("color1", str(cells[0]))
     team_dict.register_entry("color2", str(cells[1]))
-    team_dict.register_entry("strength", cells[2][:-1:])
+    team_dict.register_entry("strength", int(cells[2][:-1:]))
 
     players_id_list = []
     team_dict.register_entry("players", players_id_list)
@@ -82,7 +85,7 @@ def file_to_dict(f):
         c_id = get_current_id(3)
         cells = line.split(";")
         player_dict = jsDict()
-        player_dict.register_entry("id", c_id)
+        player_dict.register_entry("id", int(c_id))
         player_dict.register_entry("name", cells[0])
         player_dict.register_entry("position", cells[1])
         player_dict.register_entry("nationality", cells[2][:-1:])
@@ -100,9 +103,23 @@ ds = []
 for i in range(len(team_paths)):
     club_test = open(team_paths[i], 'r')
     ds += file_to_dict(club_test)
+teams_dict = jsDict()
+teams_dict.register_entry("id", "TeamsRange")
+teams_dict.register_entry("start", 1)
+teams_dict.register_entry("end", current_id[0] - 1)
+coaches_dict = jsDict()
+coaches_dict.register_entry("id", "CoachesRange")
+coaches_dict.register_entry("start", 10001)
+coaches_dict.register_entry("end", current_id[1] - 1)
+players_dict = jsDict()
+players_dict.register_entry("id", "PlayersRange")
+players_dict.register_entry("start", 20001)
+players_dict.register_entry("end", current_id[2] - 1)
+ds += [teams_dict, coaches_dict, players_dict]
+
 first_switch = True
-for e in ds:
-    e.print_self()
+#for e in ds:
+    #e.print_self()
 for e in ds:
     id_part = str(e.access_entry("id")) + ": {"
     if first_switch:

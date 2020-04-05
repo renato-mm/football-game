@@ -50,6 +50,9 @@ export default class GameInitializer extends React.Component {
             )
           })}
         </div>
+        <div>
+          <button className = {"startGame"} onClick = {this.props.startGame}> Start Game </button>
+        </div>
       </div>
     );
   }
