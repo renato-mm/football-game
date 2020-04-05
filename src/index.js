@@ -62,7 +62,8 @@ class Game extends React.Component {
     return (
       <TeamHome team = {team} opponnent = {opponnent}
       teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}
-      showStandings={(code)=>this.showStandings(code)} season = {this.state.season}/>
+      showStandings={(code)=>this.showStandings(code)} season = {this.state.season}
+      handler = {this.state.infoHandler}/>
     );
   }
 

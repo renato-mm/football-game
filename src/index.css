@@ -2,7 +2,7 @@ body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
   min-width: 750px;
-  min-height: 450px;
+  min-height: 520px;
 }
 
 .game {
@@ -13,6 +13,6 @@ body {
 
 .game-board {
   margin: 5px auto;
-  min-width: 750px;
-  min-height: 450px;
+  min-width: 800px;
+  min-height: 520px;
 }

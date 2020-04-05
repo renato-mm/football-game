@@ -15,24 +15,25 @@ export default class TeamHome extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      team: props.team,
+      team: props.handler.get("Human",1,"team"),
       panel: "match",
       selectedPlayer: null,
       focus: false,
       teamInfo: props.opponnent,
       showOpponnentInfo: false,
     };
+    this.handler = props.handler;
     this.season = props.season;
     this.opponnent = props.opponnent;
     this.teamStandings = props.teamStandings;
     this.opponnentStandings = props.opponnentStandings;
     this.colors = {
-      background: props.team.color1,
-      color: props.team.color2,
+      background: this.handler.get("Team",this.state.team,"color1"),
+      color: this.handler.get("Team",this.state.team,"color2"),
     };
     this.colorsPlayers = {
-      background: props.team.color2,
-      color: props.team.color1,
+      background: this.handler.get("Team",this.state.team,"color2"),
+      color: this.handler.get("Team",this.state.team,"color1"),
     };
     this.showStandings = props.showStandings;
     this.countryInfo = countryInfo(props.team.nationality);
@@ -61,33 +62,35 @@ export default class TeamHome extends React.Component {
   }
 
   teamPlayers(){
-    const starter = [null, <GoPrimitiveDot />, <GoDash />];
+    const starter = [' ', <GoPrimitiveDot />, <GoDash />, ' ', ' '];
     const teamPlayers = [];
-    const teamPlys = this.state.team.players;
+    const teamPlys = this.handler.get("Team",this.state.team,"players");
     ['G','D','M','F'].forEach(pos => {
-      const plys = teamPlys.filter(e=>e.position === pos);
-      plys.sort((e1,e2)=>e1.name>e2.name);
+      const plys = teamPlys.filter(e=>this.handler.get("Player",e,"position") === pos);
+      plys.sort((e1,e2)=>this.handler.get("Player",e1,"name")>this.handler.get("Player",e2,"name"));
       const players = [];
       for(let j = 0; j < plys.length; j++){
-        const colors = this.state.selectedPlayer === plys[j] ? this.colors : this.colorsPlayers;
-        const nat = plys[j].nationality === this.state.team.nationality ? ' ' : plys[j].nationality;
-        const start = starter[plys[j].starting];
-        const injsus = plys[j].injured ? <FaPlusSquare /> : plys[j].suspended ? <AiOutlineStop /> : '';
+        const colors = this.state.selectedPlayer === this.handler.get("Player",plys[j],"id") ? this.colors : this.colorsPlayers;
+        const nat = this.handler.get("Player",plys[j],"nationality") === this.handler.get("Team",this.state.team,"nationality") ? ' ' : this.handler.get("Player",plys[j],"nationality");
+        const situation = this.handler.get("Player",plys[j],"situation")
+        const start = starter[situation[0]];
+        const injsus = situation[0] === 3 ? <FaPlusSquare /> : situation[0] === 4 ? <AiOutlineStop /> : '';
+        const contract = this.handler.get("Player",plys[j],"contract");
         players.push(
           <tr style={colors}
-              onClick={(event)=>this.selectPlayer(plys[j],event)}>
+              onClick={(event)=>this.selectPlayer(this.handler.get("Player",plys[j],"id"),event)}>
             <td onClick={(event)=>this.changePlayerFormation(plys[j],event)}>{start}</td>
-            <td>&nbsp;<b>{plys[j].position}</b></td>
-            <td>&nbsp;<b>{plys[j].name}</b>&nbsp;</td>
-            <td>&nbsp;<b>{plys[j].power}</b>&nbsp;</td>
-            <td>&nbsp;<b>{injsus}</b>&nbsp;</td>
-            <td>&nbsp;<b>{nat}</b>&nbsp;</td>
-            <td>&nbsp;<b>{plys[j].salary}</b>&nbsp;</td>
-            <td><b>{plys[j].salaryRenewed ? <GoPlus /> : ' '}</b></td>
+            <td><b>{this.handler.get("Player",plys[j],"position")}</b></td>
+            <td><b>{this.handler.get("Player",plys[j],"name")}</b></td>
+            <td><b>{injsus}</b></td>
+            <td><b>{this.handler.get("Player",plys[j],"strength")}</b></td>
+            <td><b>{nat}</b></td>
+            <td><b>{contract[1]}</b></td>
+            <td><b>{contract[0] ? <GoPlus /> : ' '}</b></td>
           </tr>);
       }
       const bodyColor = {
-        border: '1px solid '+this.state.team.color1
+        border: '1px solid '+this.colors.background
       }
       teamPlayers.push(
         <tbody style={bodyColor}>
@@ -156,6 +159,7 @@ export default class TeamHome extends React.Component {
   renderPanel(){
     return(
       <TeamHomePanel
+      handler={this.handler}
       season={this.season}
       team={this.state.team}
       opponnent={this.opponnent}
@@ -178,13 +182,17 @@ export default class TeamHome extends React.Component {
   }
 
   renderTeamHome(){
+    const division = [1,2,3,4].filter(e=>{
+      const league = this.handler.get("League",e,"teams");
+      return league ? league.includes(this.state.team) : '';
+    })[0];
     return <div
       style={this.colors}
       className = {"teamHome"}
       onKeyPress = {(event) => this.formationSelected(event.key)}
       tabIndex="0">
       <div className = {"teamHomeHeader"}>
-        <b>{this.state.team.fullName}</b>
+        <b>{this.handler.get("Team",this.state.team,"fullName")}</b>
       </div>
       {this.renderMenu()}
       <div className = {"row col-md-12"}>
@@ -194,7 +202,7 @@ export default class TeamHome extends React.Component {
             {this.countryInfo[1]}
             <div>
               {this.countryInfo[0]} 
-              <span>Division {this.state.team.division}</span>
+              <span>Division {division}</span>
             </div>
           </div>
           <div className = {"row"}>

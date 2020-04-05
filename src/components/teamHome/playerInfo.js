@@ -6,8 +6,9 @@ export default function PlayerInfo(props){
   if(props.player === null)
     return null;
 
-  const inj = (props.player.injured > 0) ? <div> Injured for {props.player.injured} matches </div> : null;
-  const sus = (props.player.suspended > 0) ? <div> Suspended for {props.player.suspended} matches </div> : null;
+  const situation = props.handler.get("Player",props.player,"situation");
+  const inj = (situation[0] === 3) ? <div> Injured for {situation[1]} matches </div> : null;
+  const sus = (situation[0] === 4) ? <div> Suspended for {situation[1]} matches </div> : null;
 
   return (
     <div className = {"playerInfos"}>
@@ -15,11 +16,11 @@ export default function PlayerInfo(props){
         <tbody>
           <tr>
             <td>Behavior</td>
-            <td>{props.player.behavior}</td>
+            <td>{props.handler.get("Player",props.player,"behaviour")}</td>
           </tr>
           <tr>
             <td>Goals this season</td>
-            <td>{props.player.seasonGoals}</td>
+            <td>{props.handler.get("Player",props.player,"goalsThisSeason")}</td>
           </tr>
         </tbody>
       </table>
@@ -30,19 +31,19 @@ export default function PlayerInfo(props){
         <tbody>
           <tr>
             <td>Matches</td>
-            <td>{props.player.matches}</td>
+            <td>{props.handler.get("Player",props.player,"history")}</td>
           </tr>
           <tr>
             <td>Goals</td>
-            <td>{props.player.goals}</td>
+            <td>{props.handler.get("Player",props.player,"history")}</td>
           </tr>
           <tr>
             <td>Red Cards</td>
-            <td>{props.player.redCards}</td>
+            <td>{props.handler.get("Player",props.player,"history")}</td>
           </tr>
           <tr>
             <td>Injuries</td>
-            <td>{props.player.injuries}</td>
+            <td>{props.handler.get("Player",props.player,"history")}</td>
           </tr>
         </tbody>
       </table>

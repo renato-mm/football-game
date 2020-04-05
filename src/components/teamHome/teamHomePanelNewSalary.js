@@ -8,7 +8,7 @@ export default class TeamHomePanelNewSalary extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      salary: props.salary,
+      salary: props.salary[1],
     };
     this.changePanel = props.changePanel;
     this.renewContract = props.renewContract;

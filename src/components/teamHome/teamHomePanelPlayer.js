@@ -8,19 +8,19 @@ export default function TeamHomePanelPlayer(props){
   if(props.player === null)
     return null;
 
-  const countryInfos = countryInfo(props.player.nationality);
+  const countryInfos = countryInfo(props.handler.get("Player",props.player,"nationality"));
 
   return (
     <div>
       <div className = {"row teamHomePanelPlayer"}>
-        <div> <span>{props.player.name}</span> </div>
+        <div> <span>{props.handler.get("Player",props.player,"name")}</span> </div>
         <div> {countryInfos[1]} {countryInfos[0]} </div>
       </div>
-      <PlayerInfo player={props.player}/>
+      <PlayerInfo handler={props.handler} player={props.player}/>
       <div className = {"row"}>
         <button className = {"teamHomePanelContract"}
                 onClick={()=>props.changePanel("newSalary")}
-                disabled={props.player.salaryRenewed ? "disabled" : ''}>
+                disabled={props.handler.get("Player",props.player,"name")[0] < 0 ? "disabled" : ''}>
           Renew Contract
         </button>
       </div>

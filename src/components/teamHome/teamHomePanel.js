@@ -11,11 +11,12 @@ export default class TeamHomePanel extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      team: props.team,
       panel: props.panel,
       selectedPlayer: props.player,
     };
+    this.handler = props.handler;
     this.season = props.season;
+    this.team = props.team;
     this.opponnent = props.opponnent;
     this.teamStandings = props.teamStandings;
     this.opponnentStandings = props.opponnentStandings;
@@ -32,7 +33,6 @@ export default class TeamHomePanel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      team: nextProps.team,
       panel: nextProps.panel,
       selectedPlayer: nextProps.player,
     });  
@@ -40,26 +40,29 @@ export default class TeamHomePanel extends React.Component {
 
   renderMatch(){
     return <Match
+    handler={this.handler}
+    team={this.team}
     teamStandings={this.teamStandings}
     opponnentStandings={this.opponnentStandings}
     colors={this.colors}
     oppColors={this.oppColors}
-    cash={this.state.team.cash}
-    moral={this.state.team.moral} />;
+    cash={this.handler.get("Team",this.team,"cash")}
+    moral={this.handler.get("Team",this.team,"moral")} />;
   }
 
   renderPlayer(){
-    return <Player 
+    return <Player
+            handler={this.handler}
             player={this.state.selectedPlayer}
             changePanel={this.changePanel}/>;
   }
 
   renderFinance(){
-    return <Finance finances={this.state.team.finances} season={this.season}/>;
+    return <Finance finances={this.handler.get("Team",this.team,"finances")} season={this.season}/>;
   }
 
   renderFormation(){
-    return <Formation players={this.state.team.players} auto={false}/>;
+    return <Formation handler={this.handler} players={this.handler.get("Team",this.team,"players")} auto={false}/>;
   }
 
   renderOpponnent(){
@@ -68,7 +71,7 @@ export default class TeamHomePanel extends React.Component {
 
   renderNewSalary(){
     return <NewSalary
-            salary={this.state.selectedPlayer.salary}
+            salary={this.handler.get("Player",this.state.selectedPlayer,"contract")}
             renewContract={this.renewContract}
             changePanel={this.changePanel}
             changeFocus={this.changeFocus}/>;

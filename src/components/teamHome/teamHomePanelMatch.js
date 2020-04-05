@@ -8,7 +8,7 @@ export default function TeamHomePanelMatch(props){
   headToHead.push(
   <tbody>
     <tr style={props.colors}>
-      <td>{props.teamStandings.team}</td>
+      <td>{props.handler.get("Team",props.team,"name")}</td>
       <td>&nbsp;{props.teamStandings.wins}&nbsp;</td>
       <td>&nbsp;{props.teamStandings.draws}&nbsp;</td>
       <td>&nbsp;{props.teamStandings.losses}&nbsp;</td>

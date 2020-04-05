@@ -3,7 +3,7 @@
   margin: 10px auto;
   border: 1px solid #000;
   padding: 0 0px;
-  height: 450px;
+  height: 505px;
   cursor: default;
 }
 
@@ -41,9 +41,33 @@
   font-size: 80%;
   width: 95%;
   cursor: default;
+  text-align: center;
 }
 
 .teamHomePlayers tbody{
   border: 1px solid #000;
   border-collapse: collapse;
+  width: 100%;
+}
+
+.teamHomePlayers tbody tr td:nth-child(1),
+.teamHomePlayers tbody tr td:nth-child(2),
+.teamHomePlayers tbody tr td:nth-child(4),
+.teamHomePlayers tbody tr td:nth-child(5),
+.teamHomePlayers tbody tr td:nth-child(8){
+  width: 5%;
+}
+
+.teamHomePlayers tbody tr td:nth-child(3){
+  text-align: left;
+  width: 50%;
+}
+
+.teamHomePlayers tbody tr td:nth-child(6){
+  width: 10%;
+}
+
+.teamHomePlayers tbody tr td:nth-child(7){
+  width: 15%;
+  text-align: right;
 }
