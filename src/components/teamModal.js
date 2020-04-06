@@ -2,46 +2,39 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal'
 import './teamModal.css';
 import { IconContext } from "react-icons";
-import { FaRegWindowClose } from "react-icons/fa";
 import { GiSoccerBall } from "react-icons/gi";
 import {AiTwotoneBook} from "react-icons/ai";
 
 const goalIcon = <GiSoccerBall />;
-const yellowCard = <IconContext.Provider value={{className: "yellowCard"}}>
-  <AiTwotoneBook />
-</IconContext.Provider>;
 const redCard = <IconContext.Provider value={{className: "redCard"}}>
   <AiTwotoneBook />
 </IconContext.Provider>;
-const closeIcon = <FaRegWindowClose />;
 
 export default function TeamModal(props) {
 
-  const show = props.show;
-  const handleClose = props.handleClose;
-
-  const colors = {
-    background: props.team.color1,
-    color: props.team.color2,
+  const  colors = {
+    background: props.handler.get("Team",props.team,"color1"),
+    color: props.handler.get("Team",props.team,"color2"),
   };
 
-  const teamPlys = props.team.players.filter(e=>e.injured === 0 && e.suspended === 0);
+  const plysID = props.handler.get("Team",props.team,"players");
+  const teamPlys = plysID.filter(e=>(props.handler.get("Player",e,"situation")[0]<3));
   const players = [];
   const reserves = [];
 
   ['G','D','M','F'].forEach(pos => {
-    const plys = teamPlys.filter(e=>e.position === pos);
-    plys.sort((e1,e2)=>e1.name>e2.name);
+    const plys = teamPlys.filter(e=>props.handler.get("Player",e,"position") === pos);
+    plys.sort((e1,e2)=>props.handler.get("Player",e1,"name")>props.handler.get("Player",e2,"name"));
     for(let j = 0; j < plys.length; j++){
       let html = <tr>
-                  <td>{plys[j].position}</td>
-                  <td>&nbsp;{plys[j].name}&nbsp;</td>
-                  <td>{plys[j].power}</td>
+                  <td>{props.handler.get("Player",plys[j],"position")}</td>
+                  <td>&nbsp;{props.handler.get("Player",plys[j],"name")}&nbsp;</td>
+                  <td>{props.handler.get("Player",plys[j],"strength")}</td>
                 </tr>;
-      if(plys[j].starting === 1){
+      if(props.handler.get("Player",plys[j],"situation")[0] === 1){
         players.push(html);
       }
-      else if(plys[j].starting === 2){
+      else if(props.handler.get("Player",plys[j],"situation")[0] === 2){
         reserves.push(html);
       }
     }
@@ -58,7 +51,7 @@ export default function TeamModal(props) {
   }
 
   return (
-    <Modal show={show} onHide={handleClose} animation={false} centered>
+    <Modal show={props.show} onHide={props.handleClose} animation={false} centered>
       <Modal.Body>
         <div
           style = {colors}
@@ -72,7 +65,7 @@ export default function TeamModal(props) {
               {hist}
             </tbody>
           </table>
-          <b>{props.team.name}</b>
+          <b>{props.handler.get("Team",props.team,"name")}</b>
           <div className = {"teamModalPlayers"}>
             <table className = {"teamModalPlayersTable"}>
               <tbody>

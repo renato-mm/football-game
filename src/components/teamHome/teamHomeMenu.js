@@ -9,6 +9,7 @@ import Coach from './teamHomeMenuCoach';
 import onClickOutside from "react-onclickoutside";
 import FixturesInfo from './fixturesInfo';
 import Bank from './bank';
+import Stadium from './stadium';
 
 class TeamHomeMenu extends React.Component {
   constructor(props){
@@ -18,7 +19,9 @@ class TeamHomeMenu extends React.Component {
       menu: '',
       teamFixturesModalShow: false,
       bankModalShow: false,
+      stadiumModalShow: false,
     };
+    this.handler = props.handler;
     this.team = props.team;
     this.formationSelected = props.formationSelected;
     this.showStandings = props.showStandings;
@@ -38,7 +41,10 @@ class TeamHomeMenu extends React.Component {
 
   renderFormation(){
     if(this.state.showMenu && this.state.menu === "formation"){
-      return <Formation formationSelected={this.formationSelected}/>;
+      return <Formation
+              handler={this.handler}
+              players={this.handler.get("Team",this.team,"players")}
+              formationSelected={this.formationSelected}/>;
     }
     else{
       return null;
@@ -137,6 +143,9 @@ class TeamHomeMenu extends React.Component {
       <Bank
       handleClose={()=>this.handleClose('bankModalShow')}
       show={this.state.bankModalShow}/>
+      <Stadium
+      handleClose={()=>this.handleClose('stadiumModalShow')}
+      show={this.state.stadiumModalShow}/>
       </>
     );
   }

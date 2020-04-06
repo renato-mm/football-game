@@ -131,7 +131,7 @@ export default class TeamHome extends React.Component {
 
   formationSelected(key){
     if(!this.state.focus && ((key >= "0" && key <= "9") || key === 'A' || key === 'a' || key === 'm' || key === 'M')){
-      const newTeamPlayers = teamHomeFunc.selectFormation(this.state.team.players, key);
+      const newTeamPlayers = teamHomeFunc.selectFormation(this.handler, this.handler.get("Team",this.team,"players"), key);
       const newTeam = this.state.team;
       newTeam.players = newTeamPlayers;
       this.setState({
@@ -150,6 +150,7 @@ export default class TeamHome extends React.Component {
   renderMenu(){
     return(
       <TeamHomeMenu
+      handler={this.handler}
       team={this.state.team}
       formationSelected={(key) => this.formationSelected(key)}
       showStandings={this.showStandings}/>

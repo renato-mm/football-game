@@ -1,0 +1,39 @@
+
+.teamInfoIconSize{
+  font-size: 2em;
+}
+
+.stadiumDrawing{
+  height: 225px;
+  width: 100%;
+}
+
+.stadiumCapacity{
+  font-size: 1.5em;
+}
+
+.stadiumInfo{
+  width: 100%;
+}
+
+.stadiumInfo p{
+  float: left;
+  height: 80px;
+  padding: 20px 0px;
+  margin: 10px 10px;
+}
+
+.stadiumButtons button{
+  float: right;
+}
+
+.stadiumButtons button{
+  height: 80px;
+  width: 90px;
+  margin: 10px 10px;
+}
+
+.stadiumButtons button span{
+  font-size: .8em;
+  display: block;
+}

@@ -32,7 +32,7 @@ function runChance(chances) {
   }
 }
 
-export default function runMatch(home, away, history, time){
+export default function runMatch(handler, home, away, history, time){
   //{time: 0,  stat:'S',  text: goalIcon, teamID:'cruzeiro1921', playerID: '0', player:'0'}
   let teams = [home, away]
   let event_chance = {"F" : 50, "M" : 20, "D" : 10, "G" : 1}
@@ -53,49 +53,49 @@ export default function runMatch(home, away, history, time){
       e = 1
     }
     enemy = teams[e] 
-    player = possession.players.filter( e => e.position === "F" && e.starting === 1 )[0]
+    player = handler.get("Team",possession,"players").filter( e => handler.get("Player",e,"position") === "F" && handler.get("Player",e,"situation")[0] === 1 )[0]
   } else {
-    possession = teams.filter(e => e.id === lastH.teamID)[0]
-    enemy = teams.filter(e => e.id !== lastH.teamID)[0]
-    player = possession.players.filter( e => e.id === lastH.playerID )[0]
+    possession = teams.filter(e => handler.get("Team",e,"id") === lastH.teamID)[0]
+    enemy = teams.filter(e => handler.get("Team",e,"id") !== lastH.teamID)[0]
+    player = handler.get("Team",possession,"players").filter( e => handler.get("Player",e,"id") === lastH.playerID )[0]
   }
 
   let historyElements = []
   //let historyElement = {time: time,  stat:'N',  text: "Error", teamID: possession.id, playerID: '0', player:'0'}
-  let goal_add_chance = (1 + player.power/50) * 5
-  let pass_add_chance = (1 + player.power/50) * 10
+  let goal_add_chance = (1 + handler.get("Player",player,"strength")/50) * 5
+  let pass_add_chance = (1 + handler.get("Player",player,"strength")/50) * 10
   let event_roll = randomInt(0, 100)
   let success_roll = randomInt(0, 100)
-  if (event_roll < event_chance[player.position]) {
+  if (event_roll < event_chance[handler.get("Player",player,"position")]) {
     let event = "Goal Attempt"
     if (success_roll < 10 + goal_add_chance) {
       let eventSuccess = true
-      historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession.id, playerID: player.id, player: player.name})
-      let ePlayer = enemy.players.filter( e => e.position === "F" && e.starting === 1 )[0]
-      historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: enemy.id, playerID: ePlayer.id, player: ePlayer.name})
+      historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: handler.get("Team",possession,"id"), playerID: handler.get("Player",player,"id"), player: handler.get("Player",player,"name")})
+      let ePlayer = handler.get("Team",enemy,"players").filter( e => handler.get("Player",e,"position") === "F" && handler.get("Player",e,"situation")[0] === 1 )[0]
+      historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: handler.get("Team",enemy,"id"), playerID: handler.get("Player",ePlayer,"id"), player: handler.get("Player",ePlayer,"name")})
     } else {
       let eventSuccess = false
-      let enemyGK = enemy.players.filter( e => e.position === "G" && e.starting === 1 )[0]
-      historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: enemy.id, playerID: enemyGK.id, player: enemyGK.name})
+      let enemyGK = handler.get("Team",enemy,"players").filter( e => handler.get("Player",e,"position") === "G" && handler.get("Player",e,"situation")[0] === 1 )[0]
+      historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: handler.get("Team",enemy,"id"), playerID: handler.get("Player",enemyGK,"id"), player: handler.get("Player",enemyGK,"name")})
     }
   } else {
     let event = "Pass Attempt"
     if (success_roll < 70 + pass_add_chance) {
       let eventSuccess = true
-      let pc = pass_choice[player.position]
+      let pc = pass_choice[handler.get("Player",player,"position")]
       let pc_choice = pass_options[runChance(pc)]
-      let possessionPS = possession.players.filter( e => e.position === pc_choice && e.starting === 1 )
+      let possessionPS = handler.get("Team",possession,"players").filter( e => handler.get("Player",e,"position") === pc_choice && handler.get("Player",e,"situation")[0] === 1 )
       let l = possessionPS.length
       let r = randomInt(0, l)
       let possessionP = possessionPS[r]
-      historyElements.push({time: time,  stat:'Pass',  text: "Pass", teamID: possession.id, playerID: possessionP.id, player: possessionP.name})
+      historyElements.push({time: time,  stat:'Pass',  text: "Pass", teamID: handler.get("Team",possession,"id"), playerID: handler.get("Player",possessionP,"id"), player: handler.get("Player",possessionP,"name")})
     } else {
       let eventSuccess = false
-      let enemyPS = enemy.players.filter( e => e.position === inverse_positions[player.position] && e.starting === 1 )
+      let enemyPS = handler.get("Team",enemy,"players").filter( e => handler.get("Player",e,"position") === inverse_positions[handler.get("Player",e,"position")] && handler.get("Player",e,"situation")[0] === 1 )
       let l = enemyPS.length
       let r = randomInt(0, l)
       let enemyP = enemyPS[r]
-      historyElements.push({time: time,  stat:'Steal',  text: "Steal", teamID: enemy.id, playerID: enemyP.id, player: enemyP.name})
+      historyElements.push({time: time,  stat:'Steal',  text: "Steal", teamID: handler.get("Team",enemy,"id"), playerID: handler.get("Player",enemyP,"id"), player: handler.get("Player",enemyP,"name")})
     }
 
   }

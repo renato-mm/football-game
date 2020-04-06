@@ -32,10 +32,7 @@ export default class Match extends React.Component {
     this.state = {
       modalShow: false,
       modalTeam: "",
-      homeTeam: props.homeTeam,
-      awayTeam: props.awayTeam,
       history: history,
-      attendance: attendance,
       homeScore: 0,
       awayScore: 0,
       interval: setInterval(() => this.matchPlay(), 50),
@@ -43,6 +40,10 @@ export default class Match extends React.Component {
       eventsProcessed: 0,
       timeBetweenEvents: 100,
     };
+    this.handler = props.handler;
+    this.homeTeam = props.homeTeam;
+    this.awayTeam = props.awayTeam;
+    this.attendance = attendance;
   }
 
   handleClose = () => this.setState({modalShow: false, modalTeam: "",});
@@ -53,7 +54,7 @@ export default class Match extends React.Component {
     if ( this.state.eventsProcessed < 90 && (this.state.eventsProcessed + 1) * this.state.timeBetweenEvents < elapsedTime ) {
       let newEventsProcessed = this.state.eventsProcessed + 1
       let newHistory = this.state.history.slice()
-      let result = runMatch(this.state.homeTeam, this.state.awayTeam, newHistory, newEventsProcessed)
+      let result = runMatch(this.handler, this.homeTeam, this.awayTeam, newHistory, newEventsProcessed)
       result.forEach(e => newHistory.push(e))
       this.setState( {eventsProcessed : newEventsProcessed, history : newHistory } )
     }
@@ -73,7 +74,11 @@ export default class Match extends React.Component {
 
   renderTeam(side, team) {
     return (
-      <Team side = {side} team = {team} handleShow = {() => this.handleShow(side)} />
+      <Team
+      handler = {this.handler}
+      side = {side}
+      team = {team}
+      handleShow = {() => this.handleShow(side)} />
     );
   }
 
@@ -90,8 +95,8 @@ export default class Match extends React.Component {
   }
 
   updateMatch(){
-    const homeSc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.state.homeTeam.id)).length;
-    const awaySc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.state.awayTeam.id)).length;
+    const homeSc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.handler.get("Team",this.homeTeam,"id"))).length;
+    const awaySc = (this.state.history.filter(e => e.stat === 'Goal' && e.teamID === this.handler.get("Team",this.awayTeam,"id"))).length;
     this.setState({
       homeScore: homeSc,
       awayScore: awaySc
@@ -101,16 +106,17 @@ export default class Match extends React.Component {
   
   render(){
     const matchStoryText = this.state.history[this.state.history.length - 1];
-    const scoreboard = this.state.homeTeam.name+" "+this.state.homeScore+" - "+this.state.awayScore+" "+this.state.awayTeam.name;
+    const scoreboard = this.handler.get("Team",this.homeTeam,"name")+" "+this.state.homeScore+" - "+this.state.awayScore+" "+this.handler.get("Team",this.awayTeam,"name");
     return (
       <div className = {"matchBox"} >
         {this.renderAttendance(this.state.attendance)}
-        {this.renderTeam("home", this.state.homeTeam)}
+        {this.renderTeam("home", this.homeTeam)}
         {this.renderScoreboard(this.state.homeScore, this.state.awayScore)}
-        {this.renderTeam("away", this.state.awayTeam)}
+        {this.renderTeam("away", this.awayTeam)}
         {this.renderMatchStory(matchStoryText.time+"'  "+matchStoryText.stat+": "+matchStoryText.player)}
         <TeamModal
-        team = {this.state.modalTeam === "home" ? this.state.homeTeam : this.state.awayTeam}
+        handler={this.handler}
+        team = {this.state.modalTeam === "home" ? this.homeTeam : this.awayTeam}
         history = {this.state.history}
         score = {scoreboard}
         show = {this.state.modalShow}

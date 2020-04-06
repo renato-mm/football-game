@@ -20,7 +20,7 @@ export default function TeamHomePanelPlayer(props){
       <div className = {"row"}>
         <button className = {"teamHomePanelContract"}
                 onClick={()=>props.changePanel("newSalary")}
-                disabled={props.handler.get("Player",props.player,"name")[0] < 0 ? "disabled" : ''}>
+                disabled={props.handler.get("Player",props.player,"contract")[0] === 0 ? "disabled" : ''}>
           Renew Contract
         </button>
       </div>

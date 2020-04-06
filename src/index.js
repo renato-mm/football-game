@@ -43,7 +43,7 @@ class Game extends React.Component {
 
   renderDivision() {
     return (
-      <Division />
+      <Division handler = {this.state.infoHandler}/>
     );
   }
 
