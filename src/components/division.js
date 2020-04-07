@@ -12,70 +12,64 @@ export default class Division extends React.Component {
       startTime: 1,
       elapsedTime: 0,
       matchesDone: 0,
+      interval: 0,
+      matchTime: 0
     };
     this.handler = props.handler;
   }
 
   startMatches(){
     if (this.state.matchesStarted === 0) {
+      this.setState({interval: setInterval(() => this.matchPlay(), 100)})
       let d = new Date()
       let t = d.getTime()
       this.setState( {matchesStarted: 1, startTime: t} )
     }
   }
 
-  matchPlay(matchDone){
-    console.log(matchDone)
+  matchPlay(){
     if (this.state.matchesStarted === 1) {
-      if (!matchDone) {
-        this.setState( { matchesDone : 0 } )
+      if (this.state.matchTime < 90) {
+        let time = this.state.matchTime + 1
+        this.props.handler.runMatches(time)
+        let d = new Date()
+        let t = d.getTime()
+        let elapsedTime = t - this.state.startTime
+        this.setState( {elapsedTime: elapsedTime, matchTime: time} )
+      } else {
+        clearInterval(this.state.interval)
+        this.setState( { matchesStarted : 2 } )
       }
-      let d = new Date()
-      let t = d.getTime()
-      let elapsedTime = t - this.state.startTime
-      this.setState( {elapsedTime: elapsedTime} )
-      if (elapsedTime % 100 === 0) {
-        if (this.state.matchesDone) {
-          this.setState( { matchesStarted : 2 } )
-        } else {
-          this.setState( { matchesDone : 1 } )
-        }
-      }
-      return elapsedTime 
     }
   }
 
-  renderMatch(home, away) {
-    teamHomeFunc.selectFormation(this.handler, this.handler.get("Team",home,"players"), 'A');
-    teamHomeFunc.selectFormation(this.handler ,this.handler.get("Team",away,"players"), 'A');
+  renderMatch(ind) {
+    //teamHomeFunc.selectFormation(this.handler, this.handler.get("Team",home,"players"), 'A');
+    //teamHomeFunc.selectFormation(this.handler ,this.handler.get("Team",away,"players"), 'A');
     return (
       <Match
+      key = {ind}
       handler = {this.handler}
-      homeTeam = {home}
-      awayTeam = {away}
-      playCallBack = {(p1) => this.matchPlay(p1)}/>
+      time = {this.state.matchTime}
+      matchInd = {ind}/>
     );
   }
   
   render(){
+    let matches = this.props.handler.get("Match", 0, "current matches")
+    let inds = []
+    //console.log("Matches", matches)
+    for (let x = 0 ; x < matches.length ; x++) {
+      //console.log(x)
+      inds.push(x)
+    }
     return (
       <div
         className = {"divisionBox"}
       >
         <button onClick = {() => this.startMatches()}>Start: {this.state.elapsedTime.toString()}</button>
         <div>
-          {this.renderMatch(1, 2)}
-          {this.renderMatch(3, 4)}
-          {this.renderMatch(5, 6)}
-          {this.renderMatch(7, 8)}
-          {this.renderMatch(9, 10)}
-          {this.renderMatch(11, 12)}
-          {this.renderMatch(13, 14)}
-          {this.renderMatch(15, 16)}
-          {this.renderMatch(17, 18)}
-          {this.renderMatch(19, 20)}
-          {this.renderMatch(21, 22)}
-          {this.renderMatch(23, 24)}
+          {inds.map((e) => {return this.renderMatch(e)})}
         </div>
       </div>
     );
