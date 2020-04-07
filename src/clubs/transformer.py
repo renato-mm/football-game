@@ -95,7 +95,7 @@ def file_to_dict(f):
     return players_dict_list + [team_dict]
 
 
-o = open('clubs.js', "w+")
+o = open('clubs.js', "w+", encoding='utf-8')
 first_line = "export let base_info = {"
 l = len(first_line)
 o.write(first_line)

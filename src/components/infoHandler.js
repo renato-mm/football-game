@@ -160,7 +160,7 @@ export class InfoHandler {
                 lowEnd = 1
             }
             let new_properties = ["moral", "situation", "strength", "behaviour", "contract"]
-            let new_values = [this.randomInt(1, 100), [1, 0], this.randomInt(lowEnd, team_power), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)]]
+            let new_values = [this.randomInt(1, 100), [0, 0], this.randomInt(lowEnd, team_power), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_player[new_properties[l]] = new_values[l]
             }
@@ -172,10 +172,34 @@ export class InfoHandler {
             this.sessionInfo[this.playersTeam[x]]["coach"] = -x
         }
 
+        this.randomStartFormation()
         //console.log("making games")
         this.seasonGamesMaker()
         //console.log("getting next matches")
         this.nextMatches()
+    }
+
+    randomStartFormation() {
+        for (let x = 0 ; x < this.teamsPlaying.length ; x++) {
+            let teamPlayers = this.sessionInfo[this.teamsPlaying[x]]["players"]
+            let goalkeepers = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "G").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+            let defenders = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "D").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+            let mids = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "M").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+            let forwards = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "F").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+            let formationPlayers = [goalkeepers[0]]
+            let rotation = [defenders, mids, forwards]
+            let count = 0
+            while (formationPlayers.length < 11) {
+                formationPlayers.push(rotation[count].splice(0, 1))
+                count = count + 1
+                if (count > 2) {
+                    count = 0
+                }
+            }
+            for (let y = 0 ; y < 11 ; y++) {
+                this.sessionInfo[formationPlayers[y]]["situation"][0] = 1
+            }
+        }
     }
 
     initialization(action, ids) {
@@ -509,32 +533,32 @@ export class InfoHandler {
             e = 1
             }
             enemy = teams[e] 
-            player = this.get("Team",possession,"players").filter( e => this.get("Player",e,"position") === "F" && this.get("Player",e,"situation")[0] === 1 )[0]
+            player = this.sessionInfo[possession]["players"].filter( e => this.sessionInfo[e]["position"] === "F" && this.sessionInfo[e]["situation"][0] === 1 )[0]
         } else {
-            possession = teams.filter(e => this.get("Team",e,"id") === lastH.teamID)[0]
-            enemy = teams.filter(e => this.get("Team",e,"id") !== lastH.teamID)[0]
-            player = this.get("Team",possession,"players").filter( e => this.get("Player",e,"id") === lastH.playerID )[0]
+            possession = teams.filter(e => e === lastH.teamID)[0]
+            enemy = teams.filter(e => e !== lastH.teamID)[0]
+            player = this.sessionInfo[possession]["players"].filter( e => this.sessionInfo[e]["id"] === lastH.playerID )[0]
         }
 
         //console.log(history)
         
         let historyElements = []
         //let historyElement = {time: time,  stat:'N',  text: "Error", teamID: possession.id, playerID: '0', player:'0'}
-        let goal_add_chance = (1 + this.get("Player",player,"strength")/50) * 5
-        let pass_add_chance = (1 + this.get("Player",player,"strength")/50) * 10
+        let goal_add_chance = (1 + this.sessionInfo[player]["strength"]/50) * 5
+        let pass_add_chance = (1 + this.sessionInfo[player]["strength"]/50) * 10
         let event_roll = this.randomInt(0, 100)
         let success_roll = this.randomInt(0, 100)
-        if (event_roll < event_chance[this.get("Player",player,"position")]) {
+        if (event_roll < event_chance[this.sessionInfo[player]["position"]]) {
             let event = "Goal Attempt"
             if (success_roll < 10 + goal_add_chance) {
             let eventSuccess = true
-            historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: this.get("Team",possession,"id"), playerID: this.get("Player",player,"id"), player: this.get("Player",player,"name")})
-            let ePlayer = this.get("Team",enemy,"players").filter( e => this.get("Player",e,"position") === "F" && this.get("Player",e,"situation")[0] === 1 )[0]
-            historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: this.get("Team",enemy,"id"), playerID: this.get("Player",ePlayer,"id"), player: this.get("Player",ePlayer,"name")})
+            historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
+            let ePlayer = this.sessionInfo[enemy]["players"].filter( e => this.sessionInfo[e]["position"] === "F" && this.sessionInfo[e]["situation"][0] === 1 )[0]
+            historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: enemy, playerID: ePlayer, player: this.sessionInfo[ePlayer]["name"]})
             } else {
             let eventSuccess = false
-            let enemyGK = this.get("Team",enemy,"players").filter( e => this.get("Player",e,"position") === "G" && this.get("Player",e,"situation")[0] === 1 )[0]
-            historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: this.get("Team",enemy,"id"), playerID: this.get("Player",enemyGK,"id"), player: this.get("Player",enemyGK,"name")})
+            let enemyGK = this.sessionInfo[enemy]["players"].filter( e => this.sessionInfo[e]["position"] === "G" && this.sessionInfo[e]["situation"][0] === 1 )[0]
+            historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: enemy, playerID: enemyGK, player: this.sessionInfo[enemyGK]["name"]})
             }
         } else {
             let event = "Pass Attempt"
@@ -542,18 +566,18 @@ export class InfoHandler {
             let eventSuccess = true
             let pc = pass_choice[this.get("Player",player,"position")]
             let pc_choice = pass_options[this.runChance(pc)]
-            let possessionPS = this.get("Team",possession,"players").filter( e => this.get("Player",e,"position") === pc_choice && this.get("Player",e,"situation")[0] === 1 )
+            let possessionPS = this.sessionInfo[possession]["players"].filter( e => this.sessionInfo[e]["position"] === pc_choice && this.sessionInfo[e]["situation"][0] === 1 )
             let l = possessionPS.length
             let r = this.randomInt(0, l)
             let possessionP = possessionPS[r]
-            historyElements.push({time: time,  stat:'Pass',  text: "Pass", teamID: this.get("Team",possession,"id"), playerID: this.get("Player",possessionP,"id"), player: this.get("Player",possessionP,"name")})
+            historyElements.push({time: time,  stat:'Pass',  text: "Pass", teamID: possession, playerID: possessionP, player: this.sessionInfo[possessionP]["name"]})
             } else {
             let eventSuccess = false
-            let enemyPS = this.get("Team",enemy,"players").filter( e => this.get("Player",e,"position") === inverse_positions[this.get("Player",e,"position")] && this.get("Player",e,"situation")[0] === 1 )
+            let enemyPS = this.sessionInfo[enemy]["players"].filter( e => this.sessionInfo[e]["position"] === inverse_positions[this.sessionInfo[e]["position"]] && this.sessionInfo[e]["situation"][0] === 1 )
             let l = enemyPS.length
             let r = this.randomInt(0, l)
             let enemyP = enemyPS[r]
-            historyElements.push({time: time,  stat:'Steal',  text: "Steal", teamID: this.get("Team",enemy,"id"), playerID: this.get("Player",enemyP,"id"), player: this.get("Player",enemyP,"name")})
+            historyElements.push({time: time,  stat:'Steal',  text: "Steal", teamID: enemy, playerID: enemyP, player: this.sessionInfo[enemyP]["name"]})
             }
         
         }

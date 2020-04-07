@@ -1,10 +1,6 @@
 import React from 'react';
 import './match.css';
-import Attendance from './attendance';
 import TeamModal from './teamModal';
-import Scoreboard from './scoreboard';
-import MatchStory from './matchStory';
-import runMatch from './matchFunctions';
 
 const attendance = 18500;
 const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}]
@@ -45,24 +41,9 @@ export default class Match extends React.Component {
   handleClose = () => this.setState({modalShow: false, modalTeam: "",});
   handleShow = (side) => this.setState({modalShow: true, modalTeam: side,});
 
-  matchPlay() {
-    let elapsedTime = this.state.playCallBack(false)
-    if ( this.state.eventsProcessed < 90 && (this.state.eventsProcessed + 1) * this.state.timeBetweenEvents < elapsedTime ) {
-      let newEventsProcessed = this.state.eventsProcessed + 1
-      let newHistory = this.state.history.slice()
-      let result = runMatch(this.handler, this.homeTeam, this.awayTeam, newHistory, newEventsProcessed)
-      result.forEach(e => newHistory.push(e))
-      this.setState( {eventsProcessed : newEventsProcessed, history : newHistory } )
-    }
-    if (this.state.eventsProcessed >= 90) {
-      this.state.playCallBack(true)
-      clearInterval(this.state.interval)
-    }
-  }
-
   renderAttendance(attend) {
     return (
-      <Attendance attendance = {attend}/>
+      <div className = {"attendance"} > Attendance: {attend} </div>
     );
   }
 
@@ -85,14 +66,11 @@ export default class Match extends React.Component {
 
   renderScoreboard(homeSc, awaySc) {
     return (
-      <Scoreboard homeScore = {homeSc} awayScore = {awaySc}/>
-    );
-  }
-
-  renderMatchStory(histText) {
-    return (
-      <MatchStory text = {histText}/>
-    );
+      <div className = {"scoreboard"}>
+        <div className = {"leftScoreboard"} > <b>{homeSc}</b> &nbsp;</div>
+        <div className = {"rightScoreboard"} > <b>{awaySc}</b> </div>
+      </div>
+    )
   }
   
   render(){
@@ -101,7 +79,15 @@ export default class Match extends React.Component {
     let awayID = this.props.handler.get("Match", this.state.ind, "away")
     const homeSc = (history.filter(e => e.stat === 'Goal' && e.teamID === homeID)).length;
     const awaySc = (history.filter(e => e.stat === 'Goal' && e.teamID === awayID)).length;
-    const matchStoryText = history[history.length - 1];
+    let matchStoryTexts = history.filter(e => e.stat === "Goal" || e.text === "Match Start")
+    const matchStoryText = matchStoryTexts[matchStoryTexts.length - 1]
+    let mText = "-"
+    if (matchStoryText.time !== 0) { 
+      mText = matchStoryText.time+"'  "+matchStoryText.stat+": "+matchStoryText.player
+    }
+    let matchStoryTextRender = (
+      <div className = {"matchStory"} > {mText} </div>
+    )
     //console.log(history, matchStoryText)
     const scoreboard = this.handler.get("Team", homeID, "name") + " " + homeSc + " - " + awaySc + " " + this.handler.get("Team", awayID, "name");
     return (
@@ -110,7 +96,7 @@ export default class Match extends React.Component {
         {this.renderTeam("home", homeID)}
         {this.renderScoreboard(homeSc, awaySc)}
         {this.renderTeam("away", awayID)}
-        {this.renderMatchStory(matchStoryText.time+"'  "+matchStoryText.stat+": "+matchStoryText.player)}
+        {matchStoryTextRender}
         <TeamModal
         handler={this.handler}
         team = {this.state.modalTeam === "home" ? homeID : awayID}
