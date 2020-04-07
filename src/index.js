@@ -50,7 +50,7 @@ class Game extends React.Component {
   renderStandings() {
     return (
       <Standings
-      division1 = {this.state.currentDivisions[0]}
+      handler = {this.state.infoHandler}
       handleClose={this.handleClose}
       show={this.state.standingsModalShow}/>
     );
@@ -63,7 +63,7 @@ class Game extends React.Component {
       <TeamHome team = {team} opponnent = {opponnent}
       teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}
       showStandings={(code)=>this.showStandings(code)} season = {this.state.season}
-      handler = {this.state.infoHandler}/>
+      handler = {this.state.infoHandler} ready = {()=>this.setState({screen: "Matches"})}/>
     );
   }
 
