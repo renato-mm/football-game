@@ -36,6 +36,7 @@ export default class TeamHome extends React.Component {
       color: this.handler.get("Team",this.state.team,"color1"),
     };
     this.showStandings = props.showStandings;
+    this.ready = props.ready;
     this.countryInfo = countryInfo(props.team.nationality);
   }
 
@@ -131,11 +132,9 @@ export default class TeamHome extends React.Component {
 
   formationSelected(key){
     if(!this.state.focus && ((key >= "0" && key <= "9") || key === 'A' || key === 'a' || key === 'm' || key === 'M')){
-      const newTeamPlayers = teamHomeFunc.selectFormation(this.handler, this.handler.get("Team",this.team,"players"), key);
-      const newTeam = this.state.team;
-      newTeam.players = newTeamPlayers;
+      const formations = [[6,3,1],[3,3,4],[3,4,3],[4,2,4],[4,3,3], [4,4,2],[4,5,1],[5,2,3],[5,3,2],[5,4,1]];
+      this.handler.set("Team", this.state.team, "formation", (key >= "0" && key <= "9") ? formations[key] : key);
       this.setState({
-        team: newTeam,
         panel: "formation",
       })
     }
@@ -172,7 +171,8 @@ export default class TeamHome extends React.Component {
       changePanel={panel=>this.changePanel(panel)}
       renewContract={(newSalary)=>this.renewContract(newSalary)}
       changeFocus={focus=>this.changeFocus(focus)}
-      showOpponnentInfo={()=>this.showOpponnentInfo()}/>
+      showOpponnentInfo={()=>this.showOpponnentInfo()}
+      ready={this.ready}/>
     );
   }
 

@@ -183,6 +183,9 @@ export class InfoHandler {
 
     formationSetter(teamID, formation) {
         let teamPlayers = this.sessionInfo[teamID]["players"]
+        for (let x = 0 ; x < teamPlayers.length ; x++) {
+            this.sessionInfo[teamPlayers[x]]["situation"][0] = 0
+        }
         let goalkeepers = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "G").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
         let defenders = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "D").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
         let mids = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "M").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})

@@ -29,6 +29,7 @@ export default class TeamHomePanel extends React.Component {
     this.renewContract = props.renewContract;
     this.changeFocus = props.changeFocus;
     this.showOpponnentInfo = props.showOpponnentInfo;
+    this.ready = props.ready;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,7 +63,11 @@ export default class TeamHomePanel extends React.Component {
   }
 
   renderFormation(){
-    return <Formation handler={this.handler} players={this.handler.get("Team",this.team,"players")} auto={false}/>;
+    return <Formation
+            handler={this.handler}
+            players={this.handler.get("Team",this.team,"players")}
+            auto={false}
+            ready={this.ready}/>;
   }
 
   renderOpponnent(){

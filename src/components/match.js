@@ -1,7 +1,14 @@
 import React from 'react';
 import './match.css';
 import TeamModal from './teamModal';
+import { IconContext } from "react-icons";
+import { GiSoccerBall } from "react-icons/gi";
+import {AiTwotoneBook} from "react-icons/ai";
 
+const goalIcon = <GiSoccerBall />;
+const redCard = <IconContext.Provider value={{className: "redCard"}}>
+  <AiTwotoneBook />
+</IconContext.Provider>;
 const attendance = 18500;
 const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}]
   /*
@@ -81,12 +88,13 @@ export default class Match extends React.Component {
     const awaySc = (history.filter(e => e.stat === 'Goal' && e.teamID === awayID)).length;
     let matchStoryTexts = history.filter(e => e.stat === "Goal" || e.text === "Match Start")
     const matchStoryText = matchStoryTexts[matchStoryTexts.length - 1]
-    let mText = "-"
+    let mText = ["-",'','']
     if (matchStoryText.time !== 0) { 
-      mText = matchStoryText.time+"'  "+matchStoryText.stat+": "+matchStoryText.player
+      const stat = matchStoryText.stat === "Goal" ? goalIcon : matchStoryText.stat;
+      mText = [matchStoryText.time+"'  ",stat,": "+matchStoryText.player]
     }
     let matchStoryTextRender = (
-      <div className = {"matchStory"} > {mText} </div>
+      <div className = {"matchStory"} > {mText[0]}{mText[1]}{mText[2]} </div>
     )
     //console.log(history, matchStoryText)
     const scoreboard = this.handler.get("Team", homeID, "name") + " " + homeSc + " - " + awaySc + " " + this.handler.get("Team", awayID, "name");

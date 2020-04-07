@@ -63,7 +63,7 @@ class Game extends React.Component {
       <TeamHome team = {team} opponnent = {opponnent}
       teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}
       showStandings={(code)=>this.showStandings(code)} season = {this.state.season}
-      handler = {this.state.infoHandler} ready = {()=>this.setState({screen: "Matches"})}/>
+      handler = {this.state.infoHandler} ready = {()=>this.setState({screen: "matches"})}/>
     );
   }
 
@@ -126,7 +126,7 @@ class Game extends React.Component {
 
   startGame() {
     this.state.infoHandler.initialization("Initialize", [])
-    this.setState({screen: "Matches"})
+    this.setState({screen: "teamHome"})
   }
 
   renderStart() {

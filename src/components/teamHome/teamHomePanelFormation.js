@@ -6,24 +6,11 @@ import { FaCheck } from "react-icons/fa";
 export default function TeamHomePanelFormation(props) {
 
     let disabled = true;
-    let starters = 0;//props.players.filter(e=>e.starting === 1);
-    let reserves = 0;//props.players.filter(e=>e.starting === 2);
-    let keepers = 0;
-    for(let j = 0; j < props.players.length; j++){
-      switch(props.handler.get("Player",props.players[j],"situation")[0]){
-        case 1:
-          if(props.handler.get("Player",props.players[j],"position"))
-            keepers++;
-          starters++;
-          break;
-        case 2:
-          reserves++;
-          break;
-        default:
-      }
-    }
-    if(starters === 11 && reserves < 6 && !props.auto){
-      if(keepers === 1){
+    let starters = props.players.filter(e=>props.handler.get("Player",e,"situation")[0] === 1);
+    let reserves = props.players.filter(e=>props.handler.get("Player",e,"situation")[0] === 2);
+    let keepers = starters.filter(e=>props.handler.get("Player",e,"position") === 'G');
+    if(starters.length === 11 && reserves.length < 6 && !props.auto){
+      if(keepers.length === 1){
         disabled = false;
       }
     }
@@ -34,7 +21,7 @@ export default function TeamHomePanelFormation(props) {
     
     return (
       <div className = {"teamHomePanelFormation"}>
-        <button disabled={disabled ? 'disabled' : ''}> {check} Ready! </button>
+        <button onClick={props.ready} disabled={disabled ? 'disabled' : ''}> {check} Ready! </button>
       </div>
     );
 

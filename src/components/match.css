@@ -9,6 +9,7 @@
   margin: 0 5px 0;
   width: 20%;
   padding: 1px 5px;
+  font-weight: bold;
 }
 
 .home {
@@ -22,7 +23,7 @@
 .matchStory {
   display: inline-block;
   width: 30%;
-  color: rgb(226, 214, 44);
+  font-weight: bold;
 }
 
 .attendance {
@@ -34,7 +35,6 @@
 
 .scoreboard {
   display: inline-block;
-  color: rgb(226, 214, 44);
 }
 
 .leftScoreboard {
@@ -43,4 +43,8 @@
 
 .rightScoreboard {
   display: inline-block;
+}
+
+.redCard{
+  color: red;
 }
