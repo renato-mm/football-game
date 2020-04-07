@@ -148,9 +148,19 @@ export class InfoHandler {
             for (let [key, value] of Object.entries(player)) {
                 processed_player[key] = value
             }
-            let team_power = (this.baseInfo[this.baseInfo[x]["teamID"]]["strength"] / this.baseInfo[this.teamsPlaying[0]]["strength"]) * 50
+            let thisPower = this.baseInfo[this.baseInfo[x]["teamID"]]["strength"]
+            let highestPower = this.baseInfo[this.teamsPlaying[0]]["strength"]
+            let lowestPower = this.baseInfo[this.teamsPlaying[this.teamsPlaying.length - 1]]["strength"]
+            let team_power = Math.floor(((thisPower - lowestPower) / (highestPower - lowestPower)) * 50)
+            if (team_power <= 0) {
+                team_power = 1
+            } 
+            let lowEnd = team_power - 5
+            if (lowEnd <= 0) {
+                lowEnd = 1
+            }
             let new_properties = ["moral", "situation", "strength", "behaviour", "contract"]
-            let new_values = [this.randomInt(1, 100), [1, 0], this.randomInt(team_power - 5, team_power), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)]]
+            let new_values = [this.randomInt(1, 100), [1, 0], this.randomInt(lowEnd, team_power), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_player[new_properties[l]] = new_values[l]
             }
