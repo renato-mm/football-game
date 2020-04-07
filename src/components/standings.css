@@ -9,3 +9,13 @@
   margin: 10px auto;
   width: 40%;
 }
+
+.standingsTable tr{
+  text-align: center;
+  border: 1px solid #000;
+  border-collapse: collapse;
+}
+
+.standingsTable tr td:nth-child(1){
+  text-align: left;
+}

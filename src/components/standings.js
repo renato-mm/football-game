@@ -4,31 +4,13 @@ import './standings.css';
 
 export default function Standings(props) {
 
-  const show = props.show;
-  const handleClose = props.handleClose;
-
-  const division1 = [];
-
-  for(let j = 0; j < props.division1.length; j++){
-    const colors = {
-      background: props.division1[j].color1,
-      color: props.division1[j].color2,
-      border: '1px solid #000',
-      'border-collapse': 'collapse',
-    };
-    division1.push(
-      <tr style={colors}>
-        <td>{props.division1[j].team}</td>
-        <td>&nbsp;{props.division1[j].wins}&nbsp;</td>
-        <td>&nbsp;{props.division1[j].draws}&nbsp;</td>
-        <td>&nbsp;{props.division1[j].losses}&nbsp;</td>
-        <td>&nbsp;{props.division1[j].goalsFor}&nbsp;:&nbsp;{props.division1[j].goalsAgainst}&nbsp;</td>
-        <td>{props.division1[j].points}</td>
-      </tr>);
-  }
+  const division1 = divisionRows(props.handler, 1);
+  const division2 = divisionRows(props.handler, 2);
+  const division3 = divisionRows(props.handler, 3);
+  const division4 = divisionRows(props.handler, 4);
 
   return (
-    <Modal show={show} onHide={handleClose} animation={false} centered>
+    <Modal show={props.show} onHide={props.handleClose} size={"lg"} animation={false} centered>
       <Modal.Body>
         <div className = {"standings"} >
           <div className = {"row"}>
@@ -39,19 +21,19 @@ export default function Standings(props) {
             </table>
             <table className = {"standingsTable"}>
               <tbody>
-                {division1}
+                {division2}
               </tbody>
             </table>
           </div>
           <div className = {"row"}>
             <table className = {"standingsTable"}>
               <tbody>
-                {division1}
+                {division3}
               </tbody>
             </table>
             <table className = {"standingsTable"}>
               <tbody>
-                {division1}
+                {division4}
               </tbody>
             </table>
           </div>
@@ -59,4 +41,28 @@ export default function Standings(props) {
       </Modal.Body>
     </Modal>
   );
+}
+
+function divisionRows(handler, divisionID){
+
+  const teams = handler.get("League", divisionID, "teams");
+
+  const division = [];
+  for(let j = 0; j < teams.length; j++){
+    const colors = {
+      background: handler.get("Team", teams[j], "color1"),
+      color: handler.get("Team", teams[j], "color2"),
+    };
+    division.push(
+      <tr style={colors}>
+        <td><b>{handler.get("Team", teams[j], "name")}</b></td>
+        <td>{0}</td>
+        <td>{0}</td>
+        <td>{0}</td>
+        <td>{0}&nbsp;:&nbsp;{0}</td>
+        <td>{0}</td>
+      </tr>);
+  }
+
+  return division;
 }
