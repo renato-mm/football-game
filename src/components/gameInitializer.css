@@ -14,9 +14,9 @@
 
 .teamsOut {
   overflow: scroll;
-  padding: 30px;
-  margin-left: 5%;
-  margin-right: 5%;
+  padding: 3px;
+  margin-left: 10px;
+  margin-right: 10px;
   border: 1px solid #F00;
   width: 30%;
   height: 100%;
@@ -25,27 +25,76 @@
 
 .teamsIn {
   overflow: scroll;
-  padding: 30px;
-  margin-left: 5%;
-  margin-right: 5%;
+  padding: 3px;
+  margin-left: 10px;
+  margin-right: 10px;
   border: 1px solid #0F0;
   width: 30%;
   height: 100%;
   float:left;
 }
 
-.selectionButton {
-  border: 1px solid #000;
-  margin: 1px;
+.startColumn {
+  overflow: auto;
+  padding: 3px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border: 1px solid #00F;
+  width: 30%;
+  height: 100%;
+  float:left;
+}
+
+.selectionDiv {
+  margin: 3px;
   width: 100%;
   height: 25px;
 }
-
-.startGame {
+.selectionName {
+  text-align: center;
+  font-weight: bold;
   border: 1px solid #000;
-  margin-left: 5%;
-  margin-right: 5%;
+  margin-right: 3px;
+  width: 150px;
+  height: 25px;
+  float:left;
+}
+.playerAddButton {
+  border: 1px solid #000;
+  background-color: #00F;
   width: 10%;
   height: 25px;
   float:left;
 }
+.addButton {
+  border: 1px solid #000;
+  background-color: #F00;
+  margin-right: 3px;
+  width: 10%;
+  height: 25px;
+  float:left;
+}
+.removeButton {
+  border: 1px solid #000;
+  background-color: #0F0;
+  width: 10%;
+  height: 25px;
+  float:left;
+}
+
+.startGame {
+  border: 1px solid #000;
+  margin: 10px;
+  width: 100px;
+  height: 25px;
+  float:left;
+}
+
+.playersTeams {
+  border: 5px solid #000;
+  margin: 10px;
+  width: 90%;
+  height: 50px;
+  float:left;
+}
+

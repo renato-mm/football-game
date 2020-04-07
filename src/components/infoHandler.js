@@ -172,33 +172,34 @@ export class InfoHandler {
             this.sessionInfo[this.playersTeam[x]]["coach"] = -x
         }
 
-        this.randomStartFormation()
+        for (let x = 0 ; x < this.teamsPlaying.length ; x++) {
+            this.formationSetter(this.teamsPlaying[x], [4, 3, 3])
+        }
         //console.log("making games")
         this.seasonGamesMaker()
         //console.log("getting next matches")
         this.nextMatches()
     }
 
-    randomStartFormation() {
-        for (let x = 0 ; x < this.teamsPlaying.length ; x++) {
-            let teamPlayers = this.sessionInfo[this.teamsPlaying[x]]["players"]
-            let goalkeepers = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "G").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
-            let defenders = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "D").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
-            let mids = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "M").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
-            let forwards = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "F").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
-            let formationPlayers = [goalkeepers[0]]
-            let rotation = [defenders, mids, forwards]
-            let count = 0
-            while (formationPlayers.length < 11) {
-                formationPlayers.push(rotation[count].splice(0, 1))
-                count = count + 1
-                if (count > 2) {
-                    count = 0
-                }
-            }
-            for (let y = 0 ; y < 11 ; y++) {
-                this.sessionInfo[formationPlayers[y]]["situation"][0] = 1
-            }
+    formationSetter(teamID, formation) {
+        let teamPlayers = this.sessionInfo[teamID]["players"]
+        let goalkeepers = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "G").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+        let defenders = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "D").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+        let mids = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "M").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+        let forwards = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "F").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
+        let formationPlayers = [goalkeepers[0]]
+        let rotation = [defenders, mids, forwards]
+        if (!(formation.length === 3 && (formation[0] + formation[1] + formation[2] === 10))) {
+            formation = [4, 3, 3]
+        }
+        for (let p = 0 ; p < 3 ; p++) {
+            let ps = rotation[p].splice(0, formation[p])
+            console.log(ps)
+            formationPlayers = formationPlayers.concat(ps)
+        }
+        for (let y = 0 ; y < formationPlayers.length ; y++) {
+            console.log(formationPlayers)
+            this.sessionInfo[formationPlayers[y]]["situation"][0] = 1
         }
     }
 
@@ -207,10 +208,12 @@ export class InfoHandler {
             return this.teamsIn
         } else if (action === "Teams Out") {
             return this.teamsOut
+        } else if (action === "Get") {
+            return [this.baseInfo[ids]["color1"], this.baseInfo[ids]["color2"], this.baseInfo[ids]["name"]]
         } else if (action === "Remove") {
             let mover = 0
             for (let x = 0 ; x < this.teamsIn.length ; x++) {
-                if (this.teamsIn[x].id === ids[0]) {
+                if (this.teamsIn[x] === ids[0]) {
                     mover = this.teamsIn[x]
                     this.teamsIn.splice(x, 1)
                 }
@@ -219,21 +222,22 @@ export class InfoHandler {
         } else if (action === "Add") {
             let mover = 0
             for (let x = 0 ; x < this.teamsOut.length ; x++) {
-                if (this.teamsOut[x].id === ids[0]) {
+                if (this.teamsOut[x] === ids[0]) {
                     mover = this.teamsOut[x]
                     this.teamsOut.splice(x, 1)
                 }
             }
             this.teamsIn.push(mover)
+        } else if (action === "Player") {
+            this.playersTeam[1] = ids[0]
+        } else if (action === "Get Player") {
+            return this.playersTeam[ids[0]]
         } else if (action === "Initialize") {
-            this.teamsPlaying = []
-            for (let [key, value] of Object.entries(this.teamsIn)) {
-                this.teamsPlaying.push(parseInt(value["id"]))
-            }
+            this.teamsPlaying = this.teamsIn.slice()
             //console.log(this.teamsPlaying)
             this.teamsPlaying.sort((e1, e2) => {return this.baseInfo[e2]["strength"] - this.baseInfo[e1]["strength"]})
             let temp = this.teamsPlaying.slice()
-            temp.sort((a, b) => {return a["strength"] - b["strength"]})
+            temp.sort((e1, e2) => {return this.baseInfo[e2]["strength"] - this.baseInfo[e1]["strength"]})
             //this.cup_teams["Directs"] = temp.slice(0,2)
             //this.cup_teams["Prelim"] = temp.slice(2,13)
             let count = 1
@@ -375,9 +379,9 @@ export class InfoHandler {
 
     all_teams(ids) {
         let returnArray = [];
-        for (let x = 1 ; x <= 10000 ; x++) {
+        for (let x = this.teamsRange[0] ; x <= this.teamsRange[1] ; x++) {
             if (this.baseInfo[x]) {
-                returnArray.push(this.baseInfo[x])
+                returnArray.push(x)
             }
         }
         return returnArray;
@@ -461,6 +465,8 @@ export class InfoHandler {
         if (section === "Team") {
             if (property === "all") {
                 this.sessionInfo[id] = value
+            } else if (property === "formation") {
+                this.formationSetter(id, value)
             } else {
                 this.sessionInfo[id][property] = value
             }
@@ -541,51 +547,51 @@ export class InfoHandler {
         }
 
         //console.log(history)
-        
         let historyElements = []
         //let historyElement = {time: time,  stat:'N',  text: "Error", teamID: possession.id, playerID: '0', player:'0'}
-        let goal_add_chance = (1 + this.sessionInfo[player]["strength"]/50) * 5
-        let pass_add_chance = (1 + this.sessionInfo[player]["strength"]/50) * 10
+
         let event_roll = this.randomInt(0, 100)
         let success_roll = this.randomInt(0, 100)
+
         if (event_roll < event_chance[this.sessionInfo[player]["position"]]) {
-            let event = "Goal Attempt"
-            if (success_roll < 10 + goal_add_chance) {
-            let eventSuccess = true
-            historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
-            let ePlayer = this.sessionInfo[enemy]["players"].filter( e => this.sessionInfo[e]["position"] === "F" && this.sessionInfo[e]["situation"][0] === 1 )[0]
-            historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: enemy, playerID: ePlayer, player: this.sessionInfo[ePlayer]["name"]})
-            } else {
-            let eventSuccess = false
             let enemyGK = this.sessionInfo[enemy]["players"].filter( e => this.sessionInfo[e]["position"] === "G" && this.sessionInfo[e]["situation"][0] === 1 )[0]
-            historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: enemy, playerID: enemyGK, player: this.sessionInfo[enemyGK]["name"]})
+            let ePlayerStart = this.sessionInfo[enemy]["players"].filter( e => this.sessionInfo[e]["position"] === "F" && this.sessionInfo[e]["situation"][0] === 1 )[0]
+
+            let strengthDiff = (this.sessionInfo[player]["strength"] - this.sessionInfo[enemyGK]["strength"])
+            if (strengthDiff < 0) {strengthDiff = 0}
+            let goal_add_chance = (1 + strengthDiff/50) * 5
+
+            if (success_roll < 10 + goal_add_chance) {
+                historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
+                historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: enemy, playerID: ePlayerStart, player: this.sessionInfo[ePlayerStart]["name"]})
+            } else {
+                historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: enemy, playerID: enemyGK, player: this.sessionInfo[enemyGK]["name"]})
             }
         } else {
-            let event = "Pass Attempt"
-            if (success_roll < 70 + pass_add_chance) {
-            let eventSuccess = true
             let pc = pass_choice[this.get("Player",player,"position")]
             let pc_choice = pass_options[this.runChance(pc)]
             let possessionPS = this.sessionInfo[possession]["players"].filter( e => this.sessionInfo[e]["position"] === pc_choice && this.sessionInfo[e]["situation"][0] === 1 )
-            let l = possessionPS.length
-            let r = this.randomInt(0, l)
-            let possessionP = possessionPS[r]
-            historyElements.push({time: time,  stat:'Pass',  text: "Pass", teamID: possession, playerID: possessionP, player: this.sessionInfo[possessionP]["name"]})
-            } else {
-            let eventSuccess = false
+            let rp = this.randomInt(0, possessionPS.length)
+            let possessionP = possessionPS[rp]
+
             let enemyPS = this.sessionInfo[enemy]["players"].filter( e => this.sessionInfo[e]["position"] === inverse_positions[this.sessionInfo[e]["position"]] && this.sessionInfo[e]["situation"][0] === 1 )
-            let l = enemyPS.length
-            let r = this.randomInt(0, l)
-            let enemyP = enemyPS[r]
-            historyElements.push({time: time,  stat:'Steal',  text: "Steal", teamID: enemy, playerID: enemyP, player: this.sessionInfo[enemyP]["name"]})
+            let re = this.randomInt(0, enemyPS.length)
+            let enemyP = enemyPS[re]
+
+            let strengthDiff = (this.sessionInfo[player]["strength"] - this.sessionInfo[enemyP]["strength"])
+            if (strengthDiff < 0) {strengthDiff = 0}
+            let pass_add_chance = (1 + this.sessionInfo[player]["strength"]/50) * 10
+
+            if (success_roll < 70 + pass_add_chance) {
+                historyElements.push({time: time,  stat:'Pass',  text: "Pass", teamID: possession, playerID: possessionP, player: this.sessionInfo[possessionP]["name"]})
+            } else {
+                historyElements.push({time: time,  stat:'Steal',  text: "Steal", teamID: enemy, playerID: enemyP, player: this.sessionInfo[enemyP]["name"]})
             }
         
         }
         
-        //console.log("histroyelementst", historyElements)
         for (let z = 0 ; z< historyElements.length ; z++) {
             this.currentMatchesHistory[matchID].push(historyElements[z])
         }
-        //console.log(this.currentMatchesHistory[matchID])
-        }
+    }
 }
