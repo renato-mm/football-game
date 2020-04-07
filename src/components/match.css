@@ -18,3 +18,29 @@
 .away {
   text-align: left;
 }
+
+.matchStory {
+  display: inline-block;
+  width: 30%;
+  color: rgb(226, 214, 44);
+}
+
+.attendance {
+  display: inline-block;
+  background: #ddd;
+  width: 20%;
+  padding: 0px 1px;
+}
+
+.scoreboard {
+  display: inline-block;
+  color: rgb(226, 214, 44);
+}
+
+.leftScoreboard {
+  display: inline-block;
+}
+
+.rightScoreboard {
+  display: inline-block;
+}
