@@ -27,31 +27,66 @@ export default class GameInitializer extends React.Component {
     this.setState({teamsIn: TI, teamsOut: TO})
   }
 
+  renderTeamRec(teamID) {
+    let tb = this.props.handler.initialization("Get", teamID)
+    let color1 = tb[0]
+    let color2 = tb[1]
+    let name = tb[2]
+    return (
+    <div style = {{backgroundColor:color1, color:color2}}  className = "selectionName">{name} </div>
+    )
+  }
+
   renderNew(){
     return (
       <div className = {"newBox"}>
         <div className = {"teamsIn"}>
           {this.state.teamsIn.map((e) => {
-            let color1 = "background-color:" + e.color1 + ";"
-            let color2 = "color:" + e.color2 + ";"
-            let color = color1 + color2
             return (
-              <button style = {{backgroundColor:e.color1, color:e.color2}} className = {"selectionButton"} key = {e.id} onClick = {() => {this.props.handler.initialization("Remove", [e.id]); this.getTeams()}}> {e.name} </button>
+              <div
+                className = {"selectionDiv"} 
+                key = {e}
+              >
+                {this.renderTeamRec(e)}
+                <button 
+                  className = {"addButton"} 
+                  onClick = {() => {this.props.handler.initialization("Remove", [e]); this.getTeams()}}
+                  >
+                -
+                </button>
+                <button  
+                  className = {"playerAddButton"} 
+                  onClick = {() => {this.props.handler.initialization("Player", [e]); this.getTeams()}}
+                  > 
+                *
+                </button>
+              </div>
             )
           })}
         </div>
         <div className = {"teamsOut"}>
           {this.state.teamsOut.map((e) => {
-            let color1 = "background-color:" + e.color1 + ";"
-            let color2 = "color:" + e.color2 + ";"
-            let color = color1 + color2
             return (
-              <button style = {{backgroundColor:e.color1, color:e.color2}} className = {"selectionButton"} key = {e.id} onClick = {() => {this.props.handler.initialization("Add", [e.id]); this.getTeams()}}> {e.name} </button>
+              <div
+                className = {"selectionDiv"} 
+                key = {e}
+              >
+                {this.renderTeamRec(e)}
+                <button 
+                  className = {"removeButton"} 
+                  onClick = {() => {this.props.handler.initialization("Add", [e]); this.getTeams()}}
+                  >
+                +
+                </button>
+              </div>
             )
           })}
         </div>
-        <div>
+        <div className = {"startColumn"}>
           <button className = {"startGame"} onClick = {this.props.startGame}> Start Game </button>
+          <div className = {"playersTeams"}>
+            Player 1:{this.renderTeamRec(this.props.handler.initialization("Get Player", [1]))}
+          </div>
         </div>
       </div>
     );

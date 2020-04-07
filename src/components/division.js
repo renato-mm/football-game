@@ -1,7 +1,6 @@
 import React from 'react';
 import './division.css';
 import Match from './match';
-import * as Teams from './teams';
 import * as teamHomeFunc from './teamHomeFunctions';
 
 export default class Division extends React.Component {
@@ -20,7 +19,7 @@ export default class Division extends React.Component {
 
   startMatches(){
     if (this.state.matchesStarted === 0) {
-      this.setState({interval: setInterval(() => this.matchPlay(), 100)})
+      this.setState({interval: setInterval(() => this.matchPlay(), 50)})
       let d = new Date()
       let t = d.getTime()
       this.setState( {matchesStarted: 1, startTime: t} )

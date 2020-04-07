@@ -140,7 +140,7 @@ class Game extends React.Component {
   }
 
   render() {
-    let screenBoard = null;
+    //let screenBoard = null;
     if (this.state.screen === "Start") {
       return this.renderStart()
     } else {
