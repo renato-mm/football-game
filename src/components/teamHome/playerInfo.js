@@ -26,7 +26,9 @@ export default function PlayerInfo(props){
       </table>
       <table className = {"playerHistory"}>
         <thead>
-          <td colSpan="2">History</td>
+          <tr>
+            <td colSpan="2">History</td>
+          </tr>
         </thead>
         <tbody>
           <tr>

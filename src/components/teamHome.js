@@ -3,7 +3,6 @@ import './teamHome.css';
 import TeamHomeMenu from './teamHome/teamHomeMenu';
 import TeamHomePanel from './teamHome/teamHomePanel';
 import TeamInfo from './teamInfo';
-import * as teamHomeFunc from './teamHomeFunctions';
 import { GoPrimitiveDot } from "react-icons/go";
 import { GoDash } from "react-icons/go";
 import { GoPlus } from "react-icons/go";
@@ -15,29 +14,31 @@ export default class TeamHome extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      team: props.handler.get("Human",1,"team"),
       panel: "match",
       selectedPlayer: null,
       focus: false,
-      teamInfo: props.opponnent,
-      showOpponnentInfo: false,
+      teamInfo: props.opponent,
+      showOpponentInfo: false,
     };
     this.handler = props.handler;
+    this.team = props.team;
     this.season = props.season;
-    this.opponnent = props.opponnent;
+    this.opponent = props.opponent;
     this.teamStandings = props.teamStandings;
-    this.opponnentStandings = props.opponnentStandings;
+    this.opponentStandings = props.opponentStandings;
     this.colors = {
-      background: this.handler.get("Team",this.state.team,"color1"),
-      color: this.handler.get("Team",this.state.team,"color2"),
+      background: this.handler.get("Team",this.team,"color1"),
+      color: this.handler.get("Team",this.team,"color2"),
     };
     this.colorsPlayers = {
-      background: this.handler.get("Team",this.state.team,"color2"),
-      color: this.handler.get("Team",this.state.team,"color1"),
+      background: this.handler.get("Team",this.team,"color2"),
+      color: this.handler.get("Team",this.team,"color1"),
     };
+    // this.coach = this.handler.get("Player",this.handler.get("Team",this.team,"coach"),"name");
+    this.division = this.handler.get("Team",this.team,"league division");
     this.showStandings = props.showStandings;
     this.ready = props.ready;
-    this.countryInfo = countryInfo(props.team.nationality);
+    this.countryInfo = countryInfo(this.handler.get("Team",this.team,"nationality"));
   }
 
   selectPlayer(player, event){
@@ -52,12 +53,11 @@ export default class TeamHome extends React.Component {
   changePlayerFormation(player, event){
     if(player.injured === 0 && player.suspended === 0){
       event.bubbles = false; 
-      const team = this.state.team;
-      const idx = team.players.indexOf(player);
-      team.players[idx].starting = team.players[idx].starting === 2 ? 0 : team.players[idx].starting + 1;
+      let situation = this.handler.get("Player",player,"situation");
+      situation[0] = situation[0] === 2 ? 0 : situation[0] + 1;
+      this.handler.set("Player",player,"situation", situation);
       this.setState({
         panel: "formation",
-        team: team,
       });
     }
   }
@@ -65,21 +65,22 @@ export default class TeamHome extends React.Component {
   teamPlayers(){
     const starter = [' ', <GoPrimitiveDot />, <GoDash />, ' ', ' '];
     const teamPlayers = [];
-    const teamPlys = this.handler.get("Team",this.state.team,"players");
+    const teamPlys = this.handler.get("Team",this.team,"players");
     ['G','D','M','F'].forEach(pos => {
       const plys = teamPlys.filter(e=>this.handler.get("Player",e,"position") === pos);
       plys.sort((e1,e2)=>this.handler.get("Player",e1,"name")>this.handler.get("Player",e2,"name"));
       const players = [];
       for(let j = 0; j < plys.length; j++){
         const colors = this.state.selectedPlayer === this.handler.get("Player",plys[j],"id") ? this.colors : this.colorsPlayers;
-        const nat = this.handler.get("Player",plys[j],"nationality") === this.handler.get("Team",this.state.team,"nationality") ? ' ' : this.handler.get("Player",plys[j],"nationality");
+        const nat = this.handler.get("Player",plys[j],"nationality") === this.handler.get("Team",this.team,"nationality") ? ' ' : this.handler.get("Player",plys[j],"nationality");
         const situation = this.handler.get("Player",plys[j],"situation")
         const start = starter[situation[0]];
         const injsus = situation[0] === 3 ? <FaPlusSquare /> : situation[0] === 4 ? <AiOutlineStop /> : '';
         const contract = this.handler.get("Player",plys[j],"contract");
         players.push(
-          <tr style={colors}
-              onClick={(event)=>this.selectPlayer(this.handler.get("Player",plys[j],"id"),event)}>
+          <tr key={plys[j]}
+              style={colors}
+              onClick={(event)=>this.selectPlayer(plys[j],event)}>
             <td onClick={(event)=>this.changePlayerFormation(plys[j],event)}>{start}</td>
             <td><b>{this.handler.get("Player",plys[j],"position")}</b></td>
             <td><b>{this.handler.get("Player",plys[j],"name")}</b></td>
@@ -94,7 +95,7 @@ export default class TeamHome extends React.Component {
         border: '1px solid '+this.colors.background
       }
       teamPlayers.push(
-        <tbody style={bodyColor}>
+        <tbody key={pos} style={bodyColor}>
           {players}
         </tbody>
       )
@@ -114,26 +115,25 @@ export default class TeamHome extends React.Component {
     });
   }
 
-  showOpponnentInfo(){
+  showOpponentInfo(){
     this.setState({
-      showOpponnentInfo: !this.state.showOpponnentInfo,
+      showOpponentInfo: !this.state.showOpponentInfo,
     });
   }
 
   renewContract(newSalary){
-    const newPlayer = this.state.selectedPlayer;
-    newPlayer.salary = newSalary;
-    newPlayer.salaryRenewed = true;
+    const newContract = this.handler.get("Player",this.state.selectedPlayer,"contract");
+    newContract[1] = newSalary;
+    this.handler.set("Player",this.state.selectedPlayer,"contract", newContract)
     this.setState({
       panel: "player",
-      selectedPlayer: newPlayer
     });
   }
 
   formationSelected(key){
     if(!this.state.focus && ((key >= "0" && key <= "9") || key === 'A' || key === 'a' || key === 'm' || key === 'M')){
       const formations = [[6,3,1],[3,3,4],[3,4,3],[4,2,4],[4,3,3], [4,4,2],[4,5,1],[5,2,3],[5,3,2],[5,4,1]];
-      this.handler.set("Team", this.state.team, "formation", (key >= "0" && key <= "9") ? formations[key] : key);
+      this.handler.set("Team", this.team, "formation", (key >= "0" && key <= "9") ? formations[key] : key);
       this.setState({
         panel: "formation",
       })
@@ -150,7 +150,7 @@ export default class TeamHome extends React.Component {
     return(
       <TeamHomeMenu
       handler={this.handler}
-      team={this.state.team}
+      team={this.team}
       formationSelected={(key) => this.formationSelected(key)}
       showStandings={this.showStandings}/>
     );
@@ -161,49 +161,46 @@ export default class TeamHome extends React.Component {
       <TeamHomePanel
       handler={this.handler}
       season={this.season}
-      team={this.state.team}
-      opponnent={this.opponnent}
+      team={this.team}
+      opponent={this.opponent}
       teamStandings={this.teamStandings}
-      opponnentStandings={this.opponnentStandings}
+      opponentStandings={this.opponentStandings}
       colors={this.colors}
       player={this.state.selectedPlayer}
       panel={this.state.panel}
       changePanel={panel=>this.changePanel(panel)}
       renewContract={(newSalary)=>this.renewContract(newSalary)}
       changeFocus={focus=>this.changeFocus(focus)}
-      showOpponnentInfo={()=>this.showOpponnentInfo()}
+      showOpponentInfo={()=>this.showOpponentInfo()}
       ready={this.ready}/>
     );
   }
 
-  renderOpponnentInfo() {
+  renderOpponentInfo() {
     return <TeamInfo
+            handler={this.handler}
             team = {this.state.teamInfo}
-            showTeamInfo={()=>this.showOpponnentInfo()}/>
+            showTeamInfo={()=>this.showOpponentInfo()}/>
   }
 
   renderTeamHome(){
-    const division = [1,2,3,4].filter(e=>{
-      const league = this.handler.get("League",e,"teams");
-      return league ? league.includes(this.state.team) : '';
-    })[0];
     return <div
       style={this.colors}
       className = {"teamHome"}
       onKeyPress = {(event) => this.formationSelected(event.key)}
       tabIndex="0">
       <div className = {"teamHomeHeader"}>
-        <b>{this.handler.get("Team",this.state.team,"fullName")}</b>
+        <b>{this.handler.get("Team",this.team,"fullName")}</b>
       </div>
       {this.renderMenu()}
       <div className = {"row col-md-12"}>
         <div className = {"col-md-6"}>
-          <div className = {"row teamHomeCoach"}> <b>{this.state.team.coach}</b> </div>
+          <div className = {"row teamHomeCoach"}> <b>{this.coach}</b> </div>
           <div className = {"row teamHomeInfo"}>
             {this.countryInfo[1]}
             <div>
               {this.countryInfo[0]} 
-              <span>Division {division}</span>
+              <span>Division {this.division}</span>
             </div>
           </div>
           <div className = {"row"}>
@@ -223,7 +220,7 @@ export default class TeamHome extends React.Component {
     
     return (
       <div>
-        {this.state.showOpponnentInfo ? this.renderOpponnentInfo() : this.renderTeamHome()}
+        {this.state.showOpponentInfo ? this.renderOpponentInfo() : this.renderTeamHome()}
       </div>
     );
   }

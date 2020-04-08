@@ -56,12 +56,12 @@ class Game extends React.Component {
     );
   }
 
-  renderTeamHome(team, opponnent) {
-    const teamStandings = this.state.currentDivisions[team.division - 1].filter(e=>e.teamID === team.id)[0];
-    const opponnentStandings = this.state.currentDivisions[opponnent.division - 1].filter(e=>e.teamID === opponnent.id)[0];
+  renderTeamHome(team, opponent) {
+    const teamStandings = this.state.currentDivisions[0][0];
+    const opponentStandings = this.state.currentDivisions[0][1];
     return (
-      <TeamHome team = {team} opponnent = {opponnent}
-      teamStandings = {teamStandings} opponnentStandings = {opponnentStandings}
+      <TeamHome team = {team} opponent = {opponent}
+      teamStandings = {teamStandings} opponentStandings = {opponentStandings}
       showStandings={(code)=>this.showStandings(code)} season = {this.state.season}
       handler = {this.state.infoHandler} ready = {()=>this.setState({screen: "matches"})}/>
     );
@@ -71,7 +71,8 @@ class Game extends React.Component {
     return (
       <TeamInfo
       team = {team}
-      showTeamInfo = {()=>null}/>
+      showTeamInfo = {()=>null}
+      handler = {this.state.infoHandler}/>
     );
   }
 
@@ -102,10 +103,11 @@ class Game extends React.Component {
         screenBoard = this.renderStandings();
         break;
       case "teamHome":
-        screenBoard = this.renderTeamHome(Teams.cruzeiro, Teams.liverpool);
+        const humanTeam = this.state.infoHandler.get("Human",1,"team");
+        screenBoard = this.renderTeamHome(humanTeam, this.state.infoHandler.get("Team",humanTeam,"next opponent"));
         break;
       case "teamInfo":
-        screenBoard = this.renderTeamInfo(Teams.liverpool/*this.state.selectedTeam*/);
+        screenBoard = this.renderTeamInfo(2/*this.state.selectedTeam*/);
         break;
       default:
         screenBoard = null;

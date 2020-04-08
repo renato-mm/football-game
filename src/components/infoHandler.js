@@ -403,7 +403,7 @@ export class InfoHandler {
             } else if (property === "next opponent") {
                 for (let x = 0 ; x < this.current_matches.length ; x++) {
                     let match = this.current_matches[x]
-                    if (id in match) {
+                    if (match.includes(id)) {
                         if (match[0] === 1) {
                             return match[1]
                         } else {
@@ -413,7 +413,7 @@ export class InfoHandler {
                 }
             } else if (property === "league division") {
                 for (let x = 1 ; x <= this.divisions ; x++) {
-                    if (id in this.divisions_teams[x]) {
+                    if (this.divisions_teams[x].includes(id)) {
                         return x
                     }
                 }

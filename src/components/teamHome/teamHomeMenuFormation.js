@@ -16,7 +16,7 @@ export default function TeamHomeMenuFormation(props) {
                     mid < parseInt(e[1].slice(2,3)) ||
                     fwd < parseInt(e[1].slice(4)));
     formations.push(
-      <tr style={disable ? color : {}} onClick={()=>props.formationSelected(e[0])}>
+      <tr key={e[0]} style={disable ? color : {}} onClick={()=>props.formationSelected(e[0])}>
         <td>{e[1]}</td>
         <td>{e[0]}</td>
       </tr>);

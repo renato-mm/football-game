@@ -22,7 +22,9 @@ export default function TeamHomePanelFinance(props){
           </tr>
         </thead>
         <tbody>
-          <th colSpan="2">Incomes</th>
+          <tr>
+            <th colSpan="2">Incomes</th>
+          </tr>
           <tr>
             <td>Tickets</td>
             <td>{cashFormat(0)}</td>
@@ -37,7 +39,9 @@ export default function TeamHomePanelFinance(props){
           </tr>
         </tbody>
         <tbody>
-          <th colSpan="2">Expenses</th>
+          <tr>
+            <th colSpan="2">Expenses</th>
+          </tr>
           <tr>
             <td>Salaries</td>
             <td>{cashFormat(0)}</td>
