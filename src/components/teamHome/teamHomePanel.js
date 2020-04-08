@@ -4,7 +4,7 @@ import Match from './teamHomePanelMatch';
 import Player from './teamHomePanelPlayer';
 import Finance from './teamHomePanelFinance';
 import Formation from './teamHomePanelFormation';
-import Opponnent from './teamHomePanelOpponnent';
+import Opponent from './teamHomePanelOpponent';
 import NewSalary from './teamHomePanelNewSalary';
 
 export default class TeamHomePanel extends React.Component {
@@ -17,38 +17,39 @@ export default class TeamHomePanel extends React.Component {
     this.handler = props.handler;
     this.season = props.season;
     this.team = props.team;
-    this.opponnent = props.opponnent;
+    this.opponent = props.opponent;
     this.teamStandings = props.teamStandings;
-    this.opponnentStandings = props.opponnentStandings;
+    this.opponentStandings = props.opponentStandings;
     this.colors = props.colors;
     this.oppColors = {
-      background: props.opponnent.color1,
-      color: props.opponnent.color2,
+      background: this.handler.get("Team",this.opponent,"color1"),
+      color: this.handler.get("Team",this.opponent,"color2"),
     };
     this.changePanel = props.changePanel;
     this.renewContract = props.renewContract;
     this.changeFocus = props.changeFocus;
-    this.showOpponnentInfo = props.showOpponnentInfo;
+    this.showOpponentInfo = props.showOpponentInfo;
     this.ready = props.ready;
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      panel: nextProps.panel,
-      selectedPlayer: nextProps.player,
-    });  
+  static getDerivedStateFromProps(props, state) {
+    return {
+      panel: props.panel,
+      selectedPlayer: props.player,
+    };  
   }
 
   renderMatch(){
     return <Match
-    handler={this.handler}
-    team={this.team}
-    teamStandings={this.teamStandings}
-    opponnentStandings={this.opponnentStandings}
-    colors={this.colors}
-    oppColors={this.oppColors}
-    cash={this.handler.get("Team",this.team,"cash")}
-    moral={this.handler.get("Team",this.team,"moral")} />;
+          handler={this.handler}
+          team={this.team}
+          opponent={this.opponent}
+          teamStandings={this.teamStandings}
+          opponentStandings={this.opponentStandings}
+          colors={this.colors}
+          oppColors={this.oppColors}
+          cash={this.handler.get("Team",this.team,"cash")}
+          moral={this.handler.get("Team",this.team,"moral")} />;
   }
 
   renderPlayer(){
@@ -70,8 +71,11 @@ export default class TeamHomePanel extends React.Component {
             ready={this.ready}/>;
   }
 
-  renderOpponnent(){
-    return <Opponnent opponnent={this.opponnent} showOpponnentInfo={this.showOpponnentInfo}/>;
+  renderOpponent(){
+    return <Opponent 
+            handler={this.handler}
+            opponent={this.opponent}
+            showOpponentInfo={this.showOpponentInfo}/>;
   }
 
   renderNewSalary(){
@@ -101,8 +105,8 @@ export default class TeamHomePanel extends React.Component {
       case "formation":
         screenPanel = this.renderFormation();
         break;
-      case "opponnent":
-        screenPanel = this.renderOpponnent();
+      case "opponent":
+        screenPanel = this.renderOpponent();
         break;
       case "newSalary":
         screenPanel = this.renderNewSalary();
@@ -113,8 +117,8 @@ export default class TeamHomePanel extends React.Component {
     return (
       <div>
         <div className = {"panel"}>
-          <div className = {"row nextMatch"}> Opponnent <span>{this.season}</span></div>
-          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.opponnentStandings.team} <div>HOME - Fixture #4</div></div>
+          <div className = {"row nextMatch"}> Opponent <span>{this.season}</span></div>
+          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.handler.get("Team",this.opponent,"name")} <div>HOME - Fixture #4</div></div>
           <div className = {"teamHomePanel"}>
             {screenPanel}
           </div>
@@ -124,7 +128,7 @@ export default class TeamHomePanel extends React.Component {
           <button onClick={()=>this.changePanel("player")} className={this.selectedButton("player")}>Player</button>
           <button onClick={()=>this.changePanel("finance")} className={this.selectedButton("finance")}>Finance</button>
           <button onClick={()=>this.changePanel("formation")} className={this.selectedButton("formation")}>Formation</button>
-          <button onClick={()=>this.changePanel("opponnent")} className={this.selectedButton("opponnent")}>Opponnent</button>
+          <button onClick={()=>this.changePanel("opponent")} className={this.selectedButton("opponent")}>Opponent</button>
         </div>
       </div>
     );

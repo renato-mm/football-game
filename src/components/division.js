@@ -1,7 +1,6 @@
 import React from 'react';
 import './division.css';
 import Match from './match';
-import * as teamHomeFunc from './teamHomeFunctions';
 
 export default class Division extends React.Component {
   constructor(props){
@@ -43,8 +42,6 @@ export default class Division extends React.Component {
   }
 
   renderMatch(ind) {
-    //teamHomeFunc.selectFormation(this.handler, this.handler.get("Team",home,"players"), 'A');
-    //teamHomeFunc.selectFormation(this.handler ,this.handler.get("Team",away,"players"), 'A');
     return (
       <Match
       key = {ind}

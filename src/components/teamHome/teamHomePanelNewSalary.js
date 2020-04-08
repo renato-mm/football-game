@@ -43,7 +43,7 @@ export default class TeamHomePanelNewSalary extends React.Component {
           New salary
           <input type='number' value={this.state.salary}
           onChange={(event)=>this.updateSalary(event)}
-          min="0" step="500"/>
+          min="0" step="250"/>
         </div>
         <div className = {"buttons"}>
           <button onClick={()=>this.renewContract(this.state.salary)}> {this.check} Offer </button>

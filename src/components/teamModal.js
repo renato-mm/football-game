@@ -26,7 +26,7 @@ export default function TeamModal(props) {
     const plys = teamPlys.filter(e=>props.handler.get("Player",e,"position") === pos);
     plys.sort((e1,e2)=>props.handler.get("Player",e1,"name")>props.handler.get("Player",e2,"name"));
     for(let j = 0; j < plys.length; j++){
-      let html = <tr>
+      let html = <tr key={plys[j]}>
                   <td>{props.handler.get("Player",plys[j],"position")}</td>
                   <td>&nbsp;{props.handler.get("Player",plys[j],"name")}&nbsp;</td>
                   <td>{props.handler.get("Player",plys[j],"strength")}</td>
@@ -43,7 +43,7 @@ export default function TeamModal(props) {
   const hist = []
   for(let j = 0; j < props.history.length; j++){
     hist.push(
-      <tr>
+      <tr key={j}>
         <td>{props.history[j].time.toString().padStart(2, '0')}'</td>
         <td>&nbsp;{props.history[j].text}&nbsp;</td>
         <td>{props.history[j].player}</td>

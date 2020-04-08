@@ -54,7 +54,7 @@ function divisionRows(handler, divisionID){
       color: handler.get("Team", teams[j], "color2"),
     };
     division.push(
-      <tr style={colors}>
+      <tr key={teams[j]} style={colors}>
         <td><b>{handler.get("Team", teams[j], "name")}</b></td>
         <td>{0}</td>
         <td>{0}</td>

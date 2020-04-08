@@ -1,37 +1,37 @@
 
-.teamHomePanelOpponnentName{
+.teamHomePanelOpponentName{
   margin: 0px -15px 10px;
   height: 30px;
 }
 
-.teamHomePanelOpponnentName span{
+.teamHomePanelOpponentName span{
   font-size: 1.6em;
   width: 100%;
   text-align: center;
   border: 1px solid black;
 }
 
-.teamHomeOpponnentMoralBar .progress{
+.teamHomeOpponentMoralBar .progress{
   width: 100%;
   border: 2px solid #000;
   height: 2em;
 }
 
-.teamHomeOpponnentCoach{
+.teamHomeOpponentCoach{
   margin: 50px -10px;
   width: 100%;
 }
 
-.teamHomeOpponnentCoach span{
+.teamHomeOpponentCoach span{
   padding-left: 20px;
 }
 
-.teamHomeOpponnentButtons{
+.teamHomeOpponentButtons{
   height: 100px;
   float: right;
 }
 
-.teamHomeOpponnentButtons button{
+.teamHomeOpponentButtons button{
   height: 80px;
   width: 90px;
   margin: 10px 5px;

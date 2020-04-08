@@ -3,7 +3,7 @@
   margin: 10px auto;
   border: 1px solid #000;
   padding: 0 0px;
-  height: 450px;
+  height: 505px;
   cursor: default;
 }
 
@@ -37,6 +37,33 @@
   cursor: default;
   border: 5px inset gray;
   margin: 5px auto;
+  text-align: center;
+}
+
+.teamInfoPlayers tbody{
+  border: 1px solid #000;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.teamInfoPlayers tbody tr td:nth-child(1),
+.teamInfoPlayers tbody tr td:nth-child(3),
+.teamInfoPlayers tbody tr td:nth-child(4){
+  width: 5%;
+}
+
+.teamInfoPlayers tbody tr td:nth-child(2){
+  text-align: left;
+  width: 50%;
+}
+
+.teamInfoPlayers tbody tr td:nth-child(5){
+  width: 10%;
+}
+
+.teamInfoPlayers tbody tr td:nth-child(6){
+  width: 15%;
+  text-align: right;
 }
 
 .teamInfoPlayer{

@@ -12,26 +12,49 @@ export default class TeamInfo extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      team: props.team,
       panel: "match",
+      team: props.team,
       selectedPlayer: null,
       teamInfoFixturesModalShow: false,
+      colors: {
+        background: props.handler.get("Team",props.team,"color1"),
+        color: props.handler.get("Team",props.team,"color2"),
+      },
+      colorsPlayers: {
+        background: props.handler.get("Team",props.team,"color2"),
+        color: props.handler.get("Team",props.team,"color1"),
+      },
+      countryInfo: countryInfo(props.handler.get("Team",props.team,"nationality")),
+      division: props.handler.get("Team",props.team,"league division") > 0 ? "Division "+props.handler.get("Team",props.team,"league division") : "No division",
     };
-    this.colors = {
-      background: props.team.color1,
-      color: props.team.color2,
-    };
-    this.colorsPlayers = {
-      background: props.team.color2,
-      color: props.team.color1,
-    };
-    this.countryInfo = countryInfo(props.team.nationality);
-    this.division = props.team.division > 0 ? "Division "+props.team.division : "No division";
+    this.handler = props.handler;
     this.showTeamInfo = props.showTeamInfo;
+    this.listOfTeams = [];
+    for(let i = 1 ; i < 5 ; i++){
+      this.listOfTeams = this.listOfTeams.concat(this.handler.get("League",i,"teams"));
+    }
+    this.selectOfTeams = [];
+    for(let i = 0 ; i < this.listOfTeams.length ; i++){
+      const id = this.handler.get("Team",this.listOfTeams[i],"id");
+      this.selectOfTeams.push(<option key={id} value={id}>{this.handler.get("Team",this.listOfTeams[i],"name")}</option>)
+    }
   }
 
   handleClose = () => this.setState({teamInfoFixturesModalShow: false,});
   handleShow = () => this.setState({teamInfoFixturesModalShow: true,});
+  handleChange = (event) => this.setState({
+    team: parseInt(event.target.value),
+    colors: {
+      background: this.handler.get("Team",parseInt(event.target.value),"color1"),
+      color: this.handler.get("Team",parseInt(event.target.value),"color2"),
+    },
+    colorsPlayers: {
+      background: this.handler.get("Team",parseInt(event.target.value),"color2"),
+      color: this.handler.get("Team",parseInt(event.target.value),"color1"),
+    },
+    countryInfo: countryInfo(this.handler.get("Team",parseInt(event.target.value),"nationality")),
+    division: this.handler.get("Team",parseInt(event.target.value),"league division") > 0 ? "Division "+this.handler.get("Team",parseInt(event.target.value),"league division") : "No division",
+  });
 
   selectPlayer(player){
     this.setState({
@@ -47,25 +70,37 @@ export default class TeamInfo extends React.Component {
 
   teamPlayers(){
     const teamPlayers = [];
-    const teamPlys = this.state.team.players;
+    const teamPlys = this.handler.get("Team",this.state.team,"players");
     ['G','D','M','F'].forEach(pos => {
-      const plys = teamPlys.filter(e=>e.position === pos);
-      plys.sort((e1,e2)=>e1.name>e2.name);
+      const plys = teamPlys.filter(e=>this.handler.get("Player",e,"position") === pos);
+      plys.sort((e1,e2)=>this.handler.get("Player",e1,"name")>this.handler.get("Player",e2,"name"));
+      const players = [];
       for(let j = 0; j < plys.length; j++){
-        const colors = this.state.selectedPlayer === plys[j] ? this.colorsPlayers : this.colors;
-        const nat = plys[j].nationality === this.state.team.nationality ? ' ' : plys[j].nationality;
-        const injsus = plys[j].injured ? <FaPlusSquare /> : plys[j].suspended ? <AiOutlineStop /> : '';
-        teamPlayers.push(
-          <tr style={colors}
+        const colors = this.state.selectedPlayer === this.handler.get("Player",plys[j],"id") ? this.state.colors : this.state.colorsPlayers;
+        const nat = this.handler.get("Player",plys[j],"nationality") === this.handler.get("Team",this.state.team,"nationality") ? ' ' : this.handler.get("Player",plys[j],"nationality");
+        const situation = this.handler.get("Player",plys[j],"situation")
+        const injsus = situation[0] === 3 ? <FaPlusSquare /> : situation[0] === 4 ? <AiOutlineStop /> : '';
+        const contract = this.handler.get("Player",plys[j],"contract")[2];
+        players.push(
+          <tr key={plys[j]}
+              style={colors}
               onClick={()=>this.selectPlayer(plys[j])}>
-            <td>&nbsp;<b>{plys[j].position}</b></td>
-            <td>&nbsp;<b>{plys[j].name}</b>&nbsp;</td>
-            <td>&nbsp;<b>{plys[j].power}</b>&nbsp;</td>
-            <td>&nbsp;<b>{injsus}</b>&nbsp;</td>
-            <td>&nbsp;<b>{nat}</b>&nbsp;</td>
-            <td>&nbsp;<b>{this.cashFormat(plys[j].cost)}</b>&nbsp;</td>
+            <td><b>{this.handler.get("Player",plys[j],"position")}</b></td>
+            <td><b>{this.handler.get("Player",plys[j],"name")}</b></td>
+            <td><b>{injsus}</b></td>
+            <td><b>{this.handler.get("Player",plys[j],"strength")}</b></td>
+            <td><b>{nat}</b></td>
+            <td><b>{this.cashFormat(contract)}</b></td>
           </tr>);
       }
+      const bodyColor = {
+        border: '1px solid '+this.state.colors.background
+      }
+      teamPlayers.push(
+        <tbody style={bodyColor}>
+          {players}
+        </tbody>
+      )
     });
     return teamPlayers;
   }
@@ -85,38 +120,33 @@ export default class TeamInfo extends React.Component {
   render(){
     return (
       <div
-        style={this.colors}
+        style={this.state.colors}
         className = {"teamInfo"}>
         <div className = {"teamInfoHeader"}>
-          <b>{this.state.team.fullName} ({this.countryInfo[0]})</b>
+          <b>{this.handler.get("Team",this.state.team,"fullName")} ({this.state.countryInfo[0]})</b>
         </div>
         <div className = {"row col-md-12"}>
           <div className = {"col-md-7"}>
             <div className = {"row teamInfoSelection"}>
-              <select>
-                <option>Atlético-MG</option>
-                <option>Cruzeiro</option>
-                <option>Flamengo</option>
-                <option>Liverpool</option>
+              <select value={this.state.team} onChange={this.handleChange}>
+                {this.selectOfTeams}
               </select>
-              <span> {this.division} </span>
+              <span> {this.state.division} </span>
             </div>
             <div className = {"row"}>
               <table className = {"teamInfoPlayers"}>
-                <tbody>
-                  {this.teamPlayers()}
-                </tbody>
+                {this.teamPlayers()}
               </table>
             </div>
           </div>
           <div className = {"col-md-5"}>
-            <ProgressBar className = {"teamInfoMoralBar"} variant={this.moralColor(this.state.team.moral)} now={this.state.team.moral} />
+            <ProgressBar className = {"teamInfoMoralBar"} variant={this.moralColor(this.handler.get("Team",this.state.team,"moral"))} now={this.handler.get("Team",this.state.team,"moral")} />
             <div className = {"teamInfoSupButtons"}>
               <button> {Icons.cash} Finances </button>
               <button onClick={()=>this.handleShow()}> {Icons.calendar} Calendar </button>
             </div>
             <div className = {"teamInfoPlayer"}>
-              <PlayerInfo player={this.state.selectedPlayer}/>
+              <PlayerInfo handler={this.handler} player={this.state.selectedPlayer}/>
             </div>
             <div className = {"teamInfoInfButtons"}>
               <div>
@@ -132,10 +162,10 @@ export default class TeamInfo extends React.Component {
             </div>
           </div>
         </div>
-        <FixturesInfo
+        {/* <FixturesInfo
         fixtures={this.state.team.calendar}
         handleClose={this.handleClose}
-        show={this.state.teamInfoFixturesModalShow}/>
+        show={this.teamInfoFixturesModalShow}/> */}
       </div>
     );
   }

@@ -6,8 +6,8 @@ export default function TeamHomePanelMatch(props){
 
   const headToHead = [];
   headToHead.push(
-  <tbody>
-    <tr style={props.colors}>
+  <tbody key={"standings"}>
+    <tr key={"teamStandings"} style={props.colors}>
       <td>{props.handler.get("Team",props.team,"name")}</td>
       <td>&nbsp;{props.teamStandings.wins}&nbsp;</td>
       <td>&nbsp;{props.teamStandings.draws}&nbsp;</td>
@@ -15,13 +15,13 @@ export default function TeamHomePanelMatch(props){
       <td>&nbsp;{props.teamStandings.goalsFor}&nbsp;:&nbsp;{props.teamStandings.goalsAgainst}&nbsp;</td>
       <td>{props.teamStandings.points}</td>
     </tr>
-    <tr style={props.oppColors}>
-      <td>{props.opponnentStandings.team}</td>
-      <td>&nbsp;{props.opponnentStandings.wins}&nbsp;</td>
-      <td>&nbsp;{props.opponnentStandings.draws}&nbsp;</td>
-      <td>&nbsp;{props.opponnentStandings.losses}&nbsp;</td>
-      <td>&nbsp;{props.opponnentStandings.goalsFor}&nbsp;:&nbsp;{props.opponnentStandings.goalsAgainst}&nbsp;</td>
-      <td>{props.opponnentStandings.points}</td>
+    <tr key={"opponentStandings"} style={props.oppColors}>
+      <td>{props.handler.get("Team",props.opponent,"name")}</td>
+      <td>&nbsp;{props.opponentStandings.wins}&nbsp;</td>
+      <td>&nbsp;{props.opponentStandings.draws}&nbsp;</td>
+      <td>&nbsp;{props.opponentStandings.losses}&nbsp;</td>
+      <td>&nbsp;{props.opponentStandings.goalsFor}&nbsp;:&nbsp;{props.opponentStandings.goalsAgainst}&nbsp;</td>
+      <td>{props.opponentStandings.points}</td>
     </tr>
   </tbody>);
 
