@@ -37,8 +37,8 @@ export default class Match extends React.Component {
       history: history,
       homeScore: 0,
       awayScore: 0,
-      ind: this.props.matchInd,
     };
+    this.ind = props.matchInd;
     this.handler = props.handler;
     this.homeTeam = props.homeTeam;
     this.awayTeam = props.awayTeam;
@@ -81,13 +81,14 @@ export default class Match extends React.Component {
   }
   
   render(){
-    let history = this.props.handler.get("Match", this.state.ind, "history")
-    let homeID = this.props.handler.get("Match", this.state.ind, "home")
-    let awayID = this.props.handler.get("Match", this.state.ind, "away")
-    const homeSc = (history.filter(e => e.stat === 'Goal' && e.teamID === homeID)).length;
-    const awaySc = (history.filter(e => e.stat === 'Goal' && e.teamID === awayID)).length;
-    let matchStoryTexts = history.filter(e => e.stat === "Goal" || e.text === "Match Start")
-    const matchStoryText = matchStoryTexts[matchStoryTexts.length - 1]
+    //{time: 0,  stat:'S',  text: goalIcon, teamID:'cruzeiro1921', playerID: '0', player:'0'}
+    let returnHistory = this.props.handler.get("Match", this.ind, "history")
+    let homeID = this.props.handler.get("Match", this.ind, "home")
+    let awayID = this.props.handler.get("Match", this.ind, "away")
+    const history = returnHistory[0] 
+    const homeSc = returnHistory[1]
+    const awaySc = returnHistory[2]
+    const matchStoryText = history[history.length - 1]
     let mText = ["-",'','']
     if (matchStoryText.time !== 0) { 
       const stat = matchStoryText.stat === "Goal" ? goalIcon : matchStoryText.stat;

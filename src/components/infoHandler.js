@@ -354,6 +354,7 @@ export class InfoHandler {
         //console.log("getting next matches")
         if (this.next_tourn === "League") {
             this.currentMatchesHistory = []
+            this.currentMatchesReturnHistory = []
             this.current_matches = []
             for (let x = 1 ; x <= this.divisions ; x++){
                 //console.log(this.seasonGames)
@@ -365,6 +366,7 @@ export class InfoHandler {
             //console.log("all matches", this.current_matches)
             for (let y = 0 ; y < this.current_matches.length ; y++) {
                 this.currentMatchesHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
+                this.currentMatchesReturnHistory.push([[{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}], 0, 0])
             }
             this.divisionGameN[1] += 1
             if (this.divisionGameN[1] >= this.divisions_size/2) {
@@ -440,7 +442,7 @@ export class InfoHandler {
                 return this.current_matches[id][1]
             } else if (property === "history") {
                 //console.log(this.currentMatchesHistory[id])
-                return this.currentMatchesHistory[id]
+                return this.currentMatchesReturnHistory[id]
             } else if (property === "current matches") {
                 return this.current_matches
             }
@@ -551,6 +553,7 @@ export class InfoHandler {
 
         //console.log(history)
         let historyElements = []
+        let returnHistoryElements = []
         //let historyElement = {time: time,  stat:'N',  text: "Error", teamID: possession.id, playerID: '0', player:'0'}
 
         let event_roll = this.randomInt(0, 100)
@@ -566,6 +569,8 @@ export class InfoHandler {
 
             if (success_roll < 10 + goal_add_chance) {
                 historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
+                returnHistoryElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
+                this.currentMatchesReturnHistory[matchID][(possession === teams[0]) ? 1 : 2] += 1
                 historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: enemy, playerID: ePlayerStart, player: this.sessionInfo[ePlayerStart]["name"]})
             } else {
                 historyElements.push({time: time,  stat:'Save',  text: "Save", teamID: enemy, playerID: enemyGK, player: this.sessionInfo[enemyGK]["name"]})
@@ -595,6 +600,9 @@ export class InfoHandler {
         
         for (let z = 0 ; z< historyElements.length ; z++) {
             this.currentMatchesHistory[matchID].push(historyElements[z])
+        }
+        for (let z = 0 ; z< returnHistoryElements.length ; z++) {
+            this.currentMatchesReturnHistory[matchID][0].push(returnHistoryElements[z])
         }
     }
 }
