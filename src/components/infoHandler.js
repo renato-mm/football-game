@@ -46,6 +46,7 @@ teams = list of ints*
 export class InfoHandler {
     constructor(info) {
         this.baseInfo = info
+        //this.baseInfo[10000] = {name: "Empty Team", id: 10000, fullName: "Omega Empty Team", nationality: "NOWHERE", coach: -1000, color1: "#000000", color2: "#FFFFFF", strength: 10000, players: []}
         this.sessionInfo = {}
         this.teamsRange = [this.baseInfo["TeamsRange"]["start"], this.baseInfo["TeamsRange"]["end"]]
         this.coachesRange = [this.baseInfo["CoachesRange"]["start"], this.baseInfo["CoachesRange"]["end"]]
@@ -102,6 +103,16 @@ export class InfoHandler {
             }
         }
         return false
+    }
+
+    all_teams(ids) {
+        let returnArray = [];
+        for (let x = this.teamsRange[0] ; x <= this.teamsRange[1] ; x++) {
+            if (this.baseInfo[x]) {
+                returnArray.push(x)
+            }
+        }
+        return returnArray;
     }
 
     initializeNewSessionInfo() {
@@ -165,7 +176,6 @@ export class InfoHandler {
                 processed_player[new_properties[l]] = new_values[l]
             }
             this.sessionInfo[processed_player["id"]] = processed_player
-            
         }
 
         for (let x = 1 ; x <= this.numberOfPlayers ; x++) {
@@ -382,16 +392,6 @@ export class InfoHandler {
         return this.current_matches
     }
 
-    all_teams(ids) {
-        let returnArray = [];
-        for (let x = this.teamsRange[0] ; x <= this.teamsRange[1] ; x++) {
-            if (this.baseInfo[x]) {
-                returnArray.push(x)
-            }
-        }
-        return returnArray;
-    }
-
     get(section, id, property) {
         if (property === undefined || id === undefined || property === undefined) {
             console.log("something went wrong and is undefined", section, id, property)
@@ -413,6 +413,7 @@ export class InfoHandler {
                         }
                     }
                 }
+                return 10000
             } else if (property === "league division") {
                 for (let x = 1 ; x <= this.divisions ; x++) {
                     if (this.divisions_teams[x].includes(id)) {
@@ -420,7 +421,12 @@ export class InfoHandler {
                     }
                 }
             } else {
-                return this.sessionInfo[id][property]
+                if (this.sessionInfo[id] !== undefined) { 
+                    return this.sessionInfo[id][property] 
+                } else {
+                    let emptyTeam = {name: "Empty Team", id: null, fullName: "Omega Empty Team", nationality: "NOWHERE", coach: null, color1: "#000000", color2: "#FFFFFF", strength: 10000, players: [null]}
+                    return emptyTeam[property]
+                }
             }
         }
         if (section === "Player") {
@@ -429,7 +435,13 @@ export class InfoHandler {
             } else if (id === 0) {
                 return this.playersPlaying
             } else {
-                return this.sessionInfo[id][property]
+                if (this.sessionInfo[id] !== undefined) { 
+                    return this.sessionInfo[id][property] 
+                } else {
+                    //["moral", "situation", "strength", "behaviour", "contract"]
+                    let emptyPlayer = {name: "Empty Player", id: null, nationality: "NOWHERE", strength: 1, position: "F", moral: 1, situation: [1, 0], behaviour: "FP", contract: [0, 0, 0]}
+                    return emptyPlayer[property]
+                }
             }
         }
         
