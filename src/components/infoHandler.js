@@ -47,6 +47,9 @@ season history = list of ints [0 = matches, 1 = goals, 2 = yellows, 3 = reds, 4 
 
 ---League (id = league division)
 teams = list of ints*
+
+---Season
+day = [tournament name = string, tournament round = int]
 */
 
 export class InfoHandler {
@@ -60,9 +63,11 @@ export class InfoHandler {
         this.teamsPlaying = []
         this.playersPlaying = []
         this.coachesPlaying = []
+
         this.numberOfPlayers = 1
         this.playersTeam = {}
         this.playersTeam[1] = 1
+
         this.teamsIn = this.all_teams();
         this.teamsOut = [];
         this.divisions = 4
@@ -75,7 +80,7 @@ export class InfoHandler {
         this.cupTeams = {} 
         //this.next_tourn = "League"
         this.season = 2020
-        this.seasonGames = {league: [], cup: []}
+        this.seasonGames = {League: [], Cup: []}
         this.currentMatches = []
         this.extremesStrengths = [50, 1]
         this.currentDayState = 0
@@ -123,6 +128,8 @@ export class InfoHandler {
     all_teams(ids) {
         let returnArray = [];
         for (let x = this.teamsRange[0] ; x <= this.teamsRange[1] ; x++) {
+            let team = this.baseInfo[x]
+            team["strength"] = team["originalStrength"]
             if (this.baseInfo[x]) {
                 returnArray.push(x)
             }
@@ -142,8 +149,8 @@ export class InfoHandler {
             for (let [key, value] of Object.entries(team)) {
                 processed_team[key] = value
             }
-            let new_properties = ["moral", "finances", "stadium", "cash", "strength"]
-            let new_values = [this.randomInt(1, 100), {}, 1, this.randomInt(1, 100000), processed_team["originalStrength"]]
+            let new_properties = ["moral", "finances", "stadium", "cash"]
+            let new_values = [this.randomInt(1, 100), {}, 1, this.randomInt(1, 100000)]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_team[new_properties[l]] = new_values[l]
             } 
@@ -187,8 +194,9 @@ export class InfoHandler {
             if (lowEnd <= 0) {
                 lowEnd = 1
             }
+            let playerPower = this.randomInt(lowEnd, team_power)
             let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "history", "season history"]
-            let new_values = [this.randomInt(1, 100), [0, 0], this.randomInt(lowEnd, team_power), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)], [0, 0, 0, 0], [0, 0, 0, 0]]
+            let new_values = [this.randomInt(1, 100), [0, 0], playerPower, "FP", [0, playerPower * 500, playerPower * 10000], [0, 0, 0, 0], [0, 0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_player[new_properties[l]] = new_values[l]
             }
@@ -272,8 +280,8 @@ export class InfoHandler {
                     temp.splice(x, 1)
                 }
             }
-            let hP = this.baseInfo[temp[0]]["strength"]
-            let lP = this.baseInfo[temp[temp.length - 1]]["strength"]
+            let hP = this.baseInfo[temp[0]]["originalStrength"]
+            let lP = this.baseInfo[temp[temp.length - 1]]["originalStrength"]
             this.extremesStrengths = [hP, lP]
             //this.cupTeams["Directs"] = temp.slice(0,2)
             //this.cupTeams["Prelim"] = temp.slice(2,13)
@@ -314,25 +322,64 @@ export class InfoHandler {
     seasonGamesMaker() {
         let games = {league: []}
         for (let z = 1 ; z <= this.divisions ; z++) {
-            let teams = this.divisionsTeams[z].slice()
-            let days = []
-            let days2 = []
-            //[game[0], game[1], 0, 0, 0, "League", z, this.currentSeason, false]
-            for (let x = 0 ; x < this.divisions_size - 1 ; x++) {
-                teams = this.shuffle(teams)
-                let day = []
-                let day2 = []
-                for (let y = 0 ; y < this.divisions_size/2 ; y++) {
-                    day.push([teams[y * 2], teams[(y * 2) + 1], 0, 0, 0, "League", z, this.currentSeason, false])
-                    day2.push([teams[(y * 2) + 1], teams[y * 2], 0, 0, 0, "League", z, this.currentSeason, false])
+            let all_games1 = []
+            let all_games2 = []
+            for (let x = 0 ; x < this.divisionsTeams[z].length ; x++) {
+                for (let y = x + 1 ; y < this.divisionsTeams[z].length; y++) {
+                    let r = this.randomInt(1, 2)
+                    //console.log(r)
+                    if (r === 1) {
+                        all_games1.push([this.divisionsTeams[z][x], this.divisionsTeams[z][y]])
+                        all_games2.push([this.divisionsTeams[z][y], this.divisionsTeams[z][x]])
+                    } else { 
+                        all_games2.push([this.divisionsTeams[z][x], this.divisionsTeams[z][y]])
+                        all_games1.push([this.divisionsTeams[z][y], this.divisionsTeams[z][x]])
+                    }
                 }
-                days.push(day)
-                days2.push(day2)
             }
-            games["league"][z] = days.concat(days2)
+            all_games1 = this.shuffle(all_games1)
+            all_games2 = this.shuffle(all_games2)
+            let inds = []
+            let ag1 = []
+            let ag2 = [];
+            [[all_games1, ag1], [all_games2, ag2]].forEach( (e, i, a) => {
+                inds = []
+                let all_games = e[0]
+                let ag = e[1] 
+                while (inds.length < all_games.length) {
+                    let day = []
+                    for (let i = 0 ; i < all_games.length ; i++) {
+                        let game = all_games[i]
+                        let break_switch = false
+                        let add_switch = true
+                        for (let j = 0 ; j < day.length ; j++) {
+                            let cgame = day[j]
+                            if (game[0] === cgame[0] || game[1] === cgame[1] || game[0] === cgame[1] || game[1] === cgame[0]) {
+                                break_switch = true
+                                break
+                            }
+                        }
+                        if (break_switch) {
+                            continue
+                        }
+                        for (let p = 0 ; p < inds.length ; p++){
+                            if (i === inds[p]) {
+                                add_switch = false
+                            }
+                        }
+                        if (add_switch) {
+                            let match = [game[0], game[1], 0, 0, 0, "League", z, this.currentSeason, false]
+                            day.push(match)
+                            inds.push(i)
+                        }
+                    }
+                    ag.push(day)
+                }
+            })
+            games["league"][z] = ag1.concat(ag2)
         } // league games finished
 
-        this.seasonGames["league"] = []
+        this.seasonGames["League"] = []
         for (let day = 0 ; day < games["league"][1].length ; day++) {
             let dayGames = []
             for (let div = 1 ; div <= this.divisions ; div++) {
@@ -340,7 +387,7 @@ export class InfoHandler {
                     dayGames.push(games["league"][div][day][m])
                 }
             }
-            this.seasonGames["league"].push(dayGames)
+            this.seasonGames["League"].push(dayGames)
         }
 
         this.leagueStandings = {}
@@ -358,8 +405,8 @@ export class InfoHandler {
         }
 
         this.seasonCalendar = []
-        for (let x = 0 ; x < this.seasonGames["league"].length ; x++){
-            this.seasonCalendar.push(["league", x])
+        for (let x = 0 ; x < this.seasonGames["League"].length ; x++){
+            this.seasonCalendar.push(["League", x])
         }
         this.seasonDay = 0
         //console.log(this.seasonCalendar)
@@ -479,7 +526,7 @@ export class InfoHandler {
             } else if (property === "next opponent") {
                 for (let x = 0 ; x < this.currentMatches.length ; x++) {
                     let match = this.currentMatches[x]
-                    if (match.slice(0, 2).includes(id)) { return (match[0] === id) ? [match[1], "Away"] : [match[0], "Home"] }
+                    if (match.slice(0, 2).includes(id)) { return (match[0] === id) ? [match[1], "Home"] : [match[0], "Away"] }
                 }
                 return 10000
             } else if (property === "league division") {
@@ -554,12 +601,19 @@ export class InfoHandler {
         if (section === "Season") {
             if (property === "year") {
                 return this.currentSeason
+            } else if (property === "day") {
+                let day = this.seasonCalendar[this.seasonDay]
+                return [day[0], day[1] + 1]
             }
         }
 
         if (section === "Human") {
             if (property === "team") {
                 return this.playersTeam[id]
+            } else if (property === "current") {
+                return 1
+            } else if (property === "team colors") {
+                return [this.sessionInfo[this.playersTeam[id]]["color1"], this.sessionInfo[this.playersTeam[id]]["color2"]]
             }
         }
 
