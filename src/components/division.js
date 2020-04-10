@@ -57,9 +57,8 @@ export default class Division extends React.Component {
     );
   }
 
-  renderDivisions(m, i) {
+  renderDivisions(m, i, day) {
     let div_sizes = this.props.handler.get("League", 0, "division sizes")
-    let round = this.props.handler.get("League", 0, "round")
     let season = this.props.handler.get("Season", 0, "year")
     let divisions = []
     for (let x = 0 ; x < div_sizes[0] ; x++) {
@@ -67,7 +66,7 @@ export default class Division extends React.Component {
     } 
     return (
       <div className = {"divisionsBox"}>
-        Season: {season} --- Round : {round} ___________ Time : {this.state.matchTime}
+        Season: {season} --- {day[0]} Round : {day[1]} ___________ Time : {this.state.matchTime}
       {divisions.map((e, n) => {
         return (
           <div className = {"divisionBox"}>
@@ -87,7 +86,11 @@ export default class Division extends React.Component {
   }
   
   render(){
-    let tourn = this.props.handler.get("Match", 0, "tournament")
+    let colors = {
+      background: this.props.buttonColors[0],
+      color: this.props.buttonColors[1],
+    }
+    let day = this.props.handler.get("Season", 0, "day")
     let matches = this.props.handler.get("Match", 0, "current matches")
     let inds = []
     //console.log("Matches", matches)
@@ -96,10 +99,11 @@ export default class Division extends React.Component {
       inds.push(x)
     }
     return (
-      <div className = {"matchesOrigin"}>
+      <>
         <div className = {"matchesTopMenu"}>
           <button 
             className = {"finishButton"} 
+            style = {colors}
             onClick = {() => this.matchesButtonFunc()} 
             disabled = {(this.state.matchesStarted === 1) ? true : false}
             > 
@@ -110,10 +114,10 @@ export default class Division extends React.Component {
           <div
             className = {"matchesBox"}
           >
-            {(tourn === "league") ? this.renderDivisions(matches, inds) : this.renderCup()}
+            {(day[0] === "League") ? this.renderDivisions(matches, inds, day) : this.renderCup()}
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }

@@ -43,15 +43,17 @@ class Game extends React.Component {
 
   matchesEvents(event) {
     if (event === "End") {
-      this.setState({screen: "teamInfo"})
+      this.setState({screen: "teamHome"})
     }
   }
 
   renderDivision() {
+    let currentPlayer = this.state.infoHandler.get("Human", 0, "current")
+    let buttonColors = this.state.infoHandler.get("Human", currentPlayer, "team colors")
     return (
       <div className="game">
         <div className="game-board">
-      <Division handler = {this.state.infoHandler} matchesCallback = {(e) => this.matchesEvents(e)}/>
+      <Division handler = {this.state.infoHandler} matchesCallback = {(e) => this.matchesEvents(e)} buttonColors = {buttonColors}/>
         </div>
       </div>
     );
@@ -106,6 +108,12 @@ class Game extends React.Component {
   }
 
   renderGame() {
+    let currentPlayer = this.state.infoHandler.get("Human", 0, "current")
+    let buttonColors = this.state.infoHandler.get("Human", currentPlayer, "team colors")
+    let colors = {
+      background: buttonColors[0],
+      color: buttonColors[1],
+    }
     let screenBoard = null;
     switch(this.state.screen){
       case "standings":
@@ -125,10 +133,10 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <div className = {"gameTopMenu"}>
-            <button onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
-            <button onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
-            <button onClick={()=>this.setState({screen:"teamInfo"})} disabled={this.disabledButton("teamInfo")}>Team Info</button>
-            <button onClick={()=>this.setState({screen:"matches"})} >Play</button>
+            <button style = {colors} onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
+            <button style = {colors} onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
+            <button style = {colors} onClick={()=>this.setState({screen:"teamInfo"})} disabled={this.disabledButton("teamInfo")}>Team Info</button>
+            <button style = {colors} onClick={()=>this.setState({screen:"matches"})} >Play</button>
           </div>
           {screenBoard}
         </div>

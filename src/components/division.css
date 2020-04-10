@@ -28,10 +28,8 @@
 }
 
 .matchesTopMenu > button {
-  border: 1px solid #0F0;
   margin: 2px 1% 2px 1%;
-  background: #000;
-  color: #0F0;
   width: 23%;
   height: 100%;
+  font-weight: bold;
 }
