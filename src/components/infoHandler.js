@@ -26,7 +26,9 @@ cash: int
 standing = list of ints [0 = matches played, 1 = victories, 2 = draw, 3 = defeats, 4 = goals made, 5 = goals taken, 6 = points, 7 = division]
 history = list of lists  
     [[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = season, 8 = match played bool ], [], [] ...]
-next opponent = int*
+calendar = list of lists  
+    [[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = season, 8 = match played bool ], [], [] ...]
+next opponent = list [opponent id = int, Home/Away = string]
 league division = int
 
 ---Player
@@ -41,8 +43,7 @@ strength = int
 behaviour = str
 contract = list [(int = number of matches), (int = salary), (int = contract break fine)]
 history = list of ints [0 = matches, 1 = goals, 2 = yellows, 3 = reds, 4 = injuries]
-
-**********season history
+season history = list of ints [0 = matches, 1 = goals, 2 = yellows, 3 = reds, 4 = injuries]
 
 ---League (id = league division)
 teams = list of ints*
@@ -141,8 +142,8 @@ export class InfoHandler {
             for (let [key, value] of Object.entries(team)) {
                 processed_team[key] = value
             }
-            let new_properties = ["moral", "finances", "stadium", "cash"]
-            let new_values = [this.randomInt(1, 100), {}, 1, this.randomInt(1, 100000)]
+            let new_properties = ["moral", "finances", "stadium", "cash", "strength"]
+            let new_values = [this.randomInt(1, 100), {}, 1, this.randomInt(1, 100000), processed_team["originalStrength"]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_team[new_properties[l]] = new_values[l]
             } 
@@ -186,8 +187,8 @@ export class InfoHandler {
             if (lowEnd <= 0) {
                 lowEnd = 1
             }
-            let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "history"]
-            let new_values = [this.randomInt(1, 100), [0, 0], this.randomInt(lowEnd, team_power), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)], [0, 0, 0, 0]]
+            let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "history", "season history"]
+            let new_values = [this.randomInt(1, 100), [0, 0], this.randomInt(lowEnd, team_power), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)], [0, 0, 0, 0], [0, 0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_player[new_properties[l]] = new_values[l]
             }
@@ -351,6 +352,11 @@ export class InfoHandler {
         }
         //console.log(this.leagueStandings)
 
+        for (let x = 0 ; x < this.playersPlaying.length ; x++) {
+            let playerID = this.playersPlaying[x]
+            this.sessionInfo[playerID]["season history"] = [0, 0, 0, 0]
+        }
+
         this.seasonCalendar = []
         for (let x = 0 ; x < this.seasonGames["league"].length ; x++){
             this.seasonCalendar.push(["league", x])
@@ -426,6 +432,40 @@ export class InfoHandler {
         }
     }
 
+    searchTeamMatches(id, season = "all") {
+        let mH = []
+        if (season === "all") {
+            for (let s = this.startingSeason ; s < this.currentSeason ; s++) {
+                let season = this.pastSeasons[s]
+                if (season === null || season === undefined) {
+                    continue
+                } else {
+                    for (let d = 0 ; d < season.calendar.length ; d++) {
+                        let day = season.calendar[d]
+                        let dayMatches = season.games[day[0]][day[1]]
+                        for (let m = 0 ; m < dayMatches.length ; m++) {
+                            let match = dayMatches[m]
+                            if (match[0] === id || match[1] === id) {
+                                mH.push(match)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (let d = 0 ; d < this.seasonCalendar.length ; d++) {
+            let day = this.seasonCalendar[d]
+            let dayMatches = this.seasonGames[day[0]][day[1]]
+            for (let m = 0 ; m < dayMatches.length ; m++) {
+                let match = dayMatches[m]
+                if (match[0] === id || match[1] === id) {
+                    mH.push(match)
+                }
+            }
+        }
+        return mH
+    }
+
     get(section, id, property) {
         if (property === undefined || id === undefined || property === undefined) {
             console.log("something went wrong and is undefined", section, id, property)
@@ -439,7 +479,7 @@ export class InfoHandler {
             } else if (property === "next opponent") {
                 for (let x = 0 ; x < this.currentMatches.length ; x++) {
                     let match = this.currentMatches[x]
-                    if (match.slice(0, 2).includes(id)) { return (match[0] === id) ? match[1] : match[0] }
+                    if (match.slice(0, 2).includes(id)) { return (match[0] === id) ? [match[1], "Away"] : [match[0], "Home"] }
                 }
                 return 10000
             } else if (property === "league division") {
@@ -450,36 +490,10 @@ export class InfoHandler {
                 }
             } else if (property === "standing") {
                 return this.leagueStandings[id]
+            } else if (property === "calendar") {
+                return this.searchTeamMatches(id, "current season")
             } else if (property === "history") {
-                let mH = []
-                for (let s = this.startingSeason ; s < this.currentSeason ; s++) {
-                    let season = this.pastSeasons[s]
-                    if (season === null || season === undefined) {
-                        continue
-                    } else {
-                        for (let d = 0 ; d < season.calendar.length ; d++) {
-                            let day = season.calendar[d]
-                            let dayMatches = season.games[day[0]][day[1]]
-                            for (let m = 0 ; m < dayMatches.length ; m++) {
-                                let match = dayMatches[m]
-                                if (match[0] === id || match[1] === id) {
-                                    mH.push(match)
-                                }
-                            }
-                        }
-                    }
-                }
-                for (let d = 0 ; d < this.seasonDay ; d++) {
-                    let day = this.seasonCalendar[d]
-                    let dayMatches = this.seasonGames[day[0]][day[1]]
-                    for (let m = 0 ; m < dayMatches.length ; m++) {
-                        let match = dayMatches[m]
-                        if (match[0] === id || match[1] === id) {
-                            mH.push(match)
-                        }
-                    }
-                }
-                return mH
+                return this.searchTeamMatches(id)
             } else {
                 if (this.sessionInfo[id] !== undefined) { 
                     return this.sessionInfo[id][property] 
@@ -661,6 +675,7 @@ export class InfoHandler {
                 historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
                 returnHistoryElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
                 this.sessionInfo[player]["history"][0] += 1
+                this.sessionInfo[player]["season history"][0] += 1
                 //this.currentMatchesReturnHistory[matchID][(possession === teams[0]) ? 1 : 2] += 1
                 this.currentMatches[matchID][(possession === teams[0]) ? 2 : 3] += 1
                 historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: enemy, playerID: ePlayerStart, player: this.sessionInfo[ePlayerStart]["name"]})
