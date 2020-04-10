@@ -67,11 +67,8 @@ class Game extends React.Component {
   }
 
   renderTeamHome(team, opponent) {
-    const teamStandings = this.state.currentDivisions[0][0];
-    const opponentStandings = this.state.currentDivisions[0][1];
     return (
       <TeamHome team = {team} opponent = {opponent}
-      teamStandings = {teamStandings} opponentStandings = {opponentStandings}
       showStandings={(code)=>this.showStandings(code)} season = {this.state.season}
       handler = {this.state.infoHandler} ready = {()=>this.setState({screen: "matches"})}/>
     );
