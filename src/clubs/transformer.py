@@ -103,7 +103,11 @@ o.write(first_line)
 ds = []
 for i in range(len(team_paths)):
     print(team_paths[i])
+<<<<<<< HEAD
     club_test = open(team_paths[i], 'r')#, encoding='utf-8')
+=======
+    club_test = open(team_paths[i], 'r')
+>>>>>>> e16c24c8d3ddf882dd9954a71a69704744cadd92
     ds += file_to_dict(club_test)
 teams_dict = jsDict()
 teams_dict.register_entry("id", "TeamsRange")
