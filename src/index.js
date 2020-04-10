@@ -41,9 +41,19 @@ class Game extends React.Component {
   handleClose = () => this.setState({standingsModalShow: false,});
   handleShow = () => this.setState({standingsModalShow: true,});
 
+  matchesEvents(event) {
+    if (event === "End") {
+      this.setState({screen: "teamInfo"})
+    }
+  }
+
   renderDivision() {
     return (
-      <Division handler = {this.state.infoHandler}/>
+      <div className="game">
+        <div className="game-board">
+      <Division handler = {this.state.infoHandler} matchesCallback = {(e) => this.matchesEvents(e)}/>
+        </div>
+      </div>
     );
   }
 
@@ -96,9 +106,6 @@ class Game extends React.Component {
   renderGame() {
     let screenBoard = null;
     switch(this.state.screen){
-      case "matches":
-        screenBoard = this.renderDivision();
-        break;
       case "standings":
         screenBoard = this.renderStandings();
         break;
@@ -115,10 +122,12 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <button onClick={()=>this.setState({screen:"matches"})} disabled={this.disabledButton("matches")}>Matches</button>
-          <button onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
-          <button onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
-          <button onClick={()=>this.setState({screen:"teamInfo"})} disabled={this.disabledButton("teamInfo")}>Team Info</button>
+          <div className = {"gameTopMenu"}>
+            <button onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
+            <button onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
+            <button onClick={()=>this.setState({screen:"teamInfo"})} disabled={this.disabledButton("teamInfo")}>Team Info</button>
+            <button onClick={()=>this.setState({screen:"matches"})} >Play</button>
+          </div>
           {screenBoard}
           {this.renderStandings()}
         </div>
@@ -145,6 +154,8 @@ class Game extends React.Component {
     //let screenBoard = null;
     if (this.state.screen === "Start") {
       return this.renderStart()
+    } else if (this.state.screen === "matches") {
+      return this.renderDivision()
     } else {
       return this.renderGame()
     }

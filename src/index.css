@@ -1,8 +1,7 @@
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
-  min-width: 750px;
-  min-height: 520px;
+  min-height: 100vh; /* For 100% screen height */
+  min-width: 100vw; /* For 100% screen width */
 }
 
 .game {
@@ -15,4 +14,18 @@ body {
   margin: 5px auto;
   min-width: 800px;
   min-height: 520px;
+}
+
+.gameTopMenu {
+  background: rgb(8, 126, 4);
+  width: 100%;
+}
+
+.gameTopMenu > button {
+  border: 1px solid #0F0;
+  margin: 2px 1% 2px 1%;
+  background: #000;
+  color: #0F0;
+  width: 23%;
+  height: 100%;
 }

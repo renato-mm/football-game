@@ -16,7 +16,7 @@ export default class Division extends React.Component {
     this.buttonText = ["Start", "Playing", "Next Matches"]
   }
 
-  matchesButtonFunc(){
+  matchesButtonFunc(event){
     if (this.state.matchesStarted === 0) {
       this.matchesInterval = setInterval(() => this.matchPlay(), 50)
       let d = new Date()
@@ -25,6 +25,7 @@ export default class Division extends React.Component {
     } else if (this.state.matchesStarted === 2) {
       this.props.handler.runMatches(-2)
       this.setState( { matchesStarted : 0, elapsedTime: 0, matchTime: 0 } )
+      this.props.matchesCallback("End")
     }
   }
 
@@ -95,11 +96,23 @@ export default class Division extends React.Component {
       inds.push(x)
     }
     return (
-      <div
-        className = {"matchesBox"}
-      >
-        <button onClick = {() => this.matchesButtonFunc()} disabled = {(this.state.matchesStarted === 1) ? true : false}> {this.buttonText[this.state.matchesStarted]} </button>
-        {(tourn === "league") ? this.renderDivisions(matches, inds) : this.renderCup()}
+      <div className = {"matches"}>
+        <div className = {"matchesTopMenu"}>
+          <button 
+            className = {"finishButton"} 
+            onClick = {() => this.matchesButtonFunc()} 
+            disabled = {(this.state.matchesStarted === 1) ? true : false}
+            > 
+            {(this.state.matchesStarted === 0) ? "Start" : "Finish"} Round 
+          </button>
+        </div>
+        <div className = {"matches-board"}>
+          <div
+            className = {"matchesBox"}
+          >
+            {(tourn === "league") ? this.renderDivisions(matches, inds) : this.renderCup()}
+          </div>
+        </div>
       </div>
     );
   }

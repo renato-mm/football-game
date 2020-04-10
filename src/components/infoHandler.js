@@ -132,8 +132,9 @@ export class InfoHandler {
     initializeNewSessionInfo() {
         for (let x = this.teamsRange[0] ; x <= this.teamsRange[1] ; x++) {
             let pl = this.baseInfo[x]["players"]
+            let coach = this.baseInfo[x]["coach"]
             pl.forEach(element => {this.baseInfo[element]["teamID"] = x}) 
-            this.baseInfo[this.baseInfo[x]["coach"]]["teamID"] = x
+            this.baseInfo[coach]["teamID"] = x
             if (!(this.inArray(x, this.teamsPlaying))) { continue }
             let team = this.baseInfo[x]
             let processed_team = {}
