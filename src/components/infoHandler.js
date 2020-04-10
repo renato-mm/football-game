@@ -513,6 +513,16 @@ export class InfoHandler {
         return mH
     }
 
+    lastH2H(id1, id2) {
+        let mS = this.searchTeamMatches(id1)
+        for (let x = mS.length - 1 ; x >= 0 ; x--) {
+            let match = mS[x]
+            if (match[0] === id2 || match[1] === id2) {
+                return match
+            }
+        }
+    }
+
     get(section, id, property) {
         if (property === undefined || id === undefined || property === undefined) {
             console.log("something went wrong and is undefined", section, id, property)
@@ -526,7 +536,7 @@ export class InfoHandler {
             } else if (property === "next opponent") {
                 for (let x = 0 ; x < this.currentMatches.length ; x++) {
                     let match = this.currentMatches[x]
-                    if (match.slice(0, 2).includes(id)) { return (match[0] === id) ? [match[1], "Home"] : [match[0], "Away"] }
+                    if (match.slice(0, 2).includes(id)) { return (match[0] === id) ? [match[1], "Home", this.lastH2H(id, match[1])] : [match[0], "Away", this.lastH2H(id, match[0])] }
                 }
                 return 10000
             } else if (property === "league division") {
