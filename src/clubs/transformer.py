@@ -77,7 +77,7 @@ def file_to_dict(f):
     cells = line.split(";")
     team_dict.register_entry("color1", str(cells[0]))
     team_dict.register_entry("color2", str(cells[1]))
-    team_dict.register_entry("strength", int(cells[2][:-1:]))
+    team_dict.register_entry("originalStrength", int(cells[2][:-1:]))
 
     players_id_list = []
     team_dict.register_entry("players", players_id_list)

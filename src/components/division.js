@@ -96,7 +96,7 @@ export default class Division extends React.Component {
       inds.push(x)
     }
     return (
-      <div className = {"matches"}>
+      <div className = {"matchesOrigin"}>
         <div className = {"matchesTopMenu"}>
           <button 
             className = {"finishButton"} 
@@ -106,7 +106,7 @@ export default class Division extends React.Component {
             {(this.state.matchesStarted === 0) ? "Start" : "Finish"} Round 
           </button>
         </div>
-        <div className = {"matches-board"}>
+        <div className = {"matchesBoard"}>
           <div
             className = {"matchesBox"}
           >
