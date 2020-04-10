@@ -92,7 +92,7 @@ export default class Match extends React.Component {
     let mText = ["-",'','']
     if (matchStoryText.time !== 0) { 
       const stat = matchStoryText.stat === "Goal" ? goalIcon : matchStoryText.stat;
-      mText = [matchStoryText.time+"'  ",stat,": "+matchStoryText.player]
+      mText = [matchStoryText.time.toString().padStart(2, '0')+"'  ",stat,": "+matchStoryText.player]
     }
     let matchStoryTextRender = (
       <div className = {"matchStory"} > {mText[0]}{mText[1]}{mText[2]} </div>

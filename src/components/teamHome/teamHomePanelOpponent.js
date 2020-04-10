@@ -42,10 +42,11 @@ export default function TeamHomePanelOpponent(props){
         <button onClick={handleShow}> Fixtures </button>
         <button onClick={()=>props.showOpponentInfo()}> Roster </button>
       </div>
-      {/* <FixturesInfo
-      fixtures={props.opponent.calendar}
+      <FixturesInfo
+      handler={props.handler}
+      team={props.opponent}
       handleClose={handleClose}
-      show={oppFixturesModalShow}/> */}
+      show={oppFixturesModalShow}/>
     </>
   );
   

@@ -44,6 +44,7 @@ function divisionRows(handler, divisionID){
 
   const division = [];
   for(let j = 0; j < teams.length; j++){
+    const standing = handler.get("Team", teams[j], "standing");
     const colors = {
       background: handler.get("Team", teams[j], "color1"),
       color: handler.get("Team", teams[j], "color2"),
@@ -51,11 +52,11 @@ function divisionRows(handler, divisionID){
     division.push(
       <tr key={teams[j]} style={colors}>
         <td><b>{handler.get("Team", teams[j], "name")}</b></td>
-        <td>{0}</td>
-        <td>{0}</td>
-        <td>{0}</td>
-        <td>{0}&nbsp;:&nbsp;{0}</td>
-        <td>{0}</td>
+        <td>{standing[1]}</td>
+        <td>{standing[2]}</td>
+        <td>{standing[3]}</td>
+        <td>{standing[4]}&nbsp;:&nbsp;{standing[5]}</td>
+        <td>{standing[6]}</td>
       </tr>);
   }
 

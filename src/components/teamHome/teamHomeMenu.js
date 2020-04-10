@@ -140,6 +140,11 @@ class TeamHomeMenu extends React.Component {
           {this.renderCoach()}
         </div>
       </div>
+      <FixturesInfo
+      handler={this.handler}
+      team={this.team}
+      handleClose={()=>this.handleClose('teamFixturesModalShow')}
+      show={this.state.teamFixturesModalShow}/>
       <Bank
       handleClose={()=>this.handleClose('bankModalShow')}
       show={this.state.bankModalShow}/>

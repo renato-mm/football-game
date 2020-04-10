@@ -4,24 +4,27 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 
 export default function TeamHomePanelMatch(props){
 
+  const teamStandings = props.handler.get("Team",props.team,"standing");
+  const opponentStandings = props.handler.get("Team",props.opponent,"standing");
+
   const headToHead = [];
   headToHead.push(
   <tbody key={"standings"}>
     <tr key={"teamStandings"} style={props.colors}>
       <td>{props.handler.get("Team",props.team,"name")}</td>
-      <td>&nbsp;{props.teamStandings.wins}&nbsp;</td>
-      <td>&nbsp;{props.teamStandings.draws}&nbsp;</td>
-      <td>&nbsp;{props.teamStandings.losses}&nbsp;</td>
-      <td>&nbsp;{props.teamStandings.goalsFor}&nbsp;:&nbsp;{props.teamStandings.goalsAgainst}&nbsp;</td>
-      <td>{props.teamStandings.points}</td>
+      <td>&nbsp;{teamStandings[1]}&nbsp;</td>
+      <td>&nbsp;{teamStandings[2]}&nbsp;</td>
+      <td>&nbsp;{teamStandings[3]}&nbsp;</td>
+      <td>&nbsp;{teamStandings[4]}&nbsp;:&nbsp;{teamStandings[5]}&nbsp;</td>
+      <td>{teamStandings[6]}</td>
     </tr>
     <tr key={"opponentStandings"} style={props.oppColors}>
       <td>{props.handler.get("Team",props.opponent,"name")}</td>
-      <td>&nbsp;{props.opponentStandings.wins}&nbsp;</td>
-      <td>&nbsp;{props.opponentStandings.draws}&nbsp;</td>
-      <td>&nbsp;{props.opponentStandings.losses}&nbsp;</td>
-      <td>&nbsp;{props.opponentStandings.goalsFor}&nbsp;:&nbsp;{props.opponentStandings.goalsAgainst}&nbsp;</td>
-      <td>{props.opponentStandings.points}</td>
+      <td>&nbsp;{opponentStandings[1]}&nbsp;</td>
+      <td>&nbsp;{opponentStandings[2]}&nbsp;</td>
+      <td>&nbsp;{opponentStandings[3]}&nbsp;</td>
+      <td>&nbsp;{opponentStandings[4]}&nbsp;:&nbsp;{opponentStandings[5]}&nbsp;</td>
+      <td>{opponentStandings[6]}</td>
     </tr>
   </tbody>);
 

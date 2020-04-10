@@ -1,9 +1,14 @@
 
 .fixturesInfo{
   width: 100%;
+  text-align: center;
 }
 
 .fixturesInfo tr{
   border: 1px solid black;
   border-collapse: collapse;
+}
+
+.fixturesInfo tr td:nth-child(1){
+  text-align: left;
 }

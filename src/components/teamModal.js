@@ -42,10 +42,11 @@ export default function TeamModal(props) {
 
   const hist = []
   for(let j = 0; j < props.history.length; j++){
+    const stat = props.history[j].text === "Goal" ? goalIcon : props.history[j].text;
     hist.push(
       <tr key={j}>
         <td>{props.history[j].time.toString().padStart(2, '0')}'</td>
-        <td>&nbsp;{props.history[j].text}&nbsp;</td>
+        <td>&nbsp;{stat}&nbsp;</td>
         <td>{props.history[j].player}</td>
       </tr>);
   }

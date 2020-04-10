@@ -18,12 +18,10 @@ export default class TeamHomePanel extends React.Component {
     this.season = props.season;
     this.team = props.team;
     this.opponent = props.opponent;
-    this.teamStandings = props.teamStandings;
-    this.opponentStandings = props.opponentStandings;
     this.colors = props.colors;
     this.oppColors = {
-      background: this.handler.get("Team",this.opponent,"color1"),
-      color: this.handler.get("Team",this.opponent,"color2"),
+      background: this.handler.get("Team",this.opponent[0],"color1"),
+      color: this.handler.get("Team",this.opponent[0],"color2"),
     };
     this.changePanel = props.changePanel;
     this.renewContract = props.renewContract;
@@ -43,9 +41,7 @@ export default class TeamHomePanel extends React.Component {
     return <Match
           handler={this.handler}
           team={this.team}
-          opponent={this.opponent}
-          teamStandings={this.teamStandings}
-          opponentStandings={this.opponentStandings}
+          opponent={this.opponent[0]}
           colors={this.colors}
           oppColors={this.oppColors}
           cash={this.handler.get("Team",this.team,"cash")}
@@ -74,7 +70,7 @@ export default class TeamHomePanel extends React.Component {
   renderOpponent(){
     return <Opponent 
             handler={this.handler}
-            opponent={this.opponent}
+            opponent={this.opponent[0]}
             showOpponentInfo={this.showOpponentInfo}/>;
   }
 
@@ -118,7 +114,7 @@ export default class TeamHomePanel extends React.Component {
       <div>
         <div className = {"panel"}>
           <div className = {"row nextMatch"}> Opponent <span>{this.season}</span></div>
-          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.handler.get("Team",this.opponent,"name")} <div>HOME - Fixture #4</div></div>
+          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.handler.get("Team",this.opponent[0],"name")} <div>{this.opponent[1]} - Fixture #{this.handler.get("Season", 0, "day")[0]}</div></div>
           <div className = {"teamHomePanel"}>
             {screenPanel}
           </div>

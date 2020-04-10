@@ -17,15 +17,13 @@ export default class TeamHome extends React.Component {
       panel: "match",
       selectedPlayer: null,
       focus: false,
-      teamInfo: props.opponent,
+      teamInfo: props.opponent[0],
       showOpponentInfo: false,
     };
     this.handler = props.handler;
     this.team = props.team;
     this.season = props.season;
     this.opponent = props.opponent;
-    this.teamStandings = props.teamStandings;
-    this.opponentStandings = props.opponentStandings;
     this.colors = {
       background: this.handler.get("Team",this.team,"color1"),
       color: this.handler.get("Team",this.team,"color2"),
@@ -163,8 +161,6 @@ export default class TeamHome extends React.Component {
       season={this.season}
       team={this.team}
       opponent={this.opponent}
-      teamStandings={this.teamStandings}
-      opponentStandings={this.opponentStandings}
       colors={this.colors}
       player={this.state.selectedPlayer}
       panel={this.state.panel}
