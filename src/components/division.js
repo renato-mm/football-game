@@ -10,18 +10,21 @@ export default class Division extends React.Component {
       startTime: 1,
       elapsedTime: 0,
       matchesDone: 0,
-      interval: 0,
-      matchTime: 0
+      matchTime: 0,
     };
     this.handler = props.handler;
+    this.buttonText = ["Start", "Playing", "Next Matches"]
   }
 
-  startMatches(){
+  matchesButtonFunc(){
     if (this.state.matchesStarted === 0) {
-      this.setState({interval: setInterval(() => this.matchPlay(), 50)})
+      this.matchesInterval = setInterval(() => this.matchPlay(), 50)
       let d = new Date()
       let t = d.getTime()
       this.setState( {matchesStarted: 1, startTime: t} )
+    } else if (this.state.matchesStarted === 2) {
+      this.props.handler.runMatches(-2)
+      this.setState( { matchesStarted : 0, elapsedTime: 0, matchTime: 0 } )
     }
   }
 
@@ -35,11 +38,13 @@ export default class Division extends React.Component {
         let elapsedTime = t - this.state.startTime
         this.setState( {elapsedTime: elapsedTime, matchTime: time} )
       } else {
-        clearInterval(this.state.interval)
+        this.props.handler.runMatches(-1)
+        clearInterval(this.matchesInterval)
         this.setState( { matchesStarted : 2 } )
       }
     }
   }
+
 
   renderMatch(ind) {
     return (
@@ -50,8 +55,38 @@ export default class Division extends React.Component {
       matchInd = {ind}/>
     );
   }
+
+  renderDivisions(m, i) {
+    let div_sizes = this.props.handler.get("League", 0, "division sizes")
+    let round = this.props.handler.get("League", 0, "round")
+    let season = this.props.handler.get("Season", 0, "year")
+    let divisions = []
+    for (let x = 0 ; x < div_sizes[0] ; x++) {
+      divisions.push(i.slice(x * div_sizes[1], (x+1) * div_sizes[1]))
+    } 
+    return (
+      <div className = {"divisionsBox"}>
+        Season: {season} --- Round : {round} ___________ Time : {this.state.matchTime}
+      {divisions.map((e, n) => {
+        return (
+          <div className = {"divisionBox"}>
+            Division {n + 1}
+            { e.map((id) => {return this.renderMatch(id)}) }
+          </div>
+        )
+      }
+      )
+      }
+      </div>
+    )
+  }
+
+  renderCup() {
+    return 
+  }
   
   render(){
+    let tourn = this.props.handler.get("Match", 0, "tournament")
     let matches = this.props.handler.get("Match", 0, "current matches")
     let inds = []
     //console.log("Matches", matches)
@@ -61,12 +96,10 @@ export default class Division extends React.Component {
     }
     return (
       <div
-        className = {"divisionBox"}
+        className = {"matchesBox"}
       >
-        <button onClick = {() => this.startMatches()}>Start: {this.state.elapsedTime.toString()}</button>
-        <div>
-          {inds.map((e) => {return this.renderMatch(e)})}
-        </div>
+        <button onClick = {() => this.matchesButtonFunc()} disabled = {(this.state.matchesStarted === 1) ? true : false}> {this.buttonText[this.state.matchesStarted]} </button>
+        {(tourn === "league") ? this.renderDivisions(matches, inds) : this.renderCup()}
       </div>
     );
   }
