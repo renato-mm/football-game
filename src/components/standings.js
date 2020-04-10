@@ -1,5 +1,4 @@
 import React from 'react';
-import Modal from 'react-bootstrap/Modal'
 import './standings.css';
 
 export default function Standings(props) {
@@ -10,36 +9,32 @@ export default function Standings(props) {
   const division4 = divisionRows(props.handler, 4);
 
   return (
-    <Modal show={props.show} onHide={props.handleClose} size={"lg"} animation={false} centered>
-      <Modal.Body>
-        <div className = {"standings"} >
-          <div className = {"row"}>
-            <table className = {"standingsTable"}>
-              <tbody>
-                {division1}
-              </tbody>
-            </table>
-            <table className = {"standingsTable"}>
-              <tbody>
-                {division2}
-              </tbody>
-            </table>
-          </div>
-          <div className = {"row"}>
-            <table className = {"standingsTable"}>
-              <tbody>
-                {division3}
-              </tbody>
-            </table>
-            <table className = {"standingsTable"}>
-              <tbody>
-                {division4}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </Modal.Body>
-    </Modal>
+    <div className = {"standings"} >
+      <div className = {"row"}>
+        <table className = {"standingsTable"}>
+          <tbody>
+            {division1}
+          </tbody>
+        </table>
+        <table className = {"standingsTable"}>
+          <tbody>
+            {division2}
+          </tbody>
+        </table>
+      </div>
+      <div className = {"row"}>
+        <table className = {"standingsTable"}>
+          <tbody>
+            {division3}
+          </tbody>
+        </table>
+        <table className = {"standingsTable"}>
+          <tbody>
+            {division4}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 

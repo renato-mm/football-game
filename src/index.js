@@ -92,7 +92,9 @@ class Game extends React.Component {
 
   showStandings(code){
     if(code === 'C' || code === 'c'){
-      this.handleShow()
+      this.setState({
+        screen: "standings",
+      });
     }
   }
 
@@ -129,7 +131,6 @@ class Game extends React.Component {
             <button onClick={()=>this.setState({screen:"matches"})} >Play</button>
           </div>
           {screenBoard}
-          {this.renderStandings()}
         </div>
       </div>
     );

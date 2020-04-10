@@ -29,15 +29,7 @@ export default class TeamInfo extends React.Component {
     };
     this.handler = props.handler;
     this.showTeamInfo = props.showTeamInfo;
-    this.listOfTeams = [];
-    for(let i = 1 ; i < 5 ; i++){
-      this.listOfTeams = this.listOfTeams.concat(this.handler.get("League",i,"teams"));
-    }
-    this.selectOfTeams = [];
-    for(let i = 0 ; i < this.listOfTeams.length ; i++){
-      const id = this.handler.get("Team",this.listOfTeams[i],"id");
-      this.selectOfTeams.push(<option key={id} value={id}>{this.handler.get("Team",this.listOfTeams[i],"name")}</option>)
-    }
+    this.selectOfTeams = this.handler.get("Team",0,"id").map(e=><option key={e} value={e}>{this.handler.get("Team",e,"name")}</option>)
   }
 
   handleClose = () => this.setState({teamInfoFixturesModalShow: false,});
