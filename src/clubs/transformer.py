@@ -6,7 +6,7 @@ folders = [f for f in listdir(mypath)]
 team_paths = []
 for folder in folders:
     if folder not in ["transformer.py", "clubs.js"]:
-        c_path = mypath + "\\" + folder
+        c_path = mypath + os.path.sep + folder
         only_files = [f for f in listdir(c_path) if isfile(join(c_path, f))]
         for file in only_files:
             team_paths.append(join(c_path, file))
@@ -103,7 +103,7 @@ o.write(first_line)
 ds = []
 for i in range(len(team_paths)):
     print(team_paths[i])
-    club_test = open(team_paths[i], 'r')
+    club_test = open(team_paths[i], 'r', encoding='utf-8')
     ds += file_to_dict(club_test)
 teams_dict = jsDict()
 teams_dict.register_entry("id", "TeamsRange")
