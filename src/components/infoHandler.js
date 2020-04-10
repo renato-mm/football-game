@@ -40,7 +40,9 @@ situation = list [(int = ["starting"/"benched"/"out"/"injured"/"penalized"]), (i
 strength = int
 behaviour = str
 contract = list [(int = number of matches), (int = salary), (int = contract break fine)]
-history = list of ints [1 = goals, 2 = yellows, 3 = reds, 4 = injuries]
+history = list of ints [0 = matches, 1 = goals, 2 = yellows, 3 = reds, 4 = injuries]
+
+**********season history
 
 ---League (id = league division)
 teams = list of ints*
@@ -160,6 +162,7 @@ export class InfoHandler {
                 processed_coach[new_properties[l]] = new_values[l]
             }
             this.sessionInfo[processed_coach["id"]] = processed_coach
+            console.log(processed_coach)
             
         }
 

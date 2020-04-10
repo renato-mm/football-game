@@ -1,6 +1,7 @@
 from os import listdir
 from os.path import isfile, join
-mypath = "C:\\Users\\Ward\\Desktop\\football-game\\src\\clubs"
+import os
+mypath = os.path.dirname(os.path.abspath(__file__))
 folders = [f for f in listdir(mypath)]
 team_paths = []
 for folder in folders:
@@ -9,7 +10,7 @@ for folder in folders:
         only_files = [f for f in listdir(c_path) if isfile(join(c_path, f))]
         for file in only_files:
             team_paths.append(join(c_path, file))
-#print(team_paths)
+print(team_paths)
 
 
 current_id = [1, 10001, 20001]
@@ -101,6 +102,7 @@ l = len(first_line)
 o.write(first_line)
 ds = []
 for i in range(len(team_paths)):
+    print(team_paths[i])
     club_test = open(team_paths[i], 'r')
     ds += file_to_dict(club_test)
 teams_dict = jsDict()
