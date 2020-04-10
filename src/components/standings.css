@@ -3,6 +3,7 @@
   margin: 10px auto;
   border: 1px solid #000;
   width: 100%;
+  cursor: default;
 }
 
 .standingsTable{
@@ -18,4 +19,16 @@
 
 .standingsTable tr td:nth-child(1){
   text-align: left;
+  width: 50%;
+}
+
+.standingsTable tr td:nth-child(2),
+.standingsTable tr td:nth-child(3),
+.standingsTable tr td:nth-child(4),
+.standingsTable tr td:nth-child(6){
+  width: 7.5%;
+}
+
+.standingsTable tr td:nth-child(5){
+  width: 10%;
 }

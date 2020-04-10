@@ -34,12 +34,8 @@ class Game extends React.Component {
       gamePlayers: [], // an array of objects containing info about each player's coach
       selectedTeam: null,
       infoHandler: new InfoHandler(base_info),
-      standingsModalShow: false,
     };
   }
-
-  handleClose = () => this.setState({standingsModalShow: false,});
-  handleShow = () => this.setState({standingsModalShow: true,});
 
   matchesEvents(event) {
     if (event === "End") {
@@ -53,7 +49,10 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-      <Division handler = {this.state.infoHandler} matchesCallback = {(e) => this.matchesEvents(e)} buttonColors = {buttonColors}/>
+          <Division
+          handler = {this.state.infoHandler}
+          matchesCallback = {(e) => this.matchesEvents(e)}
+          buttonColors = {buttonColors}/>
         </div>
       </div>
     );
@@ -63,14 +62,14 @@ class Game extends React.Component {
     return (
       <Standings
       handler = {this.state.infoHandler}
-      handleClose={this.handleClose}
-      show={this.state.standingsModalShow}/>
+      showTeamInfo = {(team)=>this.showTeamInfo(team)}/>
     );
   }
 
   renderTeamHome(team, opponent) {
     return (
-      <TeamHome team = {team} opponent = {opponent}
+      <TeamHome
+      team = {team} opponent = {opponent}
       showStandings={(code)=>this.showStandings(code)} season = {this.state.season}
       handler = {this.state.infoHandler} ready = {()=>this.setState({screen: "matches"})}/>
     );
@@ -80,8 +79,8 @@ class Game extends React.Component {
     return (
       <TeamInfo
       team = {team}
-      showTeamInfo = {()=>null}
-      handler = {this.state.infoHandler}/>
+      handler = {this.state.infoHandler}
+      showTeamInfo = {()=>this.showStandings('c')}/>
     );
   }
 
@@ -121,7 +120,7 @@ class Game extends React.Component {
         screenBoard = this.renderTeamHome(humanTeam, this.state.infoHandler.get("Team",humanTeam,"next opponent"));
         break;
       case "teamInfo":
-        screenBoard = this.renderTeamInfo(2/*this.state.selectedTeam*/);
+        screenBoard = this.renderTeamInfo(this.state.selectedTeam);
         break;
       default:
         screenBoard = null;

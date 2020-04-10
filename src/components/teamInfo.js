@@ -154,10 +154,11 @@ export default class TeamInfo extends React.Component {
             </div>
           </div>
         </div>
-        {/* <FixturesInfo
-        fixtures={this.state.team.calendar}
+        <FixturesInfo
+        handler={this.handler}
+        team={this.state.team}
         handleClose={this.handleClose}
-        show={this.teamInfoFixturesModalShow}/> */}
+        show={this.state.teamInfoFixturesModalShow}/>
       </div>
     );
   }
