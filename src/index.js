@@ -9,7 +9,6 @@ import Division from './components/division';
 import Standings from './components/standings';
 import TeamHome from './components/teamHome';
 import TeamInfo from './components/teamInfo';
-import * as Teams from './components/teams';
 
 
 const currDivs = [
@@ -23,6 +22,7 @@ class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      lastScreen: null,
       screen: "Start", // a string that represents the current game screen
       season: 2020,
       currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
@@ -32,18 +32,14 @@ class Game extends React.Component {
       headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
       coaches: [], // an array of objects containing info about each coach
       gamePlayers: [], // an array of objects containing info about each player's coach
-      selectedTeam: null,
+      selectedTeam: 1,
       infoHandler: new InfoHandler(base_info),
-      standingsModalShow: false,
     };
   }
 
-  handleClose = () => this.setState({standingsModalShow: false,});
-  handleShow = () => this.setState({standingsModalShow: true,});
-
   matchesEvents(event) {
     if (event === "End") {
-      this.setState({screen: "teamHome"})
+      this.setState({lastScreen: this.state.screen, screen: "teamHome"})
     }
   }
 
@@ -53,7 +49,10 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-      <Division handler = {this.state.infoHandler} matchesCallback = {(e) => this.matchesEvents(e)} buttonColors = {buttonColors}/>
+          <Division
+          handler = {this.state.infoHandler}
+          matchesCallback = {(e) => this.matchesEvents(e)}
+          buttonColors = {buttonColors}/>
         </div>
       </div>
     );
@@ -63,16 +62,17 @@ class Game extends React.Component {
     return (
       <Standings
       handler = {this.state.infoHandler}
-      handleClose={this.handleClose}
-      show={this.state.standingsModalShow}/>
+      showTeamInfo = {(team)=>this.showTeamInfo(team)}/>
     );
   }
 
   renderTeamHome(team, opponent) {
     return (
-      <TeamHome team = {team} opponent = {opponent}
-      showStandings={(code)=>this.showStandings(code)} season = {this.state.season}
-      handler = {this.state.infoHandler} ready = {()=>this.setState({screen: "matches"})}/>
+      <TeamHome
+      team = {team} opponent = {opponent} season = {this.state.season}
+      showTeamInfo = {()=>this.showTeamInfo(opponent[0], "teamHome")}
+      showStandings={(code)=>this.showStandings(code)}
+      handler = {this.state.infoHandler} ready = {()=>this.setState({lastScreen: this.state.screen, screen: "matches"})}/>
     );
   }
 
@@ -80,8 +80,8 @@ class Game extends React.Component {
     return (
       <TeamInfo
       team = {team}
-      showTeamInfo = {()=>null}
-      handler = {this.state.infoHandler}/>
+      handler = {this.state.infoHandler}
+      showTeamInfo = {()=>this.setState({lastScreen: this.state.screen, screen: this.state.lastScreen})}/>
     );
   }
 
@@ -92,6 +92,7 @@ class Game extends React.Component {
   showStandings(code){
     if(code === 'C' || code === 'c'){
       this.setState({
+        lastScreen: this.state.screen,
         screen: "standings",
       });
     }
@@ -99,6 +100,7 @@ class Game extends React.Component {
 
   showTeamInfo(team){
     this.setState({
+      lastScreen: this.state.screen,
       screen: "teamInfo",
       selectedTeam: team
     });
@@ -121,7 +123,7 @@ class Game extends React.Component {
         screenBoard = this.renderTeamHome(humanTeam, this.state.infoHandler.get("Team",humanTeam,"next opponent"));
         break;
       case "teamInfo":
-        screenBoard = this.renderTeamInfo(2/*this.state.selectedTeam*/);
+        screenBoard = this.renderTeamInfo(this.state.selectedTeam);
         break;
       default:
         screenBoard = null;
@@ -131,9 +133,9 @@ class Game extends React.Component {
         <div className="game-board">
           <div className = {"gameTopMenu"}>
             <button style = {colors} onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
-            <button style = {colors} onClick={()=>this.setState({screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
-            <button style = {colors} onClick={()=>this.setState({screen:"teamInfo"})} disabled={this.disabledButton("teamInfo")}>Team Info</button>
-            <button style = {colors} onClick={()=>this.setState({screen:"matches"})} >Play</button>
+            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
+            <button style = {colors} onClick={()=>this.showTeamInfo(this.state.selectedTeam)} disabled={this.disabledButton("teamInfo")}>Team Info</button>
+            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} >Play</button>
           </div>
           {screenBoard}
         </div>
@@ -143,7 +145,7 @@ class Game extends React.Component {
 
   startGame() {
     this.state.infoHandler.initialization("Initialize", [])
-    this.setState({screen: "teamHome"})
+    this.setState({lastScreen: this.state.screen, screen: "teamHome"})
   }
 
   renderStart() {

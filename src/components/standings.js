@@ -3,10 +3,10 @@ import './standings.css';
 
 export default function Standings(props) {
 
-  const division1 = divisionRows(props.handler, 1);
-  const division2 = divisionRows(props.handler, 2);
-  const division3 = divisionRows(props.handler, 3);
-  const division4 = divisionRows(props.handler, 4);
+  const division1 = divisionRows(props.handler, 1, props.showTeamInfo);
+  const division2 = divisionRows(props.handler, 2, props.showTeamInfo);
+  const division3 = divisionRows(props.handler, 3, props.showTeamInfo);
+  const division4 = divisionRows(props.handler, 4, props.showTeamInfo);
 
   return (
     <div className = {"standings"} >
@@ -18,14 +18,14 @@ export default function Standings(props) {
         </table>
         <table className = {"standingsTable"}>
           <tbody>
-            {division2}
+            {division3}
           </tbody>
         </table>
       </div>
       <div className = {"row"}>
         <table className = {"standingsTable"}>
           <tbody>
-            {division3}
+            {division2}
           </tbody>
         </table>
         <table className = {"standingsTable"}>
@@ -38,7 +38,7 @@ export default function Standings(props) {
   );
 }
 
-function divisionRows(handler, divisionID){
+function divisionRows(handler, divisionID, show){
 
   const teams = handler.get("League", divisionID, "teams");
 
@@ -50,7 +50,7 @@ function divisionRows(handler, divisionID){
       color: handler.get("Team", teams[j], "color2"),
     };
     division.push(
-      <tr key={teams[j]} style={colors}>
+      <tr key={teams[j]} style={colors} onClick={()=>show(teams[j])}>
         <td><b>{handler.get("Team", teams[j], "name")}</b></td>
         <td>{standing[1]}</td>
         <td>{standing[2]}</td>

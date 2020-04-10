@@ -2,7 +2,6 @@ import React from 'react';
 import './teamHome.css';
 import TeamHomeMenu from './teamHome/teamHomeMenu';
 import TeamHomePanel from './teamHome/teamHomePanel';
-import TeamInfo from './teamInfo';
 import { GoPrimitiveDot } from "react-icons/go";
 import { GoDash } from "react-icons/go";
 import { GoPlus } from "react-icons/go";
@@ -32,9 +31,10 @@ export default class TeamHome extends React.Component {
       background: this.handler.get("Team",this.team,"color2"),
       color: this.handler.get("Team",this.team,"color1"),
     };
-    // this.coach = this.handler.get("Player",this.handler.get("Team",this.team,"coach"),"name");
+    this.coach = "Human"//this.handler.get("Human",this.handler.get("Team",this.team,"coach"),"name");
     this.division = this.handler.get("Team",this.team,"league division");
     this.showStandings = props.showStandings;
+    this.showOpponentInfo = props.showTeamInfo;
     this.ready = props.ready;
     this.countryInfo = countryInfo(this.handler.get("Team",this.team,"nationality"));
   }
@@ -113,12 +113,6 @@ export default class TeamHome extends React.Component {
     });
   }
 
-  showOpponentInfo(){
-    this.setState({
-      showOpponentInfo: !this.state.showOpponentInfo,
-    });
-  }
-
   renewContract(newSalary){
     const newContract = this.handler.get("Player",this.state.selectedPlayer,"contract");
     newContract[1] = newSalary;
@@ -140,7 +134,7 @@ export default class TeamHome extends React.Component {
       this.showStandings(key);
     }
     else if(key === 'Enter' && this.state.panel === 'formation'){
-      // Begin matches
+      this.ready();
     }
   }
 
@@ -167,16 +161,9 @@ export default class TeamHome extends React.Component {
       changePanel={panel=>this.changePanel(panel)}
       renewContract={(newSalary)=>this.renewContract(newSalary)}
       changeFocus={focus=>this.changeFocus(focus)}
-      showOpponentInfo={()=>this.showOpponentInfo()}
+      showOpponentInfo={this.showOpponentInfo}
       ready={this.ready}/>
     );
-  }
-
-  renderOpponentInfo() {
-    return <TeamInfo
-            handler={this.handler}
-            team = {this.state.teamInfo}
-            showTeamInfo={()=>this.showOpponentInfo()}/>
   }
 
   renderTeamHome(){
@@ -216,7 +203,7 @@ export default class TeamHome extends React.Component {
     
     return (
       <div>
-        {this.state.showOpponentInfo ? this.renderOpponentInfo() : this.renderTeamHome()}
+        {this.renderTeamHome()}
       </div>
     );
   }

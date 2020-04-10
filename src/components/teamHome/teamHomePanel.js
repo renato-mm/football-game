@@ -114,7 +114,7 @@ export default class TeamHomePanel extends React.Component {
       <div>
         <div className = {"panel"}>
           <div className = {"row nextMatch"}> Opponent <span>{this.season}</span></div>
-          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.handler.get("Team",this.opponent[0],"name")} <div>{this.opponent[1]} - Fixture #{this.handler.get("Season", 0, "day")[0]}</div></div>
+          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.handler.get("Team",this.opponent[0],"name")} <div>{this.opponent[1]} - Fixture #{this.handler.get("Season", 0, "day")[1]}</div></div>
           <div className = {"teamHomePanel"}>
             {screenPanel}
           </div>

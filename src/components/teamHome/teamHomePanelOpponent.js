@@ -36,7 +36,7 @@ export default function TeamHomePanelOpponent(props){
         <ProgressBar variant={moralColor(props.handler.get("Team",props.opponent,"moral"))} now={props.handler.get("Team",props.opponent,"moral")} />
       </div>
       <div className = {"row teamHomeOpponentCoach"}>
-        {/* Coach <span>{props.handler.get("Player",props.handler.get("Team",props.opponent,"coach"),"name")}</span> */}
+        Coach <span>{props.handler.get("Player",props.handler.get("Team",props.opponent,"coach"),"name")}</span>
       </div>
       <div className = {"row teamHomeOpponentButtons"}>
         <button onClick={handleShow}> Fixtures </button>
