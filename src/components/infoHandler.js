@@ -322,22 +322,61 @@ export class InfoHandler {
     seasonGamesMaker() {
         let games = {league: []}
         for (let z = 1 ; z <= this.divisions ; z++) {
-            let teams = this.divisionsTeams[z].slice()
-            let days = []
-            let days2 = []
-            //[game[0], game[1], 0, 0, 0, "League", z, this.currentSeason, false]
-            for (let x = 0 ; x < this.divisions_size - 1 ; x++) {
-                teams = this.shuffle(teams)
-                let day = []
-                let day2 = []
-                for (let y = 0 ; y < this.divisions_size/2 ; y++) {
-                    day.push([teams[y * 2], teams[(y * 2) + 1], 0, 0, 0, "League", z, this.currentSeason, false])
-                    day2.push([teams[(y * 2) + 1], teams[y * 2], 0, 0, 0, "League", z, this.currentSeason, false])
+            let all_games1 = []
+            let all_games2 = []
+            for (let x = 0 ; x < this.divisionsTeams[z].length ; x++) {
+                for (let y = x + 1 ; y < this.divisionsTeams[z].length; y++) {
+                    let r = this.randomInt(1, 2)
+                    //console.log(r)
+                    if (r === 1) {
+                        all_games1.push([this.divisionsTeams[z][x], this.divisionsTeams[z][y]])
+                        all_games2.push([this.divisionsTeams[z][y], this.divisionsTeams[z][x]])
+                    } else { 
+                        all_games2.push([this.divisionsTeams[z][x], this.divisionsTeams[z][y]])
+                        all_games1.push([this.divisionsTeams[z][y], this.divisionsTeams[z][x]])
+                    }
                 }
-                days.push(day)
-                days2.push(day2)
             }
-            games["league"][z] = days.concat(days2)
+            all_games1 = this.shuffle(all_games1)
+            all_games2 = this.shuffle(all_games2)
+            let inds = []
+            let ag1 = []
+            let ag2 = [];
+            [[all_games1, ag1], [all_games2, ag2]].forEach( (e, i, a) => {
+                inds = []
+                let all_games = e[0]
+                let ag = e[1] 
+                while (inds.length < all_games.length) {
+                    let day = []
+                    for (let i = 0 ; i < all_games.length ; i++) {
+                        let game = all_games[i]
+                        let break_switch = false
+                        let add_switch = true
+                        for (let j = 0 ; j < day.length ; j++) {
+                            let cgame = day[j]
+                            if (game[0] === cgame[0] || game[1] === cgame[1] || game[0] === cgame[1] || game[1] === cgame[0]) {
+                                break_switch = true
+                                break
+                            }
+                        }
+                        if (break_switch) {
+                            continue
+                        }
+                        for (let p = 0 ; p < inds.length ; p++){
+                            if (i === inds[p]) {
+                                add_switch = false
+                            }
+                        }
+                        if (add_switch) {
+                            let match = [game[0], game[1], 0, 0, 0, "League", z, this.currentSeason, false]
+                            day.push(match)
+                            inds.push(i)
+                        }
+                    }
+                    ag.push(day)
+                }
+            })
+            games["league"][z] = ag1.concat(ag2)
         } // league games finished
 
         this.seasonGames["League"] = []
