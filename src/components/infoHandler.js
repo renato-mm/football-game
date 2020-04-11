@@ -186,8 +186,8 @@ export class InfoHandler {
             }
             let thisPower = this.baseInfo[this.baseInfo[x]["teamID"]]["strength"]
             let highestPower = this.extremesStrengths[0]
-            let lowestPower = this.extremesStrengths[1]
-            let team_power = Math.floor(((thisPower - lowestPower) / (highestPower - lowestPower)) * 50)
+            //let lowestPower = this.extremesStrengths[1]
+            let team_power = Math.floor(((thisPower) / (highestPower)) * 50)
             if (team_power <= 0) {
                 team_power = 1
             } 
@@ -315,9 +315,13 @@ export class InfoHandler {
             }
         }
         avgPower = Math.floor(avgPower[0] / avgPower[1])
+        if (avgPower < 3) {
+            avgPower = 3
+        }
         let humanPlayers = this.sessionInfo[this.playersTeam[1]]["players"]
         for (let t = 0 ; t < humanPlayers.length ; t++) {
             this.sessionInfo[humanPlayers[t]]["strength"] = this.randomInt(avgPower - 2, avgPower + 3)
+            this.sessionInfo[humanPlayers[t]]["contract"][1] = this.sessionInfo[humanPlayers[t]]["strength"] * 500
         }
     }
 
@@ -327,27 +331,30 @@ export class InfoHandler {
             let turn1 = []
             let fixedTeam = this.divisionsTeams[z][0]
             let rotation = this.divisionsTeams[z].slice(1, this.divisionsTeams.length)
+            let count = 1
             for (let x = 0 ; x < this.divisions_size - 1 ; x++) {
                 let day = []
                 let t = rotation.slice()
                 t.unshift(fixedTeam)
-                console.log(t)
+                //console.log(t)
                 for (let y = 0 ; y < this.divisions_size/2 ; y++) {
-                    let match = [t[y], t[t.length - 1 - y], 0, 0, 0, "League", z, this.currentSeason, false]
+                    let match = [t[y], t[t.length - 1 - y], 0, 0, 0, "League", z, count, this.currentSeason, false]
                     day.push(match)
                 }
                 turn1.push(day)
                 rotation.unshift(rotation.pop())
+                count += 1
             }
 
-            let turn2 = turn1.slice()
-            for (let x = 0 ; x < turn2.length ; x++) {
-                for (let y = 0 ; y < turn2[x].length ; y++) {
-                    let match = turn2[x][y]
+            let turn2 = []
+            for (let x = 0 ; x < turn1.length ; x++) {
+                turn2.push([])
+                for (let y = 0 ; y < turn1[x].length ; y++) {
+                    let match = turn1[x][y]
                     let returnMatch = match.slice()
                     returnMatch[0] = match[1]
                     returnMatch[1] = match[0]
-                    turn2[x][y] = returnMatch
+                    turn2[x].push(returnMatch)
                 }
             }
             
@@ -423,7 +430,11 @@ export class InfoHandler {
             for (let x = 0 ; x < this.currentMatches.length ; x++) {
                 let match = this.currentMatches[x]
                 match[match.length - 1] = true;
-                (match[2] > match[3]) ? match[4] = match[0] : match[4] = match[1]
+                if (match[2] > match[3]) {
+                    match[4] = match[0]
+                } else if (match[2] < match[3]) {
+                    match[4] = match[1]
+                }
                 // standing = [0 = matches played, 1 = victories, 2 = draw, 3 = defeats, 4 = goals made, 5 = goals taken, 6 = points, 7 = division]
                 let home = match[0]
                 let away = match[1]
@@ -470,6 +481,7 @@ export class InfoHandler {
         let s2 = this.leagueStandings[e2]
         let points = [s1[6], s2[6]]
         let goalDiff = [s1[4] - s1[5], s2[4] - s2[5]]
+        let goalsFor = [s1[4], s2[4]]
         let victories = [s1[1], s2[1]]
         let score = [0, 0]
         for (let x = 0 ; x < this.seasonGames["League"].length ; x++) {
@@ -485,7 +497,7 @@ export class InfoHandler {
                 }
             }
         }
-        let unties = [points, goalDiff, score, victories]
+        let unties = [points, goalDiff, goalsFor, score, victories]
         for (let z = 0 ; z < unties.length ; z++) {
             let untie = unties[z]
             if (untie[0] !== untie[1]) {
@@ -537,6 +549,7 @@ export class InfoHandler {
                 return match
             }
         }
+        return null
     }
 
     get(section, id, property) {
