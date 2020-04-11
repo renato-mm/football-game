@@ -319,6 +319,19 @@ export class InfoHandler {
     cupSorting() {
         let day = this.seasonCalendar[this.seasonDay]
         let teams = this.shuffle(this.cupTeams)
+        if (day[1] > 0) {
+            let lastMatches = this.seasonGames["Cup"][day[1] - 1]
+            let pseudoTeams = []
+            for (let x = 0 ; x < lastMatches.length ; x++) {
+                let match = lastMatches[x]
+                if (match[4] === match[0]) {
+                    pseudoTeams.push(match[0])
+                } else {
+                    pseudoTeams.push(match[1]) // NOT HANDLING DRAWS YET
+                }
+            }
+            teams = pseudoTeams
+        }
         for (let l = 0 ; l < teams.length/2 ; l++) {
             let match = [teams[l], teams[teams.length - 1 - l], 0, 0, 0, "Cup", this.cupSize/(Math.pow(2, day[1])), (day[1] + 1), this.currentSeason, false]
             this.seasonGames["Cup"][day[1]].push(match)
@@ -467,7 +480,7 @@ export class InfoHandler {
                 this.divisionsTeams[z].sort((e1, e2) => {return this.sortDivision(e1, e2)})
             }
             this.seasonDay += 1
-            console.log(this.seasonDay)
+            //console.log(this.seasonDay)
             if (this.seasonDay >= this.seasonCalendar.length) {
                 this.currentSeason += 1
                 this.runSeason("Start")
@@ -567,14 +580,19 @@ export class InfoHandler {
                 return this.sessionInfo[id]
             } else if (id === 0) {
                 return this.teamsPlaying
-            } else if (property === "next opponent") {
+            } else if (property === "next match") {
                 for (let x = 0 ; x < this.currentMatches.length ; x++) {
                     let match = this.currentMatches[x]
+                    let returnV = 0
                     //console.log(match)
-                    if (match.slice(0, 2).includes(id)) { return (match[0] === id) ? [match[1], "Home", this.lastH2H(id, match[1])] : [match[0], "Away", this.lastH2H(id, match[0])] }
+                    if (match.slice(0, 2).includes(id)) { 
+                        returnV = (match[0] === id) ? [match, this.lastH2H(id, match[1])] : [match, this.lastH2H(id, match[0])] 
+                        //console.log(section, id, property, returnV)
+                        return returnV
+                    }
                 }
                 console.log("did not find next opponent", id)
-                return [10000, "Home", [0,0,0,0,0,0,0,0,0]]
+                return null
             } else if (property === "league division") {
                 for (let x = 1 ; x <= this.divisions ; x++) {
                     if (this.divisionsTeams[x].includes(id)) {
@@ -582,7 +600,9 @@ export class InfoHandler {
                     }
                 }
             } else if (property === "standing") {
-                return this.leagueStandings[id]
+                let fakeStandings = [0, 0, 0, 0, 0, 0, 0, 19];
+                let st = this.leagueStandings[id];
+                return (st) ? st : fakeStandings;
             } else if (property === "calendar") {
                 return this.searchTeamMatches(id, "current season")
             } else if (property === "history") {
