@@ -30,13 +30,14 @@ export default function FixturesInfo(props){
     const rowColors = colors[cup][home];
     calendar.push(
       <tr key={j} style={rowColors}>
-        <td>{fixtures[j][5]}</td>
-        <td>&nbsp;<b>{!home ? "H" : "A"}</b></td>
-        <td>&nbsp;<b>{props.handler.get("Team",fixtures[j][0],"name")}</b></td>
-        <td>&nbsp;<b>{!fixtures[j][8] ? "" : fixtures[j][2]+" : "+fixtures[j][3]}</b></td>
-        <td>&nbsp;<b>{props.handler.get("Team",fixtures[j][1],"name")}</b></td>
-        <td>&nbsp;<b>{!fixtures[j][8] ? '' : fixtures[j][4] === 0 ? 'D' : fixtures[j][4] === props.team ? 'W' : 'L'}</b></td>
-        <td>&nbsp;<b>{" "}</b></td>
+        <td>{fixtures[j][5]+" #"+fixtures[j][7]}</td>
+        <td><b>{!home ? "H" : "A"}</b></td>
+        <td><b>{props.handler.get("Team",fixtures[j][0],"name")}</b></td>
+        <td><b>{!fixtures[j][9] ? "" : fixtures[j][2]}</b></td>
+        <td><b>{!fixtures[j][9] ? "" : ":"}</b></td>
+        <td><b>{!fixtures[j][9] ? "" : fixtures[j][3]}</b></td>
+        <td><b>{props.handler.get("Team",fixtures[j][1],"name")}</b></td>
+        <td><b>{!fixtures[j][9] ? '' : fixtures[j][4] === 0 ? 'D' : fixtures[j][4] === props.team ? 'W' : 'L'}</b></td>
       </tr>);
   }
 
