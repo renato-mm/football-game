@@ -20,12 +20,12 @@
 }
 
 .teamHomePanel{
-  height: 290px;
+  height: 340px;
 }
 
 .teamHomePanelMenu{
   font-size: smaller;
-  margin: 10px -15px;
+  margin: 10px;
 }
 
 .teamHomePanelMenuActive{

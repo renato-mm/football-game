@@ -41,7 +41,7 @@ export default class TeamHomePanel extends React.Component {
     return <Match
           handler={this.handler}
           team={this.team}
-          opponent={this.opponent[0]}
+          opponent={this.opponent}
           colors={this.colors}
           oppColors={this.oppColors}
           cash={this.handler.get("Team",this.team,"cash")}

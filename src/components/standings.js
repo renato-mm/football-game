@@ -12,11 +12,21 @@ export default function Standings(props) {
     <div className = {"standings"} >
       <div className = {"row"}>
         <table className = {"standingsTable"}>
+          <thead>
+            <tr>
+              <td colSpan="8">Division 1</td>
+            </tr>
+          </thead>
           <tbody>
             {division1}
           </tbody>
         </table>
         <table className = {"standingsTable"}>
+          <thead>
+            <tr>
+              <td colSpan="8">Division 3</td>
+            </tr>
+          </thead>
           <tbody>
             {division3}
           </tbody>
@@ -24,11 +34,21 @@ export default function Standings(props) {
       </div>
       <div className = {"row"}>
         <table className = {"standingsTable"}>
+          <thead>
+            <tr>
+              <td colSpan="8">Division 2</td>
+            </tr>
+          </thead>
           <tbody>
             {division2}
           </tbody>
         </table>
         <table className = {"standingsTable"}>
+          <thead>
+            <tr>
+              <td colSpan="8">Division 4</td>
+            </tr>
+          </thead>
           <tbody>
             {division4}
           </tbody>
@@ -55,7 +75,9 @@ function divisionRows(handler, divisionID, show){
         <td>{standing[1]}</td>
         <td>{standing[2]}</td>
         <td>{standing[3]}</td>
-        <td>{standing[4]}&nbsp;:&nbsp;{standing[5]}</td>
+        <td>{standing[4]}</td>
+        <td>:</td>
+        <td>{standing[5]}</td>
         <td>{standing[6]}</td>
       </tr>);
   }

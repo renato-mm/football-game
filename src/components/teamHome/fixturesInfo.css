@@ -11,4 +11,26 @@
 
 .fixturesInfo tr td:nth-child(1){
   text-align: left;
+  width: 20%;
+}
+
+.fixturesInfo tr td:nth-child(2),
+.fixturesInfo tr td:nth-child(8){
+  border: 1px solid black;
+  border-collapse: collapse;
+  width: 4%;
+}
+
+.fixturesInfo tr td:nth-child(3),
+.fixturesInfo tr td:nth-child(7){
+  width: 30%;
+}
+
+.fixturesInfo tr td:nth-child(4),
+.fixturesInfo tr td:nth-child(6){
+  width: 5%;
+}
+
+.fixturesInfo tr td:nth-child(5){
+  width: 2%;
 }
