@@ -25,9 +25,9 @@ cash: int
 
 standing = list of ints [0 = matches played, 1 = victories, 2 = draw, 3 = defeats, 4 = goals made, 5 = goals taken, 6 = points, 7 = division]
 history = list of lists  
-    [[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = season, 8 = match played bool ], [], [] ...]
+    [[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = round, 8 = season, 9 = match played bool ], [], [] ...]
 calendar = list of lists  
-    [[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = season, 8 = match played bool ], [], [] ...]
+    [[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = round, 8 = season, 9 = match played bool ], [], [] ...]
 next opponent = list [opponent id = int, Home/Away = string]
 league division = int
 
@@ -65,7 +65,7 @@ export class InfoHandler {
         this.coachesPlaying = []
 
         this.numberOfPlayers = 1
-        this.playersTeam = {}
+        this.playersTeam = []
         this.playersTeam[1] = 1
 
         this.teamsIn = this.all_teams();
@@ -126,6 +126,15 @@ export class InfoHandler {
         return false
     }
 
+    findInArray(x, a) {
+        for (let i = 0 ; i < a.length ; i++) {
+            if (a[i] === x) {
+                return i
+            }
+        }
+        return -1
+    }
+
     all_teams(ids) {
         let returnArray = [];
         for (let x = this.teamsRange[0] ; x <= this.teamsRange[1] ; x++) {
@@ -138,6 +147,55 @@ export class InfoHandler {
         return returnArray;
     }
 
+    initialization(action, ids) {
+        if (action === "Teams In") {
+            return this.teamsIn
+        } else if (action === "Teams Out") {
+            return this.teamsOut
+        } else if (action === "Get") {
+            return [this.baseInfo[ids]["color1"], this.baseInfo[ids]["color2"], this.baseInfo[ids]["name"]]
+        } else if (action === "Remove") {
+            let mover = 0
+            let i = this.findInArray(ids[0], this.teamsIn)
+            if (i + 1) {mover = this.teamsIn.splice(i, 1)}
+            this.teamsOut.push(mover)
+        } else if (action === "Add") {
+            let mover = 0
+            let i = this.findInArray(ids[0], this.teamsIn)
+            if (i + 1) {mover = this.teamsOut.splice(i, 1)}
+            this.teamsIn.push(mover)
+        } else if (action === "Player") {
+            this.playersTeam[1] = ids[0]
+        } else if (action === "Get Player") {
+            return this.playersTeam[ids[0]]
+        } else if (action === "Initialize") {
+            this.teamsPlaying = this.teamsIn.slice()
+            this.teamsPlaying.sort((e1, e2) => {return this.baseInfo[e2]["strength"] - this.baseInfo[e1]["strength"]})
+            let temp = this.teamsPlaying.slice()
+            //temp.sort((e1, e2) => {return this.baseInfo[e2]["strength"] - this.baseInfo[e1]["strength"]})
+            let i = this.findInArray(this.playersTeam[1], temp)
+            if (i + 1) { temp.splice(i, 1) }
+            let hP = this.baseInfo[temp[0]]["strength"]
+            let lP = this.baseInfo[temp[temp.length - 1]]["strength"]
+            this.extremesStrengths = [hP, lP]
+            for (let x = 1 ; x < this.divisions ; x++) {
+                this.divisionsTeams[x] = temp.splice(0, this.divisions_size)
+            }
+            this.divisionsTeams[this.divisions] = temp.splice(0, this.divisions_size - this.numberOfPlayers)
+            let divt = this.divisionsTeams[this.divisions]
+            let avgPower = divt.reduce((t, e) => {return t + this.baseInfo[e]["strength"]}, 0) / divt.length
+            //console.log(avgPower)
+            this.playersTeam.forEach((e, i) => {
+                if (!(i)) { return }
+                this.baseInfo[e]["strength"] = avgPower;
+                this.divisionsTeams[this.divisions].push(e)}
+                )
+            //console.log(this.divisionsTeams)
+            this.initializeNewSessionInfo()
+            this.runSeason("Start")
+        }
+    }
+
     initializeNewSessionInfo() {
         for (let x = this.teamsRange[0] ; x <= this.teamsRange[1] ; x++) {
             let pl = this.baseInfo[x]["players"]
@@ -146,26 +204,20 @@ export class InfoHandler {
             this.baseInfo[coach]["teamID"] = x
             if (!(this.inArray(x, this.teamsPlaying))) { continue }
             let team = this.baseInfo[x]
-            let processed_team = {}
-            for (let [key, value] of Object.entries(team)) {
-                processed_team[key] = value
-            }
+            let processed_team = team
             let new_properties = ["moral", "finances", "stadium", "cash"]
             let new_values = [this.randomInt(1, 100), {}, 1, this.randomInt(1, 100000)]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_team[new_properties[l]] = new_values[l]
             } 
-            this.sessionInfo[x] = processed_team
+            this.sessionInfo[processed_team["id"]] = processed_team
         }
 
         for (let x = this.coachesRange[0] ; x <= this.coachesRange[1] ; x++) {
             if (!(this.inArray(this.baseInfo[x]["teamID"], this.teamsPlaying))) { continue }
             this.coachesPlaying.push(x)
             let coach = this.baseInfo[x]
-            let processed_coach = {}
-            for (let [key, value] of Object.entries(coach)) {
-                processed_coach[key] = value
-            }
+            let processed_coach = coach
             let new_properties = ["moral", "situation", "strength", "behaviour", "contract"]
             let new_values = [this.randomInt(1, 100), [1, 0], this.randomInt(1, 50), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)]]
             for (let l = 0 ; l < new_properties.length ; l++) {
@@ -180,22 +232,14 @@ export class InfoHandler {
             if (!(this.inArray(this.baseInfo[x]["teamID"], this.teamsPlaying))) { continue }
             this.playersPlaying.push(x)
             let player = this.baseInfo[x]
-            let processed_player = {}
-            for (let [key, value] of Object.entries(player)) {
-                processed_player[key] = value
-            }
+            let processed_player = player
             let thisPower = this.baseInfo[this.baseInfo[x]["teamID"]]["strength"]
             let highestPower = this.extremesStrengths[0]
             //let lowestPower = this.extremesStrengths[1]
-            let team_power = Math.floor(((thisPower) / (highestPower)) * 50)
-            if (team_power <= 0) {
-                team_power = 1
-            } 
-            let lowEnd = team_power - 5
-            if (lowEnd <= 0) {
-                lowEnd = 1
-            }
-            let playerPower = this.randomInt(lowEnd, team_power)
+            let highEnd = Math.floor( (thisPower / highestPower) * 50 )
+            if (highEnd < 5) { highEnd = 5 } 
+            let lowEnd = highEnd - 4
+            let playerPower = this.randomInt(lowEnd, highEnd)
             let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "history", "season history"]
             let new_values = [this.randomInt(1, 100), [0, 0], playerPower, "FP", [0, playerPower * 500, playerPower * 10000], [0, 0, 0, 0], [0, 0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
@@ -207,8 +251,6 @@ export class InfoHandler {
         for (let x = 1 ; x <= this.numberOfPlayers ; x++) {
             this.sessionInfo[this.playersTeam[x]]["coach"] = -x
         }
-
-        this.normalizeHumanTeamPower()
 
         for (let x = 0 ; x < this.teamsPlaying.length ; x++) {
             this.formationSetter(this.teamsPlaying[x], [4, 3, 3])
@@ -224,105 +266,32 @@ export class InfoHandler {
         let defenders = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "D").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
         let mids = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "M").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
         let forwards = teamPlayers.filter(e => this.sessionInfo[e]["position"] === "F").sort((a, b) => {return this.sessionInfo[b]["strength"] - this.sessionInfo[a]["strength"]})
-        let formationPlayers = [goalkeepers[0]]
         let rotation = [defenders, mids, forwards]
         if (!(formation.length === 3 && (formation[0] + formation[1] + formation[2] === 10))) {
             formation = [4, 3, 3]
         }
-        for (let p = 0 ; p < 3 ; p++) {
-            let ps = rotation[p].splice(0, formation[p])
-            //console.log(ps)
-            formationPlayers = formationPlayers.concat(ps)
-        }
-        for (let y = 0 ; y < formationPlayers.length ; y++) {
-            //console.log(formationPlayers)
-            this.sessionInfo[formationPlayers[y]]["situation"][0] = 1
-        }
-    }
 
-    initialization(action, ids) {
-        if (action === "Teams In") {
-            return this.teamsIn
-        } else if (action === "Teams Out") {
-            return this.teamsOut
-        } else if (action === "Get") {
-            return [this.baseInfo[ids]["color1"], this.baseInfo[ids]["color2"], this.baseInfo[ids]["name"]]
-        } else if (action === "Remove") {
-            let mover = 0
-            for (let x = 0 ; x < this.teamsIn.length ; x++) {
-                if (this.teamsIn[x] === ids[0]) {
-                    mover = this.teamsIn[x]
-                    this.teamsIn.splice(x, 1)
-                }
+        let formationPlayers = []
+        if (goalkeepers.length) { formationPlayers.push(goalkeepers.splice(0, 1)) }
+        while ((defenders.length + mids.length + forwards.length > 0) && formationPlayers.length < 11) {
+            for (let p = 0 ; p < 3 ; p++) {
+                let ps = rotation[p].splice(0, formation[p])
+                //console.log(ps)
+                formationPlayers = formationPlayers.concat(ps)
             }
-            this.teamsOut.push(mover)
-        } else if (action === "Add") {
-            let mover = 0
-            for (let x = 0 ; x < this.teamsOut.length ; x++) {
-                if (this.teamsOut[x] === ids[0]) {
-                    mover = this.teamsOut[x]
-                    this.teamsOut.splice(x, 1)
-                }
-            }
-            this.teamsIn.push(mover)
-        } else if (action === "Player") {
-            this.playersTeam[1] = ids[0]
-        } else if (action === "Get Player") {
-            return this.playersTeam[ids[0]]
-        } else if (action === "Initialize") {
-            this.teamsPlaying = this.teamsIn.slice()
-            //console.log(this.teamsPlaying)
-            this.teamsPlaying.sort((e1, e2) => {return this.baseInfo[e2]["strength"] - this.baseInfo[e1]["strength"]})
-            let temp = this.teamsPlaying.slice()
-            temp.sort((e1, e2) => {return this.baseInfo[e2]["strength"] - this.baseInfo[e1]["strength"]})
-            //console.log(temp)
-            for (let x = 0 ; x < temp.length ; x++) {
-                if (temp[x] === this.playersTeam[1]) {
-                    temp.splice(x, 1)
-                }
-            }
-            let hP = this.baseInfo[temp[0]]["originalStrength"]
-            let lP = this.baseInfo[temp[temp.length - 1]]["originalStrength"]
-            this.extremesStrengths = [hP, lP]
-            //this.cupTeams["Directs"] = temp.slice(0,2)
-            //this.cupTeams["Prelim"] = temp.slice(2,13)
-            let count = 1
-            while (count <= this.divisions) {
-                if (count === this.divisions) {
-                    this.divisionsTeams[count] = temp.splice(0, this.divisions_size - 1)
-                    this.divisionsTeams[count].push(this.playersTeam[1])
-                } else { 
-                    this.divisionsTeams[count] = temp.splice(0, this.divisions_size)
-                }
-                count = count + 1
-            }
-            console.log(this.divisionsTeams)
-            this.initializeNewSessionInfo()
-            this.runSeason("Start")
         }
-    }
+        formationPlayers.forEach((e) => {this.sessionInfo[e]["situation"][0] = 1})
 
-    normalizeHumanTeamPower() {
-        let avgPower = [0, 0]
-        for (let x = 0 ; x < this.divisionsTeams[this.divisions].length ; x++) {
-            let team = this.divisionsTeams[this.divisions][x]
-            if (this.playersTeam[1] === team) {continue}
-            let players = this.sessionInfo[team]["players"]
-            for (let p = 0 ; p < players.length ; p++) {
-                let playerStrength = this.sessionInfo[players[p]]["strength"]
-                avgPower[0] += playerStrength
-                avgPower[1] += 1
+        let reservePlayers = []
+        if (goalkeepers.length) { reservePlayers.push(goalkeepers.splice(0, 1)) }
+        while ((defenders.length + mids.length + forwards.length > 0) && reservePlayers.length < 7) {
+            for (let p = 0 ; p < 3 ; p++) {
+                let ps = rotation[p].splice(0, 1)
+                //console.log(ps)
+                reservePlayers = reservePlayers.concat(ps)
             }
         }
-        avgPower = Math.floor(avgPower[0] / avgPower[1])
-        if (avgPower < 3) {
-            avgPower = 3
-        }
-        let humanPlayers = this.sessionInfo[this.playersTeam[1]]["players"]
-        for (let t = 0 ; t < humanPlayers.length ; t++) {
-            this.sessionInfo[humanPlayers[t]]["strength"] = this.randomInt(avgPower - 2, avgPower + 3)
-            this.sessionInfo[humanPlayers[t]]["contract"][1] = this.sessionInfo[humanPlayers[t]]["strength"] * 500
-        }
+        reservePlayers.forEach((e) => {this.sessionInfo[e]["situation"][0] = 2})
     }
 
     seasonGamesMaker() {
@@ -330,7 +299,7 @@ export class InfoHandler {
         for (let z = 1 ; z <= this.divisions ; z++) {
             let turn1 = []
             let fixedTeam = this.divisionsTeams[z][0]
-            let rotation = this.divisionsTeams[z].slice(1, this.divisionsTeams.length)
+            let rotation = this.shuffle(this.divisionsTeams[z].slice(1, this.divisionsTeams.length))
             let count = 1
             for (let x = 0 ; x < this.divisions_size - 1 ; x++) {
                 let day = []
@@ -354,6 +323,7 @@ export class InfoHandler {
                     let returnMatch = match.slice()
                     returnMatch[0] = match[1]
                     returnMatch[1] = match[0]
+                    returnMatch[7] = match[7] + this.divisions_size - 1
                     turn2[x].push(returnMatch)
                 }
             }
@@ -361,7 +331,7 @@ export class InfoHandler {
             games["league"][z] = turn1.concat(turn2)
         } // league games finished
 
-        console.log("season league games", games)
+        //console.log("season league games", games)
         //console.log(this.divisionsTeams)
 
         this.seasonGames["League"] = []
@@ -382,7 +352,7 @@ export class InfoHandler {
                 this.leagueStandings[teamID] = [0, 0, 0, 0, 0, 0, 0, div]
             }
         }
-        console.log(this.leagueStandings)
+        //console.log(this.leagueStandings)
 
         for (let x = 0 ; x < this.playersPlaying.length ; x++) {
             let playerID = this.playersPlaying[x]
@@ -546,7 +516,7 @@ export class InfoHandler {
         for (let x = mS.length - 1 ; x >= 0 ; x--) {
             let match = mS[x]
             if (match[0] === id2 || match[1] === id2) {
-                return match
+                if (match[9]) {return match}
             }
         }
         return null
