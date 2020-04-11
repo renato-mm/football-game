@@ -178,6 +178,7 @@ export class InfoHandler {
             let hP = this.baseInfo[temp[0]]["strength"]
             let lP = this.baseInfo[temp[temp.length - 1]]["strength"]
             this.extremesStrengths = [hP, lP]
+
             for (let x = 1 ; x < this.divisions ; x++) {
                 this.divisionsTeams[x] = temp.splice(0, this.divisions_size)
             }
@@ -190,6 +191,23 @@ export class InfoHandler {
                 this.baseInfo[e]["strength"] = avgPower;
                 this.divisionsTeams[this.divisions].push(e)}
                 )
+
+            this.numberOfTeams = this.teamsPlaying.length
+            this.cupSize = 0;
+            this.cupRounds = 0;
+            [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024].forEach(
+                (e, i, a) => {
+                    if (i === a.length - 1) {
+                        if (!this.cupSize) { this.cupSize = e ; this.cupRounds = i + 1 }
+                    } else if (e <= this.numberOfTeams && a[i + 1] > this.numberOfTeams) {
+                        this.cupSize = e
+                        this.cupRounds = i + 1
+                    }
+                }
+            );
+            temp = this.teamsPlaying.slice()
+            this.cupTeams = temp.splice(0, this.cupSize)
+            this.rankedTeams = this.teamsPlaying.slice()
             //console.log(this.divisionsTeams)
             this.initializeNewSessionInfo()
             this.runSeason("Start")
@@ -241,7 +259,7 @@ export class InfoHandler {
             let lowEnd = highEnd - 4
             let playerPower = this.randomInt(lowEnd, highEnd)
             let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "history", "season history"]
-            let new_values = [this.randomInt(1, 100), [0, 0], playerPower, "FP", [0, playerPower * 500, playerPower * 10000], [0, 0, 0, 0], [0, 0, 0, 0]]
+            let new_values = [this.randomInt(1, 100), [0, 0], playerPower, "FP", [0, playerPower * 500, playerPower * 10000], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_player[new_properties[l]] = new_values[l]
             }
@@ -285,13 +303,28 @@ export class InfoHandler {
         let reservePlayers = []
         if (goalkeepers.length) { reservePlayers.push(goalkeepers.splice(0, 1)) }
         while ((defenders.length + mids.length + forwards.length > 0) && reservePlayers.length < 7) {
-            for (let p = 0 ; p < 3 ; p++) {
+            for (let p = 0 ; p < 3 && reservePlayers.length < 7 ; p++) {
                 let ps = rotation[p].splice(0, 1)
                 //console.log(ps)
                 reservePlayers = reservePlayers.concat(ps)
             }
         }
         reservePlayers.forEach((e) => {this.sessionInfo[e]["situation"][0] = 2})
+    }
+
+    rankTeams() {
+        let a
+    }
+
+    cupSorting() {
+        let day = this.seasonCalendar[this.seasonDay]
+        let teams = this.shuffle(this.cupTeams)
+        for (let l = 0 ; l < teams.length/2 ; l++) {
+            let match = [teams[l], teams[teams.length - 1 - l], 0, 0, 0, "Cup", this.cupSize/(Math.pow(2, day[1])), (day[1] + 1), this.currentSeason, false]
+            this.seasonGames["Cup"][day[1]].push(match)
+        }
+        //console.log("Sorted cup matches", this.seasonGames["Cup"])
+        //console.log("day", day)
     }
 
     seasonGamesMaker() {
@@ -363,8 +396,14 @@ export class InfoHandler {
         for (let x = 0 ; x < this.seasonGames["League"].length ; x++){
             this.seasonCalendar.push(["League", x])
         }
+        this.seasonGames["Cup"] = []
+        for (let x = 0 ; x < this.cupRounds ; x++) {
+            this.seasonGames["Cup"].push([])
+            let l = this.seasonCalendar.length
+            this.seasonCalendar.splice(l-(3*x), 0, ["Cup" , this.cupRounds-x-1])
+        }
         this.seasonDay = 0
-        //console.log(this.seasonCalendar)
+        console.log(this.seasonCalendar)
         //console.log(this.seasonGames["league"][1])
 
     }
@@ -376,17 +415,11 @@ export class InfoHandler {
         this.currentMatchesHistory = []
         this.currentMatchesReturnHistory = []
         this.currentMatches = this.seasonGames[day[0]][day[1]]
-        /*
-        if (day === "league") {
-            for (let div = 1 ; div < this.divisions ; div++) {
-                this.currentMatches.push(this.seasonGames["league"][div][day[1]])
-            }
-        }*/
         for (let y = 0 ; y < this.currentMatches.length ; y++) {
             this.currentMatchesHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
             this.currentMatchesReturnHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
         }
-        //return this.currentMatches
+        console.log(this.currentMatches)
     }
 
     runSeason(action) {
@@ -439,6 +472,8 @@ export class InfoHandler {
                 this.currentSeason += 1
                 this.runSeason("Start")
             } else {
+                let day = this.seasonCalendar[this.seasonDay]
+                if (day[0] === "Cup") { this.cupSorting() } 
                 this.nextMatches()
             }
             
@@ -739,8 +774,8 @@ export class InfoHandler {
             if (success_roll < 10 + goal_add_chance) {
                 historyElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
                 returnHistoryElements.push({time: time,  stat:'Goal',  text: "Goal", teamID: possession, playerID: player, player: this.sessionInfo[player]["name"]})
-                this.sessionInfo[player]["history"][0] += 1
-                this.sessionInfo[player]["season history"][0] += 1
+                this.sessionInfo[player]["history"][1] += 1
+                this.sessionInfo[player]["season history"][1] += 1
                 //this.currentMatchesReturnHistory[matchID][(possession === teams[0]) ? 1 : 2] += 1
                 this.currentMatches[matchID][(possession === teams[0]) ? 2 : 3] += 1
                 historyElements.push({time: time,  stat:'Start',  text: "Start", teamID: enemy, playerID: ePlayerStart, player: this.sessionInfo[ePlayerStart]["name"]})

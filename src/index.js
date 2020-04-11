@@ -132,10 +132,10 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <div className = {"gameTopMenu"}>
+            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} >Play</button>
             <button style = {colors} onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
             <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
             <button style = {colors} onClick={()=>this.showTeamInfo(this.state.selectedTeam)} disabled={this.disabledButton("teamInfo")}>Team Info</button>
-            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} >Play</button>
           </div>
           {screenBoard}
         </div>
