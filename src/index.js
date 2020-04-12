@@ -70,7 +70,7 @@ class Game extends React.Component {
     return (
       <TeamHome
       team = {team} opponent = {opponent} season = {this.state.infoHandler.get("Season",0,'year')}
-      showTeamInfo = {()=>this.showTeamInfo(opponent[0], "teamHome")}
+      showTeamInfo = {(opp)=>this.showTeamInfo(opp, "teamHome")}
       showStandings={(code)=>this.showStandings(code)}
       handler = {this.state.infoHandler} ready = {()=>this.setState({lastScreen: this.state.screen, screen: "matches"})}/>
     );

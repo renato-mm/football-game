@@ -1,6 +1,7 @@
 import React from 'react';
 import './division.css';
 import Match from './match';
+import PieChart from 'react-minimal-pie-chart';
 
 export default class Division extends React.Component {
   constructor(props){
@@ -67,6 +68,15 @@ export default class Division extends React.Component {
     return (
       <div className = {"divisionsBox"}>
         Season: {season} --- {day[0]} Round : {day[1]} ___________ Time : {this.state.matchTime}
+        <div className = {"clock"}>
+          <PieChart
+            data={[
+              { title: 'Time', value: this.state.matchTime, color: 'blue' },
+              { title: '', value: 90 - this.state.matchTime, color: 'white' },
+            ]}
+            startAngle={-90}
+          />
+        </div>
       {divisions.map((e, n) => {
         return (
           <div className = {"divisionBox"}>

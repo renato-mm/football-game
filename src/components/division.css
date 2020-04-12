@@ -10,7 +10,7 @@
 .matchesBoard {
   margin: 5px auto;
   background: rgb(8, 126, 4);
-  min-width: 800px;
+  width: 800px;
   min-height: 520px;
 }
 
@@ -32,4 +32,9 @@
   width: 23%;
   height: 100%;
   font-weight: bold;
+}
+
+.clock {
+  float: right;
+  width: 5%;
 }

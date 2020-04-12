@@ -16,8 +16,6 @@ export default class TeamHome extends React.Component {
       panel: "match",
       selectedPlayer: null,
       focus: false,
-      teamInfo: props.opponent[0][0] === props.team ? props.opponent[0][1] : props.opponent[0][0],
-      showOpponentInfo: false,
     };
     this.handler = props.handler;
     this.team = props.team;
@@ -66,7 +64,7 @@ export default class TeamHome extends React.Component {
     const teamPlys = this.handler.get("Team",this.team,"players");
     ['G','D','M','F'].forEach(pos => {
       const plys = teamPlys.filter(e=>this.handler.get("Player",e,"position") === pos);
-      plys.sort((e1,e2)=>this.handler.get("Player",e1,"name")>this.handler.get("Player",e2,"name"));
+      plys.sort((e1,e2)=>this.handler.get("Player",e1,"name").localeCompare(this.handler.get("Player",e2,"name")));
       const players = [];
       for(let j = 0; j < plys.length; j++){
         const colors = this.state.selectedPlayer === this.handler.get("Player",plys[j],"id") ? this.colors : this.colorsPlayers;

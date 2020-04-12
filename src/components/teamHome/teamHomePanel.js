@@ -22,14 +22,16 @@ export default class TeamHomePanel extends React.Component {
     if(props.nextMatch){
       const location = props.nextMatch[0][0] === props.team ? "Home" : "Away";
       this.opponent = location === "Home" ? props.nextMatch[0][1] : props.nextMatch[0][0];
-      const comp = props.nextMatch[0][5] === "League" ? "Fixture #"+props.nextMatch[0][7] : props.nextMatch[0][6];
-      const division = this.handler.get("Team",this.opponent,"League division") > 0 ? "Division "+this.handler.get("Team",this.opponent,"League division") : "No division";
-      this.oppName = props.nextMatch[0][5] === "League" ? this.handler.get("Team",this.opponent,"name") : this.handler.get("Team",this.opponent,"name")+" ("+division+")";
+      this.cup = props.nextMatch[0][5];
+      const comp = this.cup === "League" ? "Fixture #"+props.nextMatch[0][7] : props.nextMatch[0][6];
+      const division = this.handler.get("Team",this.opponent,"league division") > 0 ? "Division "+this.handler.get("Team",this.opponent,"league division") : "No division";
+      this.oppName = this.cup === "League" ? this.handler.get("Team",this.opponent,"name") : this.handler.get("Team",this.opponent,"name")+" ("+division+")";
       this.oppInfo = location+" - "+comp;
       this.oppColors = {
         background: this.handler.get("Team",this.opponent,"color1"),
         color: this.handler.get("Team",this.opponent,"color2"),
       };
+      this.headToHead = this.nextMatch[1];
     }
     else{
       this.oppName = "Rest (no match)";
@@ -39,6 +41,8 @@ export default class TeamHomePanel extends React.Component {
         background: 'white',
         color: 'black',
       };
+      this.headToHead = null;
+      this.cup = null;
     }
     this.changePanel = props.changePanel;
     this.renewContract = props.renewContract;
@@ -59,7 +63,8 @@ export default class TeamHomePanel extends React.Component {
           handler={this.handler}
           team={this.team}
           opponent={this.opponent}
-          headToHead={this.nextMatch[1]}
+          cup={this.cup}
+          headToHead={this.headToHead}
           colors={this.colors}
           oppColors={this.oppColors}
           cash={this.handler.get("Team",this.team,"cash")}

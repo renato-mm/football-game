@@ -3,9 +3,11 @@ import Modal from 'react-bootstrap/Modal'
 import './teamModal.css';
 import { IconContext } from "react-icons";
 import { GiSoccerBall } from "react-icons/gi";
+import { GiWhistle } from "react-icons/gi";
 import {AiTwotoneBook} from "react-icons/ai";
 
 const goalIcon = <GiSoccerBall />;
+const whistle = <GiWhistle />;
 const redCard = <IconContext.Provider value={{className: "redCard"}}>
   <AiTwotoneBook />
 </IconContext.Provider>;
@@ -42,7 +44,17 @@ export default function TeamModal(props) {
 
   const hist = []
   for(let j = 0; j < props.history.length; j++){
-    const stat = props.history[j].text === "Goal" ? goalIcon : props.history[j].text;
+    let stat = '';
+    switch(props.history[j].text){
+      case "Goal":
+        stat = goalIcon;
+        break;
+      case "Match Start":
+        stat = whistle;
+        break;
+      default:
+        stat = props.history[j].text;
+    }
     hist.push(
       <tr key={j}>
         <td>{props.history[j].time.toString().padStart(2, '0')}'</td>

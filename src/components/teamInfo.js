@@ -29,7 +29,7 @@ export default class TeamInfo extends React.Component {
     };
     this.handler = props.handler;
     this.showTeamInfo = props.showTeamInfo;
-    this.selectOfTeams = this.handler.get("Team",0,"id").map(e=><option key={e} value={e}>{this.handler.get("Team",e,"name")}</option>)
+    this.selectOfTeams = this.handler.get("Team",0,"id").sort((e1,e2)=>this.handler.get("Team",e1,"name").localeCompare(this.handler.get("Team",e2,"name"))).map(e=><option key={e} value={e}>{this.handler.get("Team",e,"name")}</option>)
   }
 
   handleClose = () => this.setState({teamInfoFixturesModalShow: false,});
@@ -65,7 +65,7 @@ export default class TeamInfo extends React.Component {
     const teamPlys = this.handler.get("Team",this.state.team,"players");
     ['G','D','M','F'].forEach(pos => {
       const plys = teamPlys.filter(e=>this.handler.get("Player",e,"position") === pos);
-      plys.sort((e1,e2)=>this.handler.get("Player",e1,"name")>this.handler.get("Player",e2,"name"));
+      plys.sort((e1,e2)=>this.handler.get("Player",e1,"name").localeCompare(this.handler.get("Player",e2,"name")));
       const players = [];
       for(let j = 0; j < plys.length; j++){
         const colors = this.state.selectedPlayer === this.handler.get("Player",plys[j],"id") ? this.state.colors : this.state.colorsPlayers;

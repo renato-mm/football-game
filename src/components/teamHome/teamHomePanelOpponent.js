@@ -40,7 +40,7 @@ export default function TeamHomePanelOpponent(props){
       </div>
       <div className = {"row teamHomeOpponentButtons"}>
         <button onClick={handleShow}> Fixtures </button>
-        <button onClick={()=>props.showOpponentInfo()}> Roster </button>
+        <button onClick={()=>props.showOpponentInfo(props.opponent)}> Roster </button>
       </div>
       <FixturesInfo
       handler={props.handler}
