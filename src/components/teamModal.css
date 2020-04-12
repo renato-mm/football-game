@@ -35,13 +35,13 @@
 }
 
 .teamModalSubButton{
-  padding: 20px 74px;
+  padding: 6px 74px;
   float: right;
 }
 
 .teamModalSubButton button{
-  height: 70px;
-  width: 90px;
+  height: 60px;
+  width: 80px;
   cursor: default;
 }
 

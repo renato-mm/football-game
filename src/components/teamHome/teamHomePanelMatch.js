@@ -5,7 +5,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 export default function TeamHomePanelMatch(props){
 
   const teamStandings = props.handler.get("Team",props.team,"standing");
-  const opponentStandings = props.handler.get("Team",props.opponent[0],"standing");
+  const opponentStandings = props.handler.get("Team",props.opponent,"standing");
 
   const headToHead = [];
   headToHead.push(
@@ -19,7 +19,7 @@ export default function TeamHomePanelMatch(props){
       <td>{teamStandings[6]}</td>
     </tr>
     <tr key={"opponentStandings"} style={props.oppColors}>
-      <td>{props.handler.get("Team",props.opponent[0],"name")}</td>
+      <td>{props.handler.get("Team",props.opponent,"name")}</td>
       <td>&nbsp;{opponentStandings[1]}&nbsp;</td>
       <td>&nbsp;{opponentStandings[2]}&nbsp;</td>
       <td>&nbsp;{opponentStandings[3]}&nbsp;</td>
@@ -28,7 +28,7 @@ export default function TeamHomePanelMatch(props){
     </tr>
   </tbody>);
 
-  const h2h = props.opponent[2];
+  const h2h = props.headToHead;
   let h2hText = '';
   if(h2h && h2h[9]){
     const cup = h2h[5] === 'League' ? 0 : 1;
@@ -37,7 +37,7 @@ export default function TeamHomePanelMatch(props){
     const h2hResult = h2h[4] === 0 ? 'D' : h2h[4] === props.team ? 'W' : 'L';
     const homeName = props.handler.get("Team",h2h[0],"name");
     const awayName = props.handler.get("Team",h2h[1],"name");
-    h2hText = <>{fixture+" ("+h2h[8]+")"+":"}<br/>{home}&nbsp;&nbsp;{homeName}&nbsp;&nbsp;{h2h[2]+":"+h2h[3]}&nbsp;&nbsp;{awayName}&nbsp;&nbsp;{h2hResult}</>;
+    h2hText = <>{fixture+" ("+h2h[8]+"):"}<br/>{home}&nbsp;&nbsp;{homeName}&nbsp;&nbsp;{h2h[2]+":"+h2h[3]}&nbsp;&nbsp;{awayName}&nbsp;&nbsp;{h2hResult}</>;
   }
   else{
     h2hText = <>{'First match between them!'}<br/></>;

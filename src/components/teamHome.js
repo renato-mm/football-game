@@ -16,13 +16,13 @@ export default class TeamHome extends React.Component {
       panel: "match",
       selectedPlayer: null,
       focus: false,
-      teamInfo: props.opponent[0],
+      teamInfo: props.opponent[0][0] === props.team ? props.opponent[0][1] : props.opponent[0][0],
       showOpponentInfo: false,
     };
     this.handler = props.handler;
     this.team = props.team;
     this.season = props.season;
-    this.opponent = props.opponent;
+    this.nextMatch = props.opponent;
     this.colors = {
       background: this.handler.get("Team",this.team,"color1"),
       color: this.handler.get("Team",this.team,"color2"),
@@ -49,9 +49,9 @@ export default class TeamHome extends React.Component {
   }
 
   changePlayerFormation(player, event){
-    if(player.injured === 0 && player.suspended === 0){
+    let situation = this.handler.get("Player",player,"situation");
+    if(![3,4].includes(situation[0])){
       event.bubbles = false; 
-      let situation = this.handler.get("Player",player,"situation");
       situation[0] = situation[0] === 2 ? 0 : situation[0] + 1;
       this.handler.set("Player",player,"situation", situation);
       this.setState({
@@ -154,7 +154,7 @@ export default class TeamHome extends React.Component {
       handler={this.handler}
       season={this.season}
       team={this.team}
-      opponent={this.opponent}
+      nextMatch={this.nextMatch}
       colors={this.colors}
       player={this.state.selectedPlayer}
       panel={this.state.panel}

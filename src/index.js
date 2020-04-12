@@ -69,7 +69,7 @@ class Game extends React.Component {
   renderTeamHome(team, opponent) {
     return (
       <TeamHome
-      team = {team} opponent = {opponent} season = {this.state.season}
+      team = {team} opponent = {opponent} season = {this.state.infoHandler.get("Season",0,'year')}
       showTeamInfo = {()=>this.showTeamInfo(opponent[0], "teamHome")}
       showStandings={(code)=>this.showStandings(code)}
       handler = {this.state.infoHandler} ready = {()=>this.setState({lastScreen: this.state.screen, screen: "matches"})}/>
@@ -120,7 +120,7 @@ class Game extends React.Component {
         break;
       case "teamHome":
         const humanTeam = this.state.infoHandler.get("Human",1,"team");
-        screenBoard = this.renderTeamHome(humanTeam, this.state.infoHandler.get("Team",humanTeam,"next opponent"));
+        screenBoard = this.renderTeamHome(humanTeam, this.state.infoHandler.get("Team",humanTeam,"next match"));
         break;
       case "teamInfo":
         screenBoard = this.renderTeamInfo(this.state.selectedTeam);

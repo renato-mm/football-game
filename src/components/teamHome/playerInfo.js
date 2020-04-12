@@ -9,6 +9,7 @@ export default function PlayerInfo(props){
   const situation = props.handler.get("Player",props.player,"situation");
   const inj = (situation[0] === 3) ? <div> Injured for {situation[1]} matches </div> : null;
   const sus = (situation[0] === 4) ? <div> Suspended for {situation[1]} matches </div> : null;
+  const hist = props.handler.get("Player",props.player,"history");
 
   return (
     <div className = {"playerInfos"}>
@@ -20,7 +21,7 @@ export default function PlayerInfo(props){
           </tr>
           <tr>
             <td>Goals this season</td>
-            <td>{props.handler.get("Player",props.player,"goalsThisSeason")}</td>
+            <td>{props.handler.get("Player",props.player,"season history")[1]}</td>
           </tr>
         </tbody>
       </table>
@@ -33,19 +34,19 @@ export default function PlayerInfo(props){
         <tbody>
           <tr>
             <td>Matches</td>
-            <td>{props.handler.get("Player",props.player,"history")}</td>
+            <td>{hist[0]}</td>
           </tr>
           <tr>
             <td>Goals</td>
-            <td>{props.handler.get("Player",props.player,"history")}</td>
+            <td>{hist[1]}</td>
           </tr>
           <tr>
             <td>Red Cards</td>
-            <td>{props.handler.get("Player",props.player,"history")}</td>
+            <td>{hist[3]}</td>
           </tr>
           <tr>
             <td>Injuries</td>
-            <td>{props.handler.get("Player",props.player,"history")}</td>
+            <td>{hist[4]}</td>
           </tr>
         </tbody>
       </table>

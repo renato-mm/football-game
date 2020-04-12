@@ -9,7 +9,7 @@ export default function TeamHomePanelFormation(props) {
     let starters = props.players.filter(e=>props.handler.get("Player",e,"situation")[0] === 1);
     let reserves = props.players.filter(e=>props.handler.get("Player",e,"situation")[0] === 2);
     let keepers = starters.filter(e=>props.handler.get("Player",e,"position") === 'G');
-    if(starters.length === 11 && reserves.length < 6 && !props.auto){
+    if(starters.length === 11 && reserves.length < 8 && !props.auto){
       if(keepers.length === 1){
         disabled = false;
       }

@@ -17,12 +17,29 @@ export default class TeamHomePanel extends React.Component {
     this.handler = props.handler;
     this.season = props.season;
     this.team = props.team;
-    this.opponent = props.opponent;
+    this.nextMatch = props.nextMatch;
     this.colors = props.colors;
-    this.oppColors = {
-      background: this.handler.get("Team",this.opponent[0],"color1"),
-      color: this.handler.get("Team",this.opponent[0],"color2"),
-    };
+    if(props.nextMatch){
+      const location = props.nextMatch[0][0] === props.team ? "Home" : "Away";
+      this.opponent = location === "Home" ? props.nextMatch[0][1] : props.nextMatch[0][0];
+      const comp = props.nextMatch[0][5] === "League" ? "Fixture #"+props.nextMatch[0][7] : props.nextMatch[0][6];
+      const division = this.handler.get("Team",this.opponent,"League division") > 0 ? "Division "+this.handler.get("Team",this.opponent,"League division") : "No division";
+      this.oppName = props.nextMatch[0][5] === "League" ? this.handler.get("Team",this.opponent,"name") : this.handler.get("Team",this.opponent,"name")+" ("+division+")";
+      this.oppInfo = location+" - "+comp;
+      this.oppColors = {
+        background: this.handler.get("Team",this.opponent,"color1"),
+        color: this.handler.get("Team",this.opponent,"color2"),
+      };
+    }
+    else{
+      this.oppName = "Rest (no match)";
+      this.oppInfo = "";
+      this.opponent = null;
+      this.oppColors = {
+        background: 'white',
+        color: 'black',
+      };
+    }
     this.changePanel = props.changePanel;
     this.renewContract = props.renewContract;
     this.changeFocus = props.changeFocus;
@@ -42,6 +59,7 @@ export default class TeamHomePanel extends React.Component {
           handler={this.handler}
           team={this.team}
           opponent={this.opponent}
+          headToHead={this.nextMatch[1]}
           colors={this.colors}
           oppColors={this.oppColors}
           cash={this.handler.get("Team",this.team,"cash")}
@@ -70,7 +88,7 @@ export default class TeamHomePanel extends React.Component {
   renderOpponent(){
     return <Opponent 
             handler={this.handler}
-            opponent={this.opponent[0]}
+            opponent={this.opponent}
             showOpponentInfo={this.showOpponentInfo}/>;
   }
 
@@ -114,7 +132,7 @@ export default class TeamHomePanel extends React.Component {
       <div>
         <div className = {"panel"}>
           <div className = {"row nextMatch"}> Opponent <span>{this.season}</span></div>
-          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.handler.get("Team",this.opponent[0],"name")} <div>{this.opponent[1]} - Fixture #{this.handler.get("Season", 0, "day")[1]}</div></div>
+          <div style={this.oppColors} className = {"row nextMatchInfo"}> {this.oppName} <div>{this.oppInfo}</div></div>
           <div className = {"teamHomePanel"}>
             {screenPanel}
           </div>
