@@ -39,7 +39,7 @@ class Game extends React.Component {
 
   matchesEvents(event) {
     if (event === "End") {
-      this.setState({lastScreen: this.state.screen, screen: "standings"})
+      this.setState({lastScreen: this.state.screen, screen: "teamHome"})
     }
   }
 

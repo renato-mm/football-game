@@ -72,7 +72,7 @@ export class InfoHandler {
         this.teamsOut = [];
         this.divisions = 4
         this.divisions_size = 8
-        this.promotionSpots = 1
+        this.promotionSpots = 2
 
         this.cup_directs_size = (60/100) * this.divisions_size
         this.cup_directs_phase = 3
@@ -208,7 +208,6 @@ export class InfoHandler {
             temp = this.teamsPlaying.slice()
             this.cupTeams = temp.splice(0, this.cupSize)
             this.rankedTeams = this.teamsPlaying.slice()
-            //console.log(this.divisionsTeams)
             this.initializeNewSessionInfo()
             this.runSeason("Start")
         }
@@ -313,7 +312,8 @@ export class InfoHandler {
     }
 
     rankTeams() {
-        let a
+        this.rankedTeams = this.teamsPlaying.slice()
+        this.rankedTeams.sort((a, b) => {return this.seasonRanking[b] - this.seasonRanking[a]})
     }
 
     cupSorting() {
@@ -390,35 +390,31 @@ export class InfoHandler {
             }
             this.seasonGames["League"].push(dayGames)
         }
+    }
 
-        this.leagueStandings = {}
+    setupTournaments() {
+        let demoting = []
+        let promoting = []
         for (let div = 1 ; div <= this.divisions ; div++) {
-            for (let t = 0 ; t < this.divisionsTeams[div].length ; t++) {
-                let teamID = this.divisionsTeams[div][t]
-                this.leagueStandings[teamID] = [0, 0, 0, 0, 0, 0, 0, div]
+            if (div !== 1) {
+                promoting = this.divisionsTeams[div].splice(0, this.promotionSpots)
+                this.divisionsTeams[div - 1] = this.divisionsTeams[div - 1].concat(promoting)
+                this.divisionsTeams[div] = demoting.concat(this.divisionsTeams[div])
             }
+            demoting = this.divisionsTeams[div].splice(this.divisions_size - this.promotionSpots, this.promotionSpots)
         }
-        //console.log(this.leagueStandings)
-
-        for (let x = 0 ; x < this.playersPlaying.length ; x++) {
-            let playerID = this.playersPlaying[x]
-            this.sessionInfo[playerID]["season history"] = [0, 0, 0, 0]
+        let count = 0
+        for (let t = 0 ; t < this.rankedTeams.length && count < this.promotionSpots ; t++) {
+            let team = this.rankedTeams[t]
+            let continue_switch = false
+            for (let div = 1 ; div <= this.divisions ; div++) {
+                if (this.inArray(team, this.divisionsTeams[div])) { continue_switch = true; break }
+            }
+            if (continue_switch || this.inArray(team, demoting)) {continue}
+            this.divisionsTeams[this.divisions].push(team)
+            count += 1
         }
-
-        this.seasonCalendar = []
-        for (let x = 0 ; x < this.seasonGames["League"].length ; x++){
-            this.seasonCalendar.push(["League", x])
-        }
-        this.seasonGames["Cup"] = []
-        for (let x = 0 ; x < this.cupRounds ; x++) {
-            this.seasonGames["Cup"].push([])
-            let l = this.seasonCalendar.length
-            this.seasonCalendar.splice(l-(3*x), 0, ["Cup" , this.cupRounds-x-1])
-        }
-        this.seasonDay = 0
-        console.log(this.seasonCalendar)
-        //console.log(this.seasonGames["league"][1])
-
+        this.cupTeams = this.rankedTeams.slice(0, this.cupSize)
     }
 
     nextMatches() {
@@ -437,10 +433,39 @@ export class InfoHandler {
 
     runSeason(action) {
         if (action === "Start") {
-            this.pastSeasons[this.currentSeason - 1] = {standings: this.leagueStandings, games: this.seasonGames, calendar: this.seasonCalendar}
-            //console.log("making games")
+            if (this.currentSeason !== this.startingSeason) {
+                this.pastSeasons[this.currentSeason - 1] = {ranking: this.seasonRanking, standings: this.leagueStandings, games: this.seasonGames, calendar: this.seasonCalendar}
+                this.setupTournaments()
+            }
             this.seasonGamesMaker()
-            //console.log("getting next matches")
+            this.seasonRanking = {}
+            for (let x = 0 ; x < this.teamsPlaying.length ; x++) {
+                this.seasonRanking[this.teamsPlaying[x]] = 0
+            }
+            this.leagueStandings = {}
+            for (let div = 1 ; div <= this.divisions ; div++) {
+                for (let t = 0 ; t < this.divisionsTeams[div].length ; t++) {
+                    let teamID = this.divisionsTeams[div][t]
+                    this.leagueStandings[teamID] = [0, 0, 0, 0, 0, 0, 0, div]
+                }
+            }
+            for (let x = 0 ; x < this.playersPlaying.length ; x++) {
+                let playerID = this.playersPlaying[x]
+                this.sessionInfo[playerID]["season history"] = [0, 0, 0, 0]
+            }
+            this.seasonCalendar = []
+            for (let x = 0 ; x < this.seasonGames["League"].length ; x++){
+                this.seasonCalendar.push(["League", x])
+            }
+            this.seasonGames["Cup"] = []
+            for (let x = 0 ; x < this.cupRounds ; x++) {
+                this.seasonGames["Cup"].push([])
+                let l = this.seasonCalendar.length
+                this.seasonCalendar.splice(l-(3*x), 0, ["Cup" , this.cupRounds-x-1])
+            }
+            this.seasonDay = 0
+            //console.log(this.seasonCalendar)
+            //console.log(this.seasonGames["league"][1])
             this.nextMatches()
         } else if (action === "End day") {
             for (let x = 0 ; x < this.currentMatches.length ; x++) {
@@ -465,10 +490,12 @@ export class InfoHandler {
                     this.leagueStandings[home][1] += 1
                     this.leagueStandings[home][6] += 3
                     this.leagueStandings[away][3] += 1
+                    this.seasonRanking[home] += 1
                 } else if (away === winner) { 
                     this.leagueStandings[away][1] += 1
                     this.leagueStandings[away][6] += 3
                     this.leagueStandings[home][3] += 1
+                    this.seasonRanking[away] += 1
                 } else {
                     this.leagueStandings[away][2] += 1
                     this.leagueStandings[home][2] += 1
@@ -479,6 +506,7 @@ export class InfoHandler {
             for (let z = 1 ; z <= this.divisions ; z++) {
                 this.divisionsTeams[z].sort((e1, e2) => {return this.sortDivision(e1, e2)})
             }
+            this.rankTeams()
             this.seasonDay += 1
             //console.log(this.seasonDay)
             if (this.seasonDay >= this.seasonCalendar.length) {
@@ -579,7 +607,7 @@ export class InfoHandler {
             if (property === "all") {
                 return this.sessionInfo[id]
             } else if (id === 0) {
-                return this.teamsPlaying
+                return this.rankedTeams.slice()
             } else if (property === "next match") {
                 for (let x = 0 ; x < this.currentMatches.length ; x++) {
                     let match = this.currentMatches[x]

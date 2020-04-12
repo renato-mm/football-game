@@ -72,7 +72,7 @@ export default class Division extends React.Component {
           <PieChart
             data={[
               { title: 'Time', value: this.state.matchTime, color: 'blue' },
-              { title: '', value: 90 - this.state.matchTime, color: 'white' },
+              { title: '', value: 120 - this.state.matchTime, color: 'white' },
             ]}
             startAngle={-90}
           />
