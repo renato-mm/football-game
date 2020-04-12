@@ -40,6 +40,24 @@ export default class GameInitializer extends React.Component {
   renderNew(){
     return (
       <div className = {"newBox"}>
+        <div className = {"teamsOut"}>
+          {this.state.teamsOut.map((e) => {
+            return (
+              <div
+                className = {"selectionDiv"} 
+                key = {e}
+              >
+                {this.renderTeamRec(e)}
+                <button 
+                  className = {"removeButton"} 
+                  onClick = {() => {this.props.handler.initialization("Add", [e]); this.getTeams()}}
+                  >
+                +
+                </button>
+              </div>
+            )
+          })}
+        </div>
         <div className = {"teamsIn"}>
           {this.state.teamsIn.map((e) => {
             return (
@@ -59,24 +77,6 @@ export default class GameInitializer extends React.Component {
                   onClick = {() => {this.props.handler.initialization("Player", [e]); this.getTeams()}}
                   > 
                 *
-                </button>
-              </div>
-            )
-          })}
-        </div>
-        <div className = {"teamsOut"}>
-          {this.state.teamsOut.map((e) => {
-            return (
-              <div
-                className = {"selectionDiv"} 
-                key = {e}
-              >
-                {this.renderTeamRec(e)}
-                <button 
-                  className = {"removeButton"} 
-                  onClick = {() => {this.props.handler.initialization("Add", [e]); this.getTeams()}}
-                  >
-                +
                 </button>
               </div>
             )

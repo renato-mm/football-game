@@ -81,8 +81,14 @@ export default class Division extends React.Component {
     )
   }
 
-  renderCup() {
-    return 
+  renderCup(m, i, day) {
+    let season = this.props.handler.get("Season", 0, "year")
+    return (
+      <div className = {"cupBox"}>
+        Season: {season} --- {day[0]} Round : {day[1]}  ___________ Time : {this.state.matchTime}
+        { i.map((id) => {return this.renderMatch(id)}) }
+      </div>
+      )
   }
   
   render(){
@@ -92,6 +98,7 @@ export default class Division extends React.Component {
     }
     let day = this.props.handler.get("Season", 0, "day")
     let matches = this.props.handler.get("Match", 0, "current matches")
+    //console.log(matches)
     let inds = []
     //console.log("Matches", matches)
     for (let x = 0 ; x < matches.length ; x++) {
@@ -114,7 +121,7 @@ export default class Division extends React.Component {
           <div
             className = {"matchesBox"}
           >
-            {(day[0] === "League") ? this.renderDivisions(matches, inds, day) : this.renderCup()}
+            {(day[0] === "League") ? this.renderDivisions(matches, inds, day) : this.renderCup(matches, inds, day)}
           </div>
         </div>
       </>
