@@ -38,3 +38,44 @@
   float: right;
   width: 5%;
 }
+
+.divisionBox {
+  margin: 10px auto;
+  border: 3px solid #000;
+  width: 100%;
+  background: rgb(8, 126, 4);
+}
+
+.seasonYear {
+  background: #050;
+  color: #55F;
+  width: 30%;
+  height: 100%;
+  font-weight: bold;
+  font-size: 20;
+  float: left;
+  margin-right: 30px;
+}
+
+.roundNumber {
+  background: #050;
+  color: #F80;
+  width: 30%;
+  height: 100%;
+  font-weight: bold;
+  float: left;
+}
+
+.divisionsTopBar {
+  border: 3px solid #000;
+  margin: 10px auto;
+  width: 100%;
+  height: 45px;
+}
+
+.cupTopBar {
+  border: 3px solid #000;
+  margin: 10px auto;
+  width: 100%;
+  height: 45px;
+}

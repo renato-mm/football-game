@@ -66,27 +66,32 @@ export default class Division extends React.Component {
       divisions.push(i.slice(x * div_sizes[1], (x+1) * div_sizes[1]))
     } 
     return (
-      <div className = {"divisionsBox"}>
-        Season: {season} --- {day[0]} Round : {day[1]} ___________ Time : {this.state.matchTime}
-        <div className = {"clock"}>
-          <PieChart
-            data={[
-              { title: 'Time', value: this.state.matchTime, color: 'blue' },
-              { title: '', value: 90 - this.state.matchTime, color: 'white' },
-            ]}
-            startAngle={-90}
-          />
-        </div>
-      {divisions.map((e, n) => {
-        return (
-          <div className = {"divisionBox"}>
-            Division {n + 1}
-            { e.map((id) => {return this.renderMatch(id)}) }
+      <div className = {"divisionsOrigin"}>
+        <div className = {"divisionsTopBar"}>
+          <div className = {"seasonYear"}>Season: {season}</div>
+          <div className = {"roundNumber"}>{day[0]} Round : {day[1]}</div>
+          <div className = {"clock"}>
+            <PieChart
+              data={[
+                { title: 'Time', value: this.state.matchTime, color: 'blue' },
+                { title: '', value: 120 - this.state.matchTime, color: 'white' },
+              ]}
+              startAngle={-90}
+            />
           </div>
-        )
-      }
-      )
-      }
+        </div>
+        <div>
+          {divisions.map((e, n) => {
+            return (
+              <div className = {"divisionBox"}>
+                Division {n + 1}
+                { e.map((id) => {return this.renderMatch(id)}) }
+              </div>
+            )
+          }
+          )
+          }
+        </div>
       </div>
     )
   }
@@ -94,9 +99,23 @@ export default class Division extends React.Component {
   renderCup(m, i, day) {
     let season = this.props.handler.get("Season", 0, "year")
     return (
-      <div className = {"cupBox"}>
-        Season: {season} --- {day[0]} Round : {day[1]}  ___________ Time : {this.state.matchTime}
-        { i.map((id) => {return this.renderMatch(id)}) }
+      <div className = {"cupOrigin"}>
+        <div className = {"cupTopBar"}> 
+          <div className = {"seasonYear"}>Season: {season}</div>
+          <div className = {"roundNumber"}>{day[0]} Round : {day[1]}</div>
+          <div className = {"clock"}>
+              <PieChart
+                data={[
+                  { title: 'Time', value: this.state.matchTime, color: 'blue' },
+                  { title: '', value: 120 - this.state.matchTime, color: 'white' },
+                ]}
+                startAngle={-90}
+              />
+            </div>
+        </div>
+        <div className = {"cupBox"}>
+          { i.map((id) => {return this.renderMatch(id)}) }
+        </div>
       </div>
       )
   }
