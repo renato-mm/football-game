@@ -31,6 +31,9 @@ calendar = list of lists
 next opponent = list [opponent id = int, Home/Away = string]
 league division = int
 
+SET
+purchase = input player id to be purchased by the team, returns list [bool = purchase success, string = info about purchase(e.g. "Too expensive")]
+
 ---Player
 (id = 0 -> list of ints*) all players
 name = string
@@ -78,7 +81,8 @@ export class InfoHandler {
         this.cup_directs_phase = 3
         this.cup_prelim_size = 10
         this.divisionsTeams = {}
-        this.cupTeams = {} 
+        this.cupTeams = []
+        this.cupRoundTeams = [] 
         //this.next_tourn = "League"
         this.season = 2020
         this.seasonGames = {League: [], Cup: []}
@@ -191,11 +195,12 @@ export class InfoHandler {
                 this.baseInfo[e]["strength"] = avgPower;
                 this.divisionsTeams[this.divisions].push(e)}
                 )
+            this.teamsPlaying.sort((e1, e2) => {return this.baseInfo[e2]["strength"] - this.baseInfo[e1]["strength"]})
 
             this.numberOfTeams = this.teamsPlaying.length
             this.cupSize = 0;
             this.cupRounds = 0;
-            [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024].forEach(
+            [2, 4, 8, 16, 32, 64, 128, 256].forEach(
                 (e, i, a) => {
                     if (i === a.length - 1) {
                         if (!this.cupSize) { this.cupSize = e ; this.cupRounds = i + 1 }
@@ -207,6 +212,7 @@ export class InfoHandler {
             );
             temp = this.teamsPlaying.slice()
             this.cupTeams = temp.splice(0, this.cupSize)
+            this.cupRoundTeams = this.cupTeams.slice()
             this.rankedTeams = this.teamsPlaying.slice()
             this.initializeNewSessionInfo()
             this.runSeason("Start")
@@ -318,6 +324,7 @@ export class InfoHandler {
 
     cupSorting() {
         let day = this.seasonCalendar[this.seasonDay]
+        /*
         let teams = this.shuffle(this.cupTeams)
         if (day[1] > 0) {
             let lastMatches = this.seasonGames["Cup"][day[1] - 1]
@@ -331,11 +338,13 @@ export class InfoHandler {
                 }
             }
             teams = pseudoTeams
-        }
+        }*/
+        let teams = this.cupRoundTeams.slice()
         for (let l = 0 ; l < teams.length/2 ; l++) {
             let match = [teams[l], teams[teams.length - 1 - l], 0, 0, 0, "Cup", this.cupSize/(Math.pow(2, day[1])), (day[1] + 1), this.currentSeason, false]
             this.seasonGames["Cup"][day[1]].push(match)
         }
+        this.cupRoundTeams = []
         //console.log("Sorted cup matches", this.seasonGames["Cup"])
         //console.log("day", day)
     }
@@ -421,12 +430,15 @@ export class InfoHandler {
         //console.log("getting next matches")
         //console.log(this.currentSeason, this.seasonGames)
         let day = this.seasonCalendar[this.seasonDay]
+        if (day[0] === "Cup") { this.cupSorting() } 
         this.currentMatchesHistory = []
         this.currentMatchesReturnHistory = []
+        this.currentMatchesExtras = []
         this.currentMatches = this.seasonGames[day[0]][day[1]]
         for (let y = 0 ; y < this.currentMatches.length ; y++) {
             this.currentMatchesHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
             this.currentMatchesReturnHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
+            this.currentMatchesExtras.push({ extra : -1, lastPossession: 0 })
         }
         console.log(this.currentMatches)
     }
@@ -480,27 +492,34 @@ export class InfoHandler {
                 let home = match[0]
                 let away = match[1]
                 let winner = match[4]
-                this.leagueStandings[home][0] += 1
-                this.leagueStandings[away][0] += 1
-                this.leagueStandings[home][4] += match[2]
-                this.leagueStandings[away][4] += match[3]
-                this.leagueStandings[home][5] += match[3]
-                this.leagueStandings[away][5] += match[2]
-                if (home === winner) { 
-                    this.leagueStandings[home][1] += 1
-                    this.leagueStandings[home][6] += 3
-                    this.leagueStandings[away][3] += 1
-                    this.seasonRanking[home] += 1
-                } else if (away === winner) { 
-                    this.leagueStandings[away][1] += 1
-                    this.leagueStandings[away][6] += 3
-                    this.leagueStandings[home][3] += 1
-                    this.seasonRanking[away] += 1
+                if (match[5] === "League") {
+                    this.leagueStandings[home][0] += 1
+                    this.leagueStandings[away][0] += 1
+                    this.leagueStandings[home][4] += match[2]
+                    this.leagueStandings[away][4] += match[3]
+                    this.leagueStandings[home][5] += match[3]
+                    this.leagueStandings[away][5] += match[2]
+                    if (home === winner) { 
+                        this.leagueStandings[home][1] += 1
+                        this.leagueStandings[home][6] += 3
+                        this.leagueStandings[away][3] += 1
+                        this.seasonRanking[home] += 1
+                    } else if (away === winner) { 
+                        this.leagueStandings[away][1] += 1
+                        this.leagueStandings[away][6] += 3
+                        this.leagueStandings[home][3] += 1
+                        this.seasonRanking[away] += 1
+                    } else {
+                        this.leagueStandings[away][2] += 1
+                        this.leagueStandings[home][2] += 1
+                        this.leagueStandings[away][6] += 1
+                        this.leagueStandings[home][6] += 1
+                    }
+                } else if (match[5] === "Cup") {
+                    if (winner === 0) { match[4] = match[0] }
+                    this.cupRoundTeams.push(match[4])
                 } else {
-                    this.leagueStandings[away][2] += 1
-                    this.leagueStandings[home][2] += 1
-                    this.leagueStandings[away][6] += 1
-                    this.leagueStandings[home][6] += 1
+                    console.log("ERROR")
                 }
             }
             for (let z = 1 ; z <= this.divisions ; z++) {
@@ -513,8 +532,6 @@ export class InfoHandler {
                 this.currentSeason += 1
                 this.runSeason("Start")
             } else {
-                let day = this.seasonCalendar[this.seasonDay]
-                if (day[0] === "Cup") { this.cupSorting() } 
                 this.nextMatches()
             }
             
@@ -720,6 +737,18 @@ export class InfoHandler {
                 this.sessionInfo[id] = value
             } else if (property === "formation") {
                 this.formationSetter(id, value)
+            } else if (property === "purchase") {
+                let availability = this.sessionInfo[value]["contract"][1]
+                if (!availability) { return [false, "Not available for sale"]}
+                let cost = this.sessionInfo[value]["contract"][2]
+                let teamMoney = this.sessionInfo[id]["finances"][0]
+                if (cost > teamMoney) { return [false, "Too expensive"] }
+                this.sessionInfo[id]["finances"][0] -= cost
+                let removeID = this.findInArray(value, this.sessionInfo[this.sessionInfo[value]["teamID"]]["players"])
+                this.sessionInfo[this.sessionInfo[value]["teamID"]]["players"].splice(removeID, 1)
+                this.sessionInfo[value]["teamID"] = id
+                this.sessionInfo[id]["players"].push(value)
+                return [true, "Purchase successful"]
             } else {
                 this.sessionInfo[id][property] = value
             }
@@ -763,10 +792,13 @@ export class InfoHandler {
 
     runMatches(time) {
         if (time >= 1 && this.currentDayState < 2) {
+            let endSwitch = true
             this.currentDayState = 1
             for (let x = 0 ; x < this.currentMatches.length ; x++) {
-                this.runMatch(x, time)
+                let done = this.runMatch(x, time)
+                if (!done) { endSwitch = false }
             }
+            return endSwitch
         } else if (time === -1) {
             this.currentDayState = 2
         } else if (time === -2) {
@@ -780,6 +812,9 @@ export class InfoHandler {
         //console.log("running match", matchID)
         let history = this.currentMatchesHistory[matchID] 
         let cMatch = this.currentMatches[matchID]
+        let cMatchExtras = this.currentMatchesExtras[matchID]
+        if (time === 45) { cMatchExtras["extra"] = this.randomInt(0,5) }
+        if (45 + cMatchExtras["extra"] < time) { return true }
         //console.log(cMatch)
         let teams = cMatch.slice(0, 2) //[home, away]
         //console.log(teams)
@@ -859,5 +894,6 @@ export class InfoHandler {
         for (let z = 0 ; z< returnHistoryElements.length ; z++) {
             this.currentMatchesReturnHistory[matchID].push(returnHistoryElements[z])
         }
+        return false
     }
 }

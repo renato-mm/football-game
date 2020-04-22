@@ -10,7 +10,6 @@ export default class Division extends React.Component {
       matchesStarted: 0,
       startTime: 1,
       elapsedTime: 0,
-      matchesDone: 0,
       matchTime: 0,
     };
     this.handler = props.handler;
@@ -32,14 +31,13 @@ export default class Division extends React.Component {
 
   matchPlay(){
     if (this.state.matchesStarted === 1) {
-      if (this.state.matchTime < 90) {
-        let time = this.state.matchTime + 1
-        this.props.handler.runMatches(time)
-        let d = new Date()
-        let t = d.getTime()
-        let elapsedTime = t - this.state.startTime
-        this.setState( {elapsedTime: elapsedTime, matchTime: time} )
-      } else {
+      let time = this.state.matchTime + 1
+      let matchesDone = this.props.handler.runMatches(time)
+      let d = new Date()
+      let t = d.getTime()
+      let elapsedTime = t - this.state.startTime
+      this.setState( {elapsedTime: elapsedTime, matchTime: time} )
+      if (matchesDone) {
         this.props.handler.runMatches(-1)
         clearInterval(this.matchesInterval)
         this.setState( { matchesStarted : 2 } )
@@ -58,6 +56,18 @@ export default class Division extends React.Component {
     );
   }
 
+  renderClock(time) {
+    let extraTime = (time > 45) ? time - 45 : 0
+    return (<PieChart
+                data={[
+                  { title: 'Time', value: time - extraTime, color: 'blue' },
+                  { title: 'ExtraTime', value: extraTime, color: 'red' },
+                  { title: '', value: 60 - time, color: 'white' },
+                ]}
+                startAngle={-90}
+              />)
+  }
+
   renderDivisions(m, i, day) {
     let div_sizes = this.props.handler.get("League", 0, "division sizes")
     let season = this.props.handler.get("Season", 0, "year")
@@ -71,13 +81,7 @@ export default class Division extends React.Component {
           <div className = {"seasonYear"}>Season: {season}</div>
           <div className = {"roundNumber"}>{day[0]} Round : {day[1]}</div>
           <div className = {"clock"}>
-            <PieChart
-              data={[
-                { title: 'Time', value: this.state.matchTime, color: 'blue' },
-                { title: '', value: 120 - this.state.matchTime, color: 'white' },
-              ]}
-              startAngle={-90}
-            />
+            {this.renderClock(this.state.matchTime)}
           </div>
         </div>
         <div>
@@ -106,14 +110,8 @@ export default class Division extends React.Component {
           <div className = {"seasonYear"}>Season: {season}</div>
           <div className = {"roundNumber"}>{day[0]} Round : {day[1]}</div>
           <div className = {"clock"}>
-              <PieChart
-                data={[
-                  { title: 'Time', value: this.state.matchTime, color: 'blue' },
-                  { title: '', value: 120 - this.state.matchTime, color: 'white' },
-                ]}
-                startAngle={-90}
-              />
-            </div>
+            {this.renderClock(this.state.matchTime)}
+          </div>
         </div>
         <div className = {"cupBox"}>
           { i.map((id) => {return this.renderMatch(id)}) }
