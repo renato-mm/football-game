@@ -84,7 +84,9 @@ export default class Division extends React.Component {
           {divisions.map((e, n) => {
             return (
               <div className = {"divisionBox"}>
-                Division {n + 1}
+                <div className = {"divisionNumber"}>
+                  Division {n + 1}
+                </div>
                 { e.map((id) => {return this.renderMatch(id)}) }
               </div>
             )

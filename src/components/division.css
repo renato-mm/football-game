@@ -22,8 +22,7 @@
 }
 
 .matchesTopMenu {
-  background: rgb(8, 126, 4);
-  margin: 10px auto;
+  margin: 10px;
   width: 100%;
 }
 
@@ -40,42 +39,53 @@
 }
 
 .divisionBox {
-  margin: 10px auto;
-  border: 3px solid #000;
-  width: 100%;
-  background: rgb(8, 126, 4);
+  margin: 10px 10px 20px 20px;
+  border: 1px solid #000;
+  width: 95%;
+}
+
+.cupBox {
+  margin: 10px 10px 20px 20px;
+  border: 1px solid #000;
+  width: 95%;
 }
 
 .seasonYear {
-  background: #050;
   color: #55F;
-  width: 30%;
+  width: 28%;
   height: 100%;
   font-weight: bold;
-  font-size: 20;
+  font-size: 25px;
+  text-align: left;
   float: left;
-  margin-right: 30px;
+  margin-left: 10px;
 }
 
 .roundNumber {
-  background: #050;
   color: #F80;
   width: 30%;
   height: 100%;
   font-weight: bold;
+  font-size: 25px;
+  text-align: center;
   float: left;
 }
 
+.divisionNumber {
+  margin: 5px;
+  color: #0F0;
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .divisionsTopBar {
-  border: 3px solid #000;
-  margin: 10px auto;
-  width: 100%;
-  height: 45px;
+  margin: 10px;
+  width: 95%;
+  height: 40px;
 }
 
 .cupTopBar {
-  border: 3px solid #000;
-  margin: 10px auto;
-  width: 100%;
-  height: 45px;
+  margin: 10px;
+  width: 95%;
+  height: 40px;
 }
