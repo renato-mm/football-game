@@ -10,14 +10,15 @@
 .matchesBoard {
   margin: 5px auto;
   background: rgb(8, 126, 4);
+  border: 3px solid #000;
   width: 800px;
   min-height: 520px;
 }
 
 .matchesBox {
   margin: 10px auto;
-  border: 3px solid #000;
   width: 100%;
+  height: 100%;
   background: rgb(8, 126, 4);
 }
 
@@ -87,4 +88,30 @@
   margin: 10px;
   width: 95%;
   height: 40px;
+}
+
+.playersListSwitch {
+  overflow: scroll;
+  padding: 3px;
+  margin: 10px;
+  border: 1px solid #F00;
+  width: 30%;
+  height: 100%;
+  float: left;
+}
+
+.selectPlayerButton { 
+  border: 1px solid #000;
+  margin: 2px;
+  font-weight: bold;
+  width: 100%;
+  height: 25px;
+}
+
+.switchPlayerButton { 
+  border: 1px solid #000;
+  margin: 2px;
+  font-weight: bold;
+  width: 25%;
+  height: 50px;
 }
