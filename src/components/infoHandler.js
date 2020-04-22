@@ -790,12 +790,12 @@ export class InfoHandler {
         }
       }
 
-    runMatches(time) {
+    runMatches(time, half) {
         if (time >= 1 && this.currentDayState < 2) {
             let endSwitch = true
             this.currentDayState = 1
             for (let x = 0 ; x < this.currentMatches.length ; x++) {
-                let done = this.runMatch(x, time)
+                let done = this.runMatch(x, time, half)
                 if (!done) { endSwitch = false }
             }
             return endSwitch
@@ -807,7 +807,7 @@ export class InfoHandler {
         }
     }
       
-    runMatch(matchID, time){
+    runMatch(matchID, time, half){
         //{time: 0,  stat:'S',  text: goalIcon, teamID:'cruzeiro1921', playerID: '0', player:'0'}
         //console.log("running match", matchID)
         let history = this.currentMatchesHistory[matchID] 
@@ -815,6 +815,7 @@ export class InfoHandler {
         let cMatchExtras = this.currentMatchesExtras[matchID]
         if (time === 45) { cMatchExtras["extra"] = this.randomInt(0,5) }
         if (45 + cMatchExtras["extra"] < time) { return true }
+        time = time + (half - 1) * 45
         //console.log(cMatch)
         let teams = cMatch.slice(0, 2) //[home, away]
         //console.log(teams)
