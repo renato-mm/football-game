@@ -64,7 +64,7 @@ export default class Match extends React.Component {
       <div
         style = {colors}
         className = {"team " + side}
-        onClick = {() => this.handleShow(side)}
+        onClick = {() => this.props.callbackFocus(team)}
       >
         {this.props.handler.get("Team", team, "name")}
       </div>

@@ -87,6 +87,7 @@ export class InfoHandler {
         this.season = 2020
         this.seasonGames = {League: [], Cup: []}
         this.currentMatches = []
+        this.allNews = [[["Text", "The " + this.season + " season has started!"]]]
         this.extremesStrengths = [50, 1]
         this.currentDayState = 0
         this.startingSeason = 2020
@@ -228,8 +229,8 @@ export class InfoHandler {
             if (!(this.inArray(x, this.teamsPlaying))) { continue }
             let team = this.baseInfo[x]
             let processed_team = team
-            let new_properties = ["moral", "finances", "stadium", "cash"]
-            let new_values = [this.randomInt(1, 100), {}, 1, this.randomInt(1, 100000)]
+            let new_properties = ["moral", "finances", "stadium", "cash", "wins"]
+            let new_values = [this.randomInt(1, 100), [0, 0, 0, 0, 0, 0], 1, this.randomInt(1, 100000), [0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_team[new_properties[l]] = new_values[l]
             } 
@@ -241,8 +242,8 @@ export class InfoHandler {
             this.coachesPlaying.push(x)
             let coach = this.baseInfo[x]
             let processed_coach = coach
-            let new_properties = ["moral", "situation", "strength", "behaviour", "contract"]
-            let new_values = [this.randomInt(1, 100), [1, 0], this.randomInt(1, 50), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)]]
+            let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "wins"]
+            let new_values = [this.randomInt(1, 100), [1, 0], this.randomInt(1, 50), "FP", [0, this.randomInt(1, 100000), this.randomInt(1, 100000)], [0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_coach[new_properties[l]] = new_values[l]
             }
@@ -263,8 +264,8 @@ export class InfoHandler {
             if (highEnd < 5) { highEnd = 5 } 
             let lowEnd = highEnd - 4
             let playerPower = this.randomInt(lowEnd, highEnd)
-            let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "history", "season history"]
-            let new_values = [this.randomInt(1, 100), [0, 0], playerPower, "FP", [0, playerPower * 500, playerPower * 10000], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+            let new_properties = ["moral", "situation", "strength", "behaviour", "contract", "history", "season history", "wins"]
+            let new_values = [this.randomInt(1, 100), [0, 0], playerPower, "FP", [0, playerPower * 500, playerPower * 10000], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_player[new_properties[l]] = new_values[l]
             }
@@ -434,11 +435,13 @@ export class InfoHandler {
         this.currentMatchesHistory = []
         this.currentMatchesReturnHistory = []
         this.currentMatchesExtras = []
+        this.allNews.push([])
+        this.currentNotices = []
         this.currentMatches = this.seasonGames[day[0]][day[1]]
         for (let y = 0 ; y < this.currentMatches.length ; y++) {
             this.currentMatchesHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
             this.currentMatchesReturnHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
-            this.currentMatchesExtras.push({ extra : -1, lastPossession: 0 })
+            this.currentMatchesExtras.push({ extra : -1, lastPossession: 0, subs: [0, 0] })
         }
         console.log(this.currentMatches)
     }
@@ -463,7 +466,7 @@ export class InfoHandler {
             }
             for (let x = 0 ; x < this.playersPlaying.length ; x++) {
                 let playerID = this.playersPlaying[x]
-                this.sessionInfo[playerID]["season history"] = [0, 0, 0, 0]
+                this.sessionInfo[playerID]["season history"] = [0, 0, 0, 0, 0]
             }
             this.seasonCalendar = []
             for (let x = 0 ; x < this.seasonGames["League"].length ; x++){
@@ -529,6 +532,21 @@ export class InfoHandler {
             this.seasonDay += 1
             //console.log(this.seasonDay)
             if (this.seasonDay >= this.seasonCalendar.length) {
+                let leagueWinner = this.divisionsTeams[1][0]
+                let cupWinner = this.cupRoundTeams[0]
+                let topGoalScorer = 0
+                let goals = 0
+                for (let x = 0 ; x < this.playersPlaying.length ; x++) {
+                    let p = this.playersPlaying[x]
+                    let g = this.sessionInfo[p]["season history"][1]
+                    if (g > goals) { goals = g ; topGoalScorer = p}
+                }
+                this.seasonWinProcesser(topGoalScorer, "Goalscorer")
+                this.seasonWinProcesser(leagueWinner, "League")
+                this.seasonWinProcesser(cupWinner, "Cup")
+
+                this.allNews[this.allNews.length - 1].push(["Season Winners", [leagueWinner, cupWinner, topGoalScorer]])
+
                 this.currentSeason += 1
                 this.runSeason("Start")
             } else {
@@ -536,6 +554,28 @@ export class InfoHandler {
             }
             
         }
+    }
+
+    seasonWinProcesser(id, winType) {
+        let cash, i;
+        let tID = id
+        let players = this.sessionInfo[id]["players"].slice()
+        if (winType === "League") {
+            cash = 20000000
+            i = 0
+        } else if (winType === "Cup") {
+            cash = 6000000
+            i = 1
+        } else if (winType === "Goalscorer") {
+            cash = 3000000
+            i = 2
+            players = [id]
+            tID = this.sessionInfo[id]["TeamID"]
+        }
+        this.sessionInfo[tID]["finances"][0] += cash
+        this.sessionInfo[tID]["wins"][i] += 1
+        players.forEach((e) => {this.sessionInfo[e]["wins"][i] += 1})
+        this.sessionInfo[this.sessionInfo[tID]["coach"]]["wins"][i] += 1
     }
 
     sortDivision(e1, e2) {
@@ -572,7 +612,7 @@ export class InfoHandler {
 
     searchTeamMatches(id, season = "all") {
         let mH = []
-        if (season === "all") {
+        if (season === "all" || season === "past") {
             for (let s = this.startingSeason ; s < this.currentSeason ; s++) {
                 let season = this.pastSeasons[s]
                 if (season === null || season === undefined) {
@@ -591,9 +631,20 @@ export class InfoHandler {
                 }
             }
         }
-        for (let d = 0 ; d < this.seasonCalendar.length ; d++) {
-            let day = this.seasonCalendar[d]
-            let dayMatches = this.seasonGames[day[0]][day[1]]
+        if (season === "all" || season === "current") {
+            for (let d = 0 ; d < this.seasonCalendar.length ; d++) {
+                let day = this.seasonCalendar[d]
+                let dayMatches = this.seasonGames[day[0]][day[1]]
+                for (let m = 0 ; m < dayMatches.length ; m++) {
+                    let match = dayMatches[m]
+                    if (match[0] === id || match[1] === id) {
+                        mH.push(match)
+                    }
+                }
+            }
+        }
+        if (season === "day") {
+            let dayMatches = this.currentMatches
             for (let m = 0 ; m < dayMatches.length ; m++) {
                 let match = dayMatches[m]
                 if (match[0] === id || match[1] === id) {
@@ -652,6 +703,12 @@ export class InfoHandler {
                 return this.searchTeamMatches(id, "current season")
             } else if (property === "history") {
                 return this.searchTeamMatches(id)
+            } else if (property === "is human") {
+                return this.inArray(id, this.playersTeam)
+            } else if (property === "current matches id") {
+                for (let x = 0 ; x < this.currentMatches.length ; x++) {
+                    if (this.currentMatches[x][0] === id || this.currentMatches[x][1] === id) { return x }
+                }
             } else {
                 if (this.sessionInfo[id] !== undefined) { 
                     return this.sessionInfo[id][property] 
@@ -692,6 +749,14 @@ export class InfoHandler {
                 return this.currentMatches
             } else if (property === "tournament") {
                 return this.seasonCalendar[this.seasonDay][0]
+            } else if (property === "sub") {
+                let teamID = this.sessionInfo[id]["teamID"]
+                let match = this.searchTeamMatches(teamID, "day")[0]
+                let i = this.findInArray(match, this.currentMatches)
+                return this.currentMatchesExtras[i]["subs"][(teamID === match[0]) ? 0 : 1]
+            } else if (property === "notice") {
+                if (this.currentNotices.length > 0) {return this.currentNotices.splice(0, 1)}
+                else {return ["Nothing"]}
             }
         }
 
@@ -715,6 +780,8 @@ export class InfoHandler {
             } else if (property === "day") {
                 let day = this.seasonCalendar[this.seasonDay]
                 return [day[0], day[1] + 1]
+            } else if (property === "latest news") {
+                return this.allNews[this.allNews.length - 2]
             }
         }
 
@@ -753,18 +820,26 @@ export class InfoHandler {
                 this.sessionInfo[id][property] = value
             }
         }
-        if (section === "Player") {
+        else if (section === "Player") {
             if (property === "all") {
                 this.sessionInfo[id] = value
             } else {
                 this.sessionInfo[id][property] = value
             }
         }
-        if (section === "League") {
+        else if (section === "Match") {
+            if (property === "sub") {
+                let teamID = this.sessionInfo[id]["teamID"]
+                let match = this.searchTeamMatches(teamID, "day")[0]
+                let i = this.findInArray(match, this.currentMatches)
+                this.currentMatchesExtras[i]["subs"][(teamID === match[0]) ? 0 : 1] += value
+            }
         }
-        if (section === "Cup") {
+        else if (section === "League") {
         }
-        if (section === "Human") {
+        else if (section === "Cup") {
+        }
+        else if (section === "Human") {
         }
     }
 

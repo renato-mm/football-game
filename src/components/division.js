@@ -14,6 +14,8 @@ export default class Division extends React.Component {
       matchHalf: 1,
       screen: "Matches",
       switchChoices: [0, 0],
+      paused: true,
+      teamFocused: 0,
     };
     this.handler = props.handler;
     this.buttonText = ["Start", "Playing", "Next Matches"]
@@ -24,7 +26,14 @@ export default class Division extends React.Component {
       this.matchesInterval = setInterval(() => this.matchPlay(), 50)
       let d = new Date()
       let t = d.getTime()
-      this.setState( {matchesStarted: 1, startTime: t, matchTime: 0} )
+      this.setState( {matchesStarted: 1, startTime: t, matchTime: 0, paused: false} )
+    } else if (this.state.matchesStarted === 1) {
+      if (this.state.paused) {
+        this.matchesInterval = setInterval(() => this.matchPlay(), 50)
+        this.setState({paused: false})
+      } else {
+        this.setState({paused: true})
+      }
     } else if (this.state.matchesStarted === 2) {
       this.props.handler.runMatches(-2)
       this.setState( { matchesStarted : 0, elapsedTime: 0, matchTime: 0 } )
@@ -32,15 +41,28 @@ export default class Division extends React.Component {
     }
   }
 
-  switchButtonFunc(event){
-    if (this.state.screen === "Matches") {
-      this.setState({screen: "Switch"})
-    } else if (this.state.screen === "Switch") {
-      this.setState({screen: "Matches"})
+  switchButtonFunc(id){
+    if (this.state.teamFocused === 0 && id === 0) {id =  this.props.handler.get("Match", 0, "current matches")[0][0]}
+    if (id === 0) {
+      if (this.state.screen === "Matches") {
+        this.setState({screen: "Switch", paused: true})
+      } else if (this.state.screen === "Switch") {
+        this.setState({screen: "Matches"})
+      }
+    } else {
+      this.setState({screen: "Switch", paused: true, teamFocused: id, switchChoices: [0, 0]})
     }
   }
 
   matchPlay(){
+    let notice = this.handler.get("Match", 0, "notice")
+    if (notice[0] !== "Nothing") {
+      if (notice[0] === "Injury") {
+        this.switchButtonFunc(notice[1])
+        return
+      }
+    }
+    if (this.state.paused) {clearInterval(this.matchesInterval); return}
     if (this.state.matchesStarted === 1) {
       let time = this.state.matchTime + 1
       let matchesDone = this.props.handler.runMatches(time, this.state.matchHalf)
@@ -67,7 +89,8 @@ export default class Division extends React.Component {
       key = {ind}
       handler = {this.handler}
       time = {this.state.matchTime}
-      matchInd = {ind}/>
+      matchInd = {ind}
+      callbackFocus = {(e) => {this.switchButtonFunc(e)}}/>
     );
   }
 
@@ -142,39 +165,77 @@ export default class Division extends React.Component {
     )
   }
 
-  renderSwitch(colors) {
-    let humanTeam = this.handler.get("Human", 1, "team")
-    let players = this.handler.get("Team", humanTeam, "players")
+  renderSwitch() {
+    let team = this.state.teamFocused
+    let matchID = this.handler.get("Team", team, "current matches id")
+    let history = this.handler.get("Match", matchID, "history")
+    let isHuman = this.handler.get("Team", team, "is human")
+    let players = this.handler.get("Team", team, "players")
+    //console.log("switch catcher", team, isHuman, players)
     let starting = players.filter((e) => {return this.handler.get("Player", e, "situation")[0] === 1})
     let reserves = players.filter((e) => {return this.handler.get("Player", e, "situation")[0] === 2})
+    let subs = this.handler.get("Match", starting[0], "sub")
+    let colors = {color: this.handler.get("Team", team, "color2"), backgroundColor: this.handler.get("Team", team, "color1")}
+    let selected = {"border": "2px solid " + colors.color, color: colors.color, backgroundColor: colors.backgroundColor}
     return (
       <div className = {"matchesBox"}>
-        <div className = {"playersListSwitch"}>
-          {starting.map((e) => {
-            return (
-              <button className = {"selectPlayerButton"} onClick = {() => {this.selectPlayer(e)}} style = {colors} key = {e}>
-                {this.handler.get("Player", e, "name")} : {(this.state.switchChoices[0] === e) ? "Out" : ""}
-              </button>
-            )
-          })}
+        <div className = {"matchInfoTop"}>
+          {this.renderMatch(matchID)}
+          {history.map((e) => {return e.time + ": " + e.name + " " + e.text})}
         </div>
-        <div className = {"playersListSwitch"}>
-          {reserves.map((e) => {
-            return (
-              <button className = {"selectPlayerButton"} onClick = {() => {this.selectPlayer(e)}} style = {colors} key = {e}>
-                {this.handler.get("Player", e, "name")} : {(this.state.switchChoices[1] === e) ? "In" : ""}
-              </button>
-            )
-          })}
+        <div className = {"matchInfoBottom"} style = {colors}>
+          <div className = {"playersListSwitch"}>
+            {starting.map((e) => {
+              let name = this.handler.get("Player", e, "name")
+              let pos = this.handler.get("Player", e, "position")
+              let strength = this.handler.get("Player", e, "strength")
+              //let sit = (this.state.switchChoices[0] === e) ? " : Out" : ""
+              return (
+                <button 
+                className = {"selectPlayerButton"} 
+                onClick = {() => {this.selectPlayer(e)}} 
+                style = {(this.state.switchChoices[0] === e) ? selected : colors} 
+                key = {e} 
+                disabled = {subs >= 3 || !isHuman}>
+                  {pos + " " + strength + " " + name}
+                </button>
+              )
+            })}
+          </div>
+          <div className = {"playersListSwitch"}>
+            {reserves.map((e) => {
+              let name = this.handler.get("Player", e, "name")
+              let pos = this.handler.get("Player", e, "position")
+              let strength = this.handler.get("Player", e, "strength")
+              //let sit = (this.state.switchChoices[1] === e) ? " : Out" : ""
+              return (
+                <button 
+                className = {"selectPlayerButton"} 
+                onClick = {() => {this.selectPlayer(e)}} 
+                style = {(this.state.switchChoices[1] === e) ? selected : colors} 
+                key = {e} 
+                disabled = {subs >= 3 || !isHuman}>
+                  {pos + " " + strength + " " + name}
+                </button>
+              )
+            })}
+          </div>
+          <div className = {"playersListSwitch"}>
+            <button className = {"switchPlayerButton"} onClick = {() => {this.switchPlayers()}} disabled = {subs >= 3 || !isHuman}>
+              Switch Players
+            </button>
+          <div style = {{"text-align" : "center", "margin": "10px"}}>  Substitutions made: {subs}</div>
+          </div>
         </div>
-        <button className = {"switchPlayerButton"} onClick = {() => {this.switchPlayers()}} style = {colors}>
-          Switch Players
-        </button>
       </div>
     )
   }
 
   selectPlayer(id) {
+
+    if (this.state.switchChoices[0] === id) {this.setState({switchChoices: [0, this.state.switchChoices[1]]}); return}
+    else if (this.state.switchChoices[1] === id) {this.setState({switchChoices: [this.state.switchChoices[0], 0]}); return}
+
     let sit = this.handler.get("Player", id, "situation")
     let choices = this.state.switchChoices.slice()
     if (sit[0] === 1) {
@@ -199,14 +260,21 @@ export default class Division extends React.Component {
     movingInSit[0] = 1
     this.handler.set("Player", movingIn, "situation", movingInSit)
 
+    this.handler.set("Match", movingIn, "sub", 1)
+
     this.setState({switchChoices: [0, 0]})
   }
   
   render(){
     let colors = {
-      background: this.props.buttonColors[0],
-      color: this.props.buttonColors[1],
+      background: "#000",
+      color: "#0F0",
+      fontWeight: "bold",
     }
+    let buttonText = "Start/Pause"
+    if (this.state.matchesStarted === 0) {buttonText = "Start " + ((this.state.matchHalf === 1) ? "First" : "Second") + " Half"}
+    else if (this.state.matchesStarted === 1) {buttonText = ((this.state.paused) ? "Resume" : "Pause")}
+    else if (this.state.matchesStarted === 2) {buttonText = "Finish"}             
     return (
       <>
         <div className = {"matchesTopMenu"}>
@@ -214,20 +282,20 @@ export default class Division extends React.Component {
             className = {"finishButton"} 
             style = {colors}
             onClick = {() => this.matchesButtonFunc()} 
-            disabled = {(this.state.matchesStarted === 1 || this.state.screen !== "Matches") ? true : false}
+            disabled = {(this.state.screen !== "Matches") ? true : false}
             > 
-            {(this.state.matchesStarted === 0) ? "Start" : "Finish"} Half {this.state.matchHalf}
+            {buttonText}
           </button>
           <button 
             className = {"switchButton"} 
             style = {colors}
-            onClick = {() => this.switchButtonFunc()} 
+            onClick = {() => this.switchButtonFunc(0)} 
             > 
             {(this.state.screen === "Matches") ? "Switch Players" : "Return to Matches"}
           </button>
         </div>
         <div className = {"matchesBoard"}>
-          {(this.state.screen === "Matches") ? this.renderMatches() : this.renderSwitch(colors)}
+          {(this.state.screen === "Matches") ? this.renderMatches() : this.renderSwitch()}
         </div>
       </>
     );

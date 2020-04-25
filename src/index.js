@@ -6,17 +6,19 @@ import GameInitializer from './components/gameInitializer';
 import {base_info} from './clubs/clubs';
 import {InfoHandler} from './components/infoHandler';
 import Division from './components/division';
+import News from './components/news';
 import Standings from './components/standings';
 import TeamHome from './components/teamHome';
 import TeamInfo from './components/teamInfo';
 
-
+/*
 const currDivs = [
   {teamID: 'cruzeiro1921', color1: "blue", color2: "white", team: 'Cruzeiro', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
   {teamID: 'atletico1906', color1: "black", color2: "white", team: 'Atlético-MG', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
   {teamID: 'flamengo1895', color1: "red", color2: "black", team: 'Flamengo', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0},
   {teamID: 'liverpool1892', color1: "red", color2: "white", team: 'Liverpool', wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0}
 ]
+*/
 
 class Game extends React.Component {
   constructor(props){
@@ -25,7 +27,7 @@ class Game extends React.Component {
       lastScreen: null,
       screen: "Start", // a string that represents the current game screen
       season: 2020,
-      currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
+      //currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
       divisionHistory: [], // an array of objects that contains each season championship winner (team and coach), cup winner (team and coach) and top scorer(s)
       teams: [], // an array of objects containing info about the teams, like current division and players
       topScorers: [], // an array of objects that contains each season top 10 scorers
@@ -39,7 +41,7 @@ class Game extends React.Component {
 
   matchesEvents(event) {
     if (event === "End") {
-      this.setState({lastScreen: this.state.screen, screen: "teamHome"})
+      this.setState({lastScreen: this.state.screen, screen: "news"})
     }
   }
 
@@ -53,6 +55,19 @@ class Game extends React.Component {
           handler = {this.state.infoHandler}
           matchesCallback = {(e) => this.matchesEvents(e)}
           buttonColors = {buttonColors}/>
+        </div>
+      </div>
+    );
+  }
+
+  renderNews() {
+    let currentPlayer = this.state.infoHandler.get("Human", 0, "current")
+    let buttonColors = this.state.infoHandler.get("Human", currentPlayer, "team colors")
+    return (
+      <div className="game">
+        <div className="game-board">
+          <News
+          handler = {this.state.infoHandler}/>
         </div>
       </div>
     );
@@ -110,8 +125,9 @@ class Game extends React.Component {
     let currentPlayer = this.state.infoHandler.get("Human", 0, "current")
     let buttonColors = this.state.infoHandler.get("Human", currentPlayer, "team colors")
     let colors = {
-      background: buttonColors[0],
-      color: buttonColors[1],
+      background: "#000",
+      color: "#0F0",
+      fontWeight: "bold",
     }
     let screenBoard = null;
     switch(this.state.screen){
@@ -125,6 +141,9 @@ class Game extends React.Component {
       case "teamInfo":
         screenBoard = this.renderTeamInfo(this.state.selectedTeam);
         break;
+      case "news":
+        screenBoard = this.renderNews();
+        break;
       default:
         screenBoard = null;
     }
@@ -132,10 +151,11 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <div className = {"gameTopMenu"}>
-            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} >Play</button>
+            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} >Play Matches</button>
             <button style = {colors} onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
             <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
             <button style = {colors} onClick={()=>this.showTeamInfo(this.state.selectedTeam)} disabled={this.disabledButton("teamInfo")}>Team Info</button>
+            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"news"})} disabled={this.disabledButton("news")}>News</button>
           </div>
           {screenBoard}
         </div>
