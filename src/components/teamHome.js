@@ -164,7 +164,7 @@ export default class TeamHome extends React.Component {
     );
   }
 
-  renderTeamHome(){
+  render(){
     return <div
       style={this.colors}
       className = {"teamHome"}
@@ -195,14 +195,5 @@ export default class TeamHome extends React.Component {
         </div>
       </div>
     </div>;
-  }
-
-  render(){
-    
-    return (
-      <div>
-        {this.renderTeamHome()}
-      </div>
-    );
   }
 }

@@ -33,3 +33,139 @@
   background-color: #777;
   color: white;
 }
+
+.teamHomePanelFinance{
+  font-size: 90%;
+  width: 90%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.teamHomePanelFinance tbody{
+  font-size: 90%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.teamHomePanelFinance tr th:nth-child(2),
+.teamHomePanelFinance tr td:nth-child(2){
+  float: right;
+  padding-right: 5px;
+}
+
+.teamHomePanelFinance tbody:nth-last-child(1){
+  padding-top: 10px;
+}
+
+.teamHomePanelFinanceCurrent{
+  margin-top: 5px;
+  font-size: 90%;
+  width: 90%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.teamHomePanelFinanceCurrent tbody tr{
+  font-size: 90%;
+}
+
+.teamHomePanelFinanceCurrent tr th:nth-child(2),
+.teamHomePanelFinanceCurrent tr td:nth-child(2){
+  float: right;
+  padding-right: 5px;
+}
+
+.teamHomePanelFormation{
+  padding-top: 150px;
+  text-align: center;
+}
+
+.teamHomePanelFormation button{
+  height: 5em;
+  width: 6em
+}
+
+.teamHomePanelFormationGreenCheck{
+  color: green;
+}
+
+.teamHomeHeadToHead{
+  font-size: 90%;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.teamHomeHeadToHead tr{
+  border: 1px solid #000;
+  border-collapse: collapse;
+}
+
+.teamHomeLastHeadtoHead{
+  margin: 50px 0;
+}
+
+.teamHomeCash{
+  display: block;
+  margin: 10px -15px;
+}
+
+.teamHomeMoral{
+  display: block;
+  margin: 15px -15px;
+}
+
+.teamHomeMoralBar{
+  border: 2px solid #000;
+  height: 2em;
+}
+
+.teamHomePanelOpponentName{
+  margin: 0px -15px 10px;
+  height: 30px;
+}
+
+.teamHomePanelOpponentName span{
+  font-size: 1.6em;
+  width: 100%;
+  text-align: center;
+  border: 1px solid black;
+}
+
+.teamHomeOpponentMoralBar .progress{
+  width: 100%;
+  border: 2px solid #000;
+  height: 2em;
+}
+
+.teamHomeOpponentCoach{
+  margin: 50px -10px;
+  width: 100%;
+}
+
+.teamHomeOpponentCoach span{
+  padding-left: 20px;
+}
+
+.teamHomeOpponentButtons{
+  height: 100px;
+  float: right;
+}
+
+.teamHomeOpponentButtons button{
+  height: 80px;
+  width: 90px;
+  margin: 10px 5px;
+}
+
+.teamHomePanelPlayer{
+  display: block;
+  margin: 10px -15px;
+}
+
+.teamHomePanelPlayer span{
+  font-size: 150%;
+}
+
+.teamHomePanelContract{
+  margin: 10px auto;
+}
