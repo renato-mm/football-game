@@ -57,6 +57,7 @@ day = [tournament name = string, tournament round = int]
 
 export class InfoHandler {
     constructor(info) {
+        this.savedStates = {}
         this.baseInfo = info
         //this.baseInfo[10000] = {name: "Empty Team", id: 10000, fullName: "Omega Empty Team", nationality: "NOWHERE", coach: -1000, color1: "#000000", color2: "#FFFFFF", strength: 10000, players: []}
         this.sessionInfo = {}
@@ -557,15 +558,16 @@ export class InfoHandler {
     }
 
     seasonWinProcesser(id, winType) {
-        let cash, i;
+        let cash, i, players;
         let tID = id
-        let players = this.sessionInfo[id]["players"].slice()
         if (winType === "League") {
             cash = 20000000
             i = 0
+            players = this.sessionInfo[id]["players"].slice()
         } else if (winType === "Cup") {
             cash = 6000000
             i = 1
+            players = this.sessionInfo[id]["players"].slice()
         } else if (winType === "Goalscorer") {
             cash = 3000000
             i = 2
@@ -795,6 +797,11 @@ export class InfoHandler {
             }
         }
 
+        if (section === "Saved State") {
+            if (this.savedStates[property] !== undefined) {return this.savedStates[property]}
+            else {return null}
+        }
+
         console.log([section, id, property, "Get didnt return"])
     }
 
@@ -840,6 +847,9 @@ export class InfoHandler {
         else if (section === "Cup") {
         }
         else if (section === "Human") {
+        }
+        else if (section === "Saved State") {
+            this.savedStates[property] = value
         }
     }
 

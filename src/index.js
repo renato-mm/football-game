@@ -26,15 +26,15 @@ class Game extends React.Component {
     this.state = {
       lastScreen: null,
       screen: "Start", // a string that represents the current game screen
-      season: 2020,
+      //season: 2020,
       //currentDivisions: [currDivs], // an array of lists, each one representing a single division containing its rank and a list of objects with current standings info of each team that belongs to it
-      divisionHistory: [], // an array of objects that contains each season championship winner (team and coach), cup winner (team and coach) and top scorer(s)
-      teams: [], // an array of objects containing info about the teams, like current division and players
-      topScorers: [], // an array of objects that contains each season top 10 scorers
-      headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
-      coaches: [], // an array of objects containing info about each coach
-      gamePlayers: [], // an array of objects containing info about each player's coach
-      selectedTeam: 1,
+      //divisionHistory: [], // an array of objects that contains each season championship winner (team and coach), cup winner (team and coach) and top scorer(s)
+      //teams: [], // an array of objects containing info about the teams, like current division and players
+      //topScorers: [], // an array of objects that contains each season top 10 scorers
+      //headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
+      //coaches: [], // an array of objects containing info about each coach
+      //gamePlayers: [], // an array of objects containing info about each player's coach
+      //selectedTeam: 1,
       infoHandler: new InfoHandler(base_info),
     };
   }
