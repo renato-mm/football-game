@@ -12,7 +12,9 @@ import countryInfo from "./countryFunctions";
 export default class TeamHome extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
+    this.state = localStorage.getItem('hasTeamHomeSavedState') === "true" ?
+    JSON.parse(localStorage.getItem('teamHomeSavedState')) : 
+    {
       panel: "match",
       selectedPlayer: null,
       focus: false,
@@ -32,9 +34,16 @@ export default class TeamHome extends React.Component {
     this.coach = "Human"//this.handler.get("Human",this.handler.get("Team",this.team,"coach"),"name");
     this.division = this.handler.get("Team",this.team,"league division");
     this.showStandings = props.showStandings;
+    this.showMarket = props.showMarket;
     this.showOpponentInfo = props.showTeamInfo;
     this.ready = props.ready;
     this.countryInfo = countryInfo(this.handler.get("Team",this.team,"nationality"));
+    localStorage.setItem('hasTeamHomeSavedState', "false");
+  }
+
+  componentWillUnmount() {
+    localStorage.setItem('hasTeamHomeSavedState', "true");
+    localStorage.setItem('teamHomeSavedState', JSON.stringify(this.state))
   }
 
   selectPlayer(player, event){
@@ -142,7 +151,8 @@ export default class TeamHome extends React.Component {
       handler={this.handler}
       team={this.team}
       formationSelected={(key) => this.formationSelected(key)}
-      showStandings={this.showStandings}/>
+      showStandings={this.showStandings}
+      showMarket={this.showMarket}/>
     );
   }
 
@@ -164,7 +174,7 @@ export default class TeamHome extends React.Component {
     );
   }
 
-  renderTeamHome(){
+  render(){
     return <div
       style={this.colors}
       className = {"teamHome"}
@@ -195,14 +205,5 @@ export default class TeamHome extends React.Component {
         </div>
       </div>
     </div>;
-  }
-
-  render(){
-    
-    return (
-      <div>
-        {this.renderTeamHome()}
-      </div>
-    );
   }
 }

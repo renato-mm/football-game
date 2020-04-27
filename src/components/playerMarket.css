@@ -1,0 +1,107 @@
+
+.playersMarket{
+  margin: 10px auto;
+  border: 1px solid #000;
+  color: black;
+  background-color: yellow;
+  padding: 0 0px;
+  height: 500px;
+  cursor: default;
+}
+
+.playersMarket button{
+  cursor: default;
+}
+
+.playersMarketHeader{
+  background-color: #ddd;
+  color: black;
+  border-bottom: 1px solid #000;
+  padding-left: 1px;
+}
+
+.playersMarketSelection{
+  cursor: default;
+  margin: 5px 5px;
+}
+
+.playersMarketSelection div{
+  cursor: default;
+  margin: 5px 5px;
+  width: 70%;
+}
+
+.playersMarketSelection input,
+.playersMarketSelection select{
+  width: 50%;
+  margin: 0px 5px;
+}
+
+.playersMarketSelection div span{
+  width: 100px;
+  display: inline-block;
+}
+
+.playersMarketTable{
+  float: left;
+  font-size: 80%;
+  color: black;
+  background-color: white;
+  cursor: default;
+  border: 5px inset gray;
+  margin: 5px 5px;
+  text-align: center;
+  width: 75%;
+  height: 300px;
+  overflow-y: scroll;
+  display: block;
+}
+
+.playersMarketTable table{
+  width: 100%;
+}
+
+.playersMarketTable tbody tr td:nth-child(1),
+.playersMarketTable tbody tr td:nth-child(4){
+  width: 3%;
+}
+
+.playersMarketTable tbody tr td:nth-child(5),
+.playersMarketTable tbody tr td:nth-child(7){
+  width: 5%;
+}
+
+.playersMarketTable tbody tr td:nth-child(2){
+  text-align: left;
+  width: 40%;
+}
+
+.playersMarketTable tbody tr td:nth-child(3){
+  text-align: left;
+  width: 25%;
+}
+
+.playersMarketTable tbody tr td:nth-child(6){
+  width: 20%;
+  text-align: right;
+}
+
+.playersMarketButtons{
+  margin: 5px auto;
+  float: right;
+  height: 80px;
+  text-align: center;
+  font-size: 85%;
+  width: 20%;
+}
+
+.playersMarketButtons button{
+  padding: 0px;
+  height: 60px;
+  width: 70px;
+  display: block;
+}
+
+.playersMarketButtons button span{
+  display: block;
+}

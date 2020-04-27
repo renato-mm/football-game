@@ -10,6 +10,7 @@ import News from './components/news';
 import Standings from './components/standings';
 import TeamHome from './components/teamHome';
 import TeamInfo from './components/teamInfo';
+import Market from './components/playerMarket';
 
 /*
 const currDivs = [
@@ -23,6 +24,10 @@ const currDivs = [
 class Game extends React.Component {
   constructor(props){
     super(props);
+    localStorage.setItem('hasTeamHomeSavedState', "false");
+    localStorage.setItem('teamHomeSavedState', "");
+    localStorage.setItem('hasMarketSavedState', "false");
+    localStorage.setItem('marketSavedState', "");
     this.state = {
       lastScreen: null,
       screen: "Start", // a string that represents the current game screen
@@ -36,6 +41,7 @@ class Game extends React.Component {
       //gamePlayers: [], // an array of objects containing info about each player's coach
       //selectedTeam: 1,
       infoHandler: new InfoHandler(base_info),
+      currentTeam: null,
     };
   }
 
@@ -85,8 +91,9 @@ class Game extends React.Component {
     return (
       <TeamHome
       team = {team} opponent = {opponent} season = {this.state.infoHandler.get("Season",0,'year')}
-      showTeamInfo = {(opp)=>this.showTeamInfo(opp, "teamHome")}
+      showTeamInfo = {(opp)=>this.showTeamInfo(opp)}
       showStandings={(code)=>this.showStandings(code)}
+      showMarket={(team)=>this.showMarket(team)}
       handler = {this.state.infoHandler} ready = {()=>this.setState({lastScreen: this.state.screen, screen: "matches"})}/>
     );
   }
@@ -97,6 +104,16 @@ class Game extends React.Component {
       team = {team}
       handler = {this.state.infoHandler}
       showTeamInfo = {()=>this.setState({lastScreen: this.state.screen, screen: this.state.lastScreen})}/>
+    );
+  }
+
+  renderPlayerMarket() {
+    return (
+      <Market
+      team = {this.state.currentTeam}
+      handler = {this.state.infoHandler}
+      showTeamInfo = {(team)=>this.showTeamInfo(team)}
+      close = {()=>this.setState({lastScreen: this.state.screen, screen: this.state.lastScreen})}/>
     );
   }
 
@@ -118,6 +135,14 @@ class Game extends React.Component {
       lastScreen: this.state.screen,
       screen: "teamInfo",
       selectedTeam: team
+    });
+  }
+
+  showMarket(team){
+    this.setState({
+      lastScreen: this.state.screen,
+      screen: "market",
+      currentTeam: team,
     });
   }
 
@@ -143,6 +168,9 @@ class Game extends React.Component {
         break;
       case "news":
         screenBoard = this.renderNews();
+        break
+      case "market":
+        screenBoard = this.renderPlayerMarket();
         break;
       default:
         screenBoard = null;
