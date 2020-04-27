@@ -7,7 +7,9 @@ import { FaTimes } from "react-icons/fa";
 export default class TeamHomePanelNewSalary extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
+    this.state = localStorage.getItem('hasTeamHomeSavedState') === "true" ?
+    JSON.parse(localStorage.getItem('teamHomePanelNewSalarySavedState')) : 
+    {
       salary: props.salary[1],
     };
     this.changePanel = props.changePanel;
@@ -27,6 +29,10 @@ export default class TeamHomePanelNewSalary extends React.Component {
         input.addEventListener('focus', () => this.changeFocus(true));
         input.addEventListener('blur', () => this.changeFocus(false));
     }
+  }
+
+  componentWillUnmount() {
+    localStorage.setItem('teamHomePanelNewSalarySavedState', JSON.stringify(this.state))
   }
 
   updateSalary(event){

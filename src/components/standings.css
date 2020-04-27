@@ -19,7 +19,7 @@
 
 .standingsTable tbody tr{
   text-align: center;
-  border: 1px solid #000;
+  border: 1px solid rgba(0, 0, 0, 0.5);
   border-collapse: collapse;
 }
 

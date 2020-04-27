@@ -11,7 +11,9 @@ import PlayerInfo from './playerInfo';
 export default class TeamHomePanel extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
+    this.state = localStorage.getItem('hasTeamHomeSavedState') === "true" ?
+    JSON.parse(localStorage.getItem('teamHomePanelSavedState')) : 
+    {
       panel: props.panel,
       selectedPlayer: props.player,
     };
@@ -50,6 +52,10 @@ export default class TeamHomePanel extends React.Component {
     this.changeFocus = props.changeFocus;
     this.showOpponentInfo = props.showOpponentInfo;
     this.ready = props.ready;
+  }
+
+  componentWillUnmount() {
+    localStorage.setItem('teamHomePanelSavedState', JSON.stringify(this.state))
   }
 
   static getDerivedStateFromProps(props, state) {
