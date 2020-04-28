@@ -21,6 +21,15 @@ export default class Division extends React.Component {
     this.buttonText = ["Start", "Playing", "Next Matches"]
   }
 
+  handleKeyPress(event) {
+    let key = event.key
+    if (key === "p") {
+      if (this.state.matchesStarted !== 1) {
+        this.matchesButtonFunc()
+      }
+    }
+  }
+
   matchesButtonFunc(event){
     if (this.state.matchesStarted === 0) {
       this.matchesInterval = setInterval(() => this.matchPlay(), 50)
@@ -149,18 +158,12 @@ export default class Division extends React.Component {
     }
     return (
       <div className = {"matchesBox"}>
-        <div className = {"divisionsOrigin"}>
-          <div className = {"divisionsTopBar"}>
-            <div className = {"seasonYear"}>Season: {season}</div>
-            <div className = {"roundNumber"}>{day[0]} Round : {day[1]}</div>
-            <div className = {"clock"}>
-              {this.renderClock(this.state.matchTime)}
-            </div>
-          </div>
-          <div>
-            {(day[0] === "League") ? this.renderDivisions(matches, inds, day) : this.renderCup(matches, inds, day)}
-          </div>
+        <div className = {"divisionsTopBar"}>
+          <div className = {"seasonYear"}>Season: {season}</div>
+          <div className = {"roundNumber"}>{day[0]} Round : {day[1]}</div>
+          <div className = {"clock"}> {this.renderClock(this.state.matchTime)} </div>
         </div>
+        {(day[0] === "League") ? this.renderDivisions(matches, inds, day) : this.renderCup(matches, inds, day)}
       </div>
     )
   }
@@ -276,7 +279,10 @@ export default class Division extends React.Component {
     else if (this.state.matchesStarted === 1) {buttonText = ((this.state.paused) ? "Resume" : "Pause")}
     else if (this.state.matchesStarted === 2) {buttonText = "Finish"}             
     return (
-      <>
+      <div className = {"matchesOrigin"} onKeyDown = {(event) => this.handleKeyPress(event)} tabIndex = "0">
+        <div className = {"matchesBoard"}>
+          {(this.state.screen === "Matches") ? this.renderMatches() : this.renderSwitch()}
+        </div>
         <div className = {"matchesTopMenu"}>
           <button 
             className = {"finishButton"} 
@@ -294,10 +300,7 @@ export default class Division extends React.Component {
             {(this.state.screen === "Matches") ? "Switch Players" : "Return to Matches"}
           </button>
         </div>
-        <div className = {"matchesBoard"}>
-          {(this.state.screen === "Matches") ? this.renderMatches() : this.renderSwitch()}
-        </div>
-      </>
+      </div>
     );
   }
 }

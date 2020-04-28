@@ -45,6 +45,15 @@ class Game extends React.Component {
     };
   }
 
+  handleKeyPress(event) {
+    let key = event.key
+    if (key === "p") {
+      if (this.state.screen !== "matches" && this.state.screen !== "Start") {
+        this.setState({lastScreen: this.state.screen, screen:"matches"})
+      }
+    }
+  }
+
   matchesEvents(event) {
     if (event === "End") {
       this.setState({lastScreen: this.state.screen, screen: "news"})
@@ -55,14 +64,10 @@ class Game extends React.Component {
     let currentPlayer = this.state.infoHandler.get("Human", 0, "current")
     let buttonColors = this.state.infoHandler.get("Human", currentPlayer, "team colors")
     return (
-      <div className="game">
-        <div className="game-board">
-          <Division
-          handler = {this.state.infoHandler}
-          matchesCallback = {(e) => this.matchesEvents(e)}
-          buttonColors = {buttonColors}/>
-        </div>
-      </div>
+      <Division
+      handler = {this.state.infoHandler}
+      matchesCallback = {(e) => this.matchesEvents(e)}
+      buttonColors = {buttonColors}/>
     );
   }
 
@@ -70,12 +75,8 @@ class Game extends React.Component {
     let currentPlayer = this.state.infoHandler.get("Human", 0, "current")
     let buttonColors = this.state.infoHandler.get("Human", currentPlayer, "team colors")
     return (
-      <div className="game">
-        <div className="game-board">
-          <News
-          handler = {this.state.infoHandler}/>
-        </div>
-      </div>
+      <News
+      handler = {this.state.infoHandler}/>
     );
   }
 
@@ -118,7 +119,9 @@ class Game extends React.Component {
   }
 
   disabledButton(button){
-    return (this.state.screen === button) ? ' disabled' : '';
+    if (this.state.screen === button) {return ' disabled'}
+    if (this.state.screen === "matches") {return ' disabled'}
+    return ''
   }
 
   showStandings(code){
@@ -169,6 +172,9 @@ class Game extends React.Component {
       case "news":
         screenBoard = this.renderNews();
         break
+      case "matches":
+        screenBoard = this.renderDivision();
+        break
       case "market":
         screenBoard = this.renderPlayerMarket();
         break;
@@ -176,10 +182,10 @@ class Game extends React.Component {
         screenBoard = null;
     }
     return (
-      <div className="game">
+      <div className="game" onKeyDown = {(event) => this.handleKeyPress(event)} tabIndex = "0">
         <div className="game-board">
           <div className = {"gameTopMenu"}>
-            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} >Play Matches</button>
+            <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} disabled={this.disabledButton("matches")}>Play Matches</button>
             <button style = {colors} onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
             <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
             <button style = {colors} onClick={()=>this.showTeamInfo(this.state.selectedTeam)} disabled={this.disabledButton("teamInfo")}>Team Info</button>
@@ -210,8 +216,6 @@ class Game extends React.Component {
     //let screenBoard = null;
     if (this.state.screen === "Start") {
       return this.renderStart()
-    } else if (this.state.screen === "matches") {
-      return this.renderDivision()
     } else {
       return this.renderGame()
     }
