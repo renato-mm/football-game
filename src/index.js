@@ -36,7 +36,7 @@ class Game extends React.Component {
       //headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
       //coaches: [], // an array of objects containing info about each coach
       //gamePlayers: [], // an array of objects containing info about each player's coach
-      selectedTeam: 1,
+      selectedTeam: handler.get("Human",1,"team"),
       infoHandler: handler,
       humanTeam: handler.get("Human",1,"team"),
       selectedPlayer: null,

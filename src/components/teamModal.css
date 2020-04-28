@@ -14,24 +14,55 @@
 }
 
 .teamModalPlayers {
-  height: 150px;
+  height: 200px;
   font-size: 90%;
 }
 
-.teamModalPlayersTable{
-  width: 225px;
-  border: 1px solid #000;
-  float: left;
-  background-color: white;
-  color: black;
-}
-
+.teamModalPlayersTable,
 .teamModalReservesTable{
   width: 225px;
   border: 1px solid #000;
-  float: right;
   background-color: white;
   color: black;
+  display: block;
+  text-align: center;
+}
+
+.teamModalPlayersTable{
+  float: left;
+  height: 200px;
+}
+
+.teamModalReservesTable{
+  float: right;
+  height: 130px;
+}
+
+.teamModalPlayersTable tbody{
+  max-height: 200px;
+}
+
+.teamModalReservesTable tbody{
+  max-height: 130px;
+}
+
+.teamModalPlayersTable tbody tr td:nth-child(1),
+.teamModalReservesTable tbody tr td:nth-child(1),
+.teamModalPlayersTable tbody tr td:nth-child(3),
+.teamModalReservesTable tbody tr td:nth-child(3){
+  width: 5%;
+  padding: 0 2px;
+}
+
+.teamModalPlayersTable tbody tr td:nth-child(2),
+.teamModalReservesTable tbody tr td:nth-child(2){
+  width: 90%;
+  text-align: left;
+}
+
+.teamModalSelected{
+  background-color: black;
+  color: white;
 }
 
 .teamModalSubButton{
@@ -50,6 +81,11 @@
   height: 150px;
   overflow-y: scroll;
   display: block;
+  text-align: center;
+}
+
+.teamModalHistoryTable tbody tr td:nth-child(4){
+  text-align: left;
 }
 
 .redCard{

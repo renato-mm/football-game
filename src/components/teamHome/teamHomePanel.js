@@ -26,7 +26,7 @@ export default class TeamHomePanel extends React.Component {
       const location = props.nextMatch[0][0] === props.team ? "Home" : "Away";
       this.opponent = location === "Home" ? props.nextMatch[0][1] : props.nextMatch[0][0];
       this.cup = props.nextMatch[0][5];
-      const comp = this.cup === "League" ? "Fixture #"+props.nextMatch[0][7] : props.nextMatch[0][6];
+      const comp = this.cup === "League" ? "Fixture #"+props.nextMatch[0][7] : "Cup: round of "+props.nextMatch[0][6];
       const division = this.handler.get("Team",this.opponent,"league division") > 0 ? "Division "+this.handler.get("Team",this.opponent,"league division") : "No division";
       this.oppName = this.cup === "League" ? this.handler.get("Team",this.opponent,"name") : this.handler.get("Team",this.opponent,"name")+" ("+division+")";
       this.oppInfo = location+" - "+comp;

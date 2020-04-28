@@ -703,7 +703,7 @@ export class InfoHandler {
                 let st = this.leagueStandings[id];
                 return (st) ? st : fakeStandings;
             } else if (property === "calendar") {
-                return this.searchTeamMatches(id, "current season")
+                return this.searchTeamMatches(id, "current")
             } else if (property === "history") {
                 return this.searchTeamMatches(id)
             } else if (property === "is human") {

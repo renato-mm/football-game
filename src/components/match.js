@@ -10,7 +10,7 @@ const redCard = <IconContext.Provider value={{className: "redCard"}}>
   <AiTwotoneBook />
 </IconContext.Provider>;
 const attendance = 18500;
-const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}]
+const history = [{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:''}]
   /*
   {time: 9,  stat:'G',  text: goalIcon, teamID:'cruzeiro1921', playerID: '2108', player:'Éverton Ribeiro'},
   {time: 15, stat:'CA', text: yellowCard, teamID:'cruzeiro1921', playerID: '2109', player:'Henrique'},
@@ -32,16 +32,11 @@ export default class Match extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      modalShow: false,
+      modalShow: props.showModal,
       modalTeam: "",
-      history: history,
-      homeScore: 0,
-      awayScore: 0,
     };
     this.ind = props.matchInd;
     this.handler = props.handler;
-    this.homeTeam = props.homeTeam;
-    this.awayTeam = props.awayTeam;
     this.attendance = attendance;
   }
 
@@ -56,17 +51,17 @@ export default class Match extends React.Component {
 
   renderTeam(side, team) {
     const  colors = {
-      background: this.props.handler.get("Team", team, "color1"),
-      color: this.props.handler.get("Team", team, "color2"),
+      background: this.handler.get("Team", team, "color1"),
+      color: this.handler.get("Team", team, "color2"),
     }
   
     return (
       <div
         style = {colors}
         className = {"team " + side}
-        onClick = {() => this.props.callbackFocus(team)}
+        onClick = {() => {this.props.pauseMatches(); this.handleShow(side)}}
       >
-        {this.props.handler.get("Team", team, "name")}
+        {this.handler.get("Team", team, "name")}
       </div>
     );
   }
@@ -82,9 +77,9 @@ export default class Match extends React.Component {
   
   render(){
     //{time: 0,  stat:'S',  text: goalIcon, teamID:'cruzeiro1921', playerID: '0', player:'0'}
-    let returnHistory = this.props.handler.get("Match", this.ind, "history")
-    let homeID = this.props.handler.get("Match", this.ind, "home")
-    let awayID = this.props.handler.get("Match", this.ind, "away")
+    let returnHistory = this.handler.get("Match", this.ind, "history")
+    let homeID = this.handler.get("Match", this.ind, "home")
+    let awayID = this.handler.get("Match", this.ind, "away")
     const history = returnHistory[0] 
     const homeSc = returnHistory[1]
     const awaySc = returnHistory[2]
@@ -101,14 +96,15 @@ export default class Match extends React.Component {
     const scoreboard = this.handler.get("Team", homeID, "name") + " " + homeSc + " - " + awaySc + " " + this.handler.get("Team", awayID, "name");
     return (
       <div className = {"matchBox"} >
-        {this.renderAttendance(this.state.attendance)}
+        {this.renderAttendance(120000)}
         {this.renderTeam("home", homeID)}
         {this.renderScoreboard(homeSc, awaySc)}
         {this.renderTeam("away", awayID)}
         {matchStoryTextRender}
         <TeamModal
-        handler={this.handler}
+        handler = {this.handler}
         team = {this.state.modalTeam === "home" ? homeID : awayID}
+        homeID = {homeID}
         history = {history}
         score = {scoreboard}
         show = {this.state.modalShow}
