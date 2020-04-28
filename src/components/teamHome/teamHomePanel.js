@@ -11,8 +11,8 @@ import PlayerInfo from './playerInfo';
 export default class TeamHomePanel extends React.Component {
   constructor(props){
     super(props);
-    this.state = localStorage.getItem('hasTeamHomeSavedState') === "true" ?
-    JSON.parse(localStorage.getItem('teamHomePanelSavedState')) : 
+    this.state = props.handler.get("Saved State", 0, 'hasTeamHome') ?
+    JSON.parse(props.handler.get("Saved State", 0, 'teamHomePanel')) : 
     {
       panel: props.panel,
       selectedPlayer: props.player,
@@ -55,7 +55,7 @@ export default class TeamHomePanel extends React.Component {
   }
 
   componentWillUnmount() {
-    localStorage.setItem('teamHomePanelSavedState', JSON.stringify(this.state))
+    this.handler.set("Saved State", 0, 'teamHomePanel', JSON.stringify(this.state));
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -74,7 +74,7 @@ export default class TeamHomePanel extends React.Component {
           headToHead={this.headToHead}
           colors={this.colors}
           oppColors={this.oppColors}
-          cash={this.handler.get("Team",this.team,"cash")}
+          cash={this.handler.get("Team",this.team,"finances")[0]}
           moral={this.handler.get("Team",this.team,"moral")} />;
   }
 
@@ -108,6 +108,7 @@ export default class TeamHomePanel extends React.Component {
 
   renderNewSalary(){
     return <NewSalary
+            handler={this.handler}
             salary={this.handler.get("Player",this.state.selectedPlayer,"contract")}
             renewContract={this.renewContract}
             changePanel={this.changePanel}

@@ -24,10 +24,7 @@ const currDivs = [
 class Game extends React.Component {
   constructor(props){
     super(props);
-    localStorage.setItem('hasTeamHomeSavedState', "false");
-    localStorage.setItem('teamHomeSavedState', "");
-    localStorage.setItem('hasMarketSavedState', "false");
-    localStorage.setItem('marketSavedState', "");
+    const handler = new InfoHandler(base_info);
     this.state = {
       lastScreen: null,
       screen: "Start", // a string that represents the current game screen
@@ -39,10 +36,15 @@ class Game extends React.Component {
       //headToHead: [], // an array of objects, each one containing two teams id and their last head to head result
       //coaches: [], // an array of objects containing info about each coach
       //gamePlayers: [], // an array of objects containing info about each player's coach
-      //selectedTeam: 1,
-      infoHandler: new InfoHandler(base_info),
-      currentTeam: null,
+      selectedTeam: 1,
+      infoHandler: handler,
+      humanTeam: handler.get("Human",1,"team"),
+      selectedPlayer: null,
     };
+    handler.set("Saved State", 0, 'hasTeamHome', false);
+    handler.set("Saved State", 0, 'teamHome', "");
+    handler.set("Saved State", 0, 'hasMarket', false);
+    handler.set("Saved State", 0, 'market', "");
   }
 
   matchesEvents(event) {
@@ -83,7 +85,7 @@ class Game extends React.Component {
     return (
       <Standings
       handler = {this.state.infoHandler}
-      showTeamInfo = {(team)=>this.showTeamInfo(team)}/>
+      showTeamInfo = {(team)=>this.showTeamInfo(team,null)}/>
     );
   }
 
@@ -91,28 +93,31 @@ class Game extends React.Component {
     return (
       <TeamHome
       team = {team} opponent = {opponent} season = {this.state.infoHandler.get("Season",0,'year')}
-      showTeamInfo = {(opp)=>this.showTeamInfo(opp)}
+      showTeamInfo = {(opp)=>this.showTeamInfo(opp,null)}
       showStandings={(code)=>this.showStandings(code)}
       showMarket={(team)=>this.showMarket(team)}
       handler = {this.state.infoHandler} ready = {()=>this.setState({lastScreen: this.state.screen, screen: "matches"})}/>
     );
   }
 
-  renderTeamInfo(team) {
+  renderTeamInfo(team, player) {
     return (
       <TeamInfo
       team = {team}
+      humanTeam = {this.state.humanTeam}
       handler = {this.state.infoHandler}
-      showTeamInfo = {()=>this.setState({lastScreen: this.state.screen, screen: this.state.lastScreen})}/>
+      player = {player}
+      showTeamInfo = {()=>this.setState({lastScreen: this.state.screen, screen: this.state.lastScreen})}
+      showMarket = {()=>this.showMarket(this.state.humanTeam)}/>
     );
   }
 
   renderPlayerMarket() {
     return (
       <Market
-      team = {this.state.currentTeam}
+      team = {this.state.humanTeam}
       handler = {this.state.infoHandler}
-      showTeamInfo = {(team)=>this.showTeamInfo(team)}
+      showTeamInfo = {(team, player)=>this.showTeamInfo(team, player)}
       close = {()=>this.setState({lastScreen: this.state.screen, screen: this.state.lastScreen})}/>
     );
   }
@@ -130,11 +135,12 @@ class Game extends React.Component {
     }
   }
 
-  showTeamInfo(team){
+  showTeamInfo(team, player){
     this.setState({
       lastScreen: this.state.screen,
       screen: "teamInfo",
-      selectedTeam: team
+      selectedTeam: team,
+      selectedPlayer: player
     });
   }
 
@@ -142,7 +148,7 @@ class Game extends React.Component {
     this.setState({
       lastScreen: this.state.screen,
       screen: "market",
-      currentTeam: team,
+      humanTeam: team,
     });
   }
 
@@ -164,7 +170,7 @@ class Game extends React.Component {
         screenBoard = this.renderTeamHome(humanTeam, this.state.infoHandler.get("Team",humanTeam,"next match"));
         break;
       case "teamInfo":
-        screenBoard = this.renderTeamInfo(this.state.selectedTeam);
+        screenBoard = this.renderTeamInfo(this.state.selectedTeam, this.state.selectedPlayer);
         break;
       case "news":
         screenBoard = this.renderNews();
@@ -182,7 +188,7 @@ class Game extends React.Component {
             <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"matches"})} >Play Matches</button>
             <button style = {colors} onClick={()=>this.showStandings('c')} disabled={this.disabledButton("standings")}>Standings</button>
             <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"teamHome"})} disabled={this.disabledButton("teamHome")}>Team Home</button>
-            <button style = {colors} onClick={()=>this.showTeamInfo(this.state.selectedTeam)} disabled={this.disabledButton("teamInfo")}>Team Info</button>
+            <button style = {colors} onClick={()=>this.showTeamInfo(this.state.selectedTeam, this.state.selectedPlayer)} disabled={this.disabledButton("teamInfo")}>Team Info</button>
             <button style = {colors} onClick={()=>this.setState({lastScreen: this.state.screen, screen:"news"})} disabled={this.disabledButton("news")}>News</button>
           </div>
           {screenBoard}

@@ -7,11 +7,12 @@ import { FaTimes } from "react-icons/fa";
 export default class TeamHomePanelNewSalary extends React.Component {
   constructor(props){
     super(props);
-    this.state = localStorage.getItem('hasTeamHomeSavedState') === "true" ?
-    JSON.parse(localStorage.getItem('teamHomePanelNewSalarySavedState')) : 
+    this.state = props.handler.get("Saved State", 0, 'hasTeamHome') ?
+    JSON.parse(props.handler.get("Saved State", 0, 'teamHomePanelNewSalary')) :
     {
       salary: props.salary[1],
     };
+    this.handler = props.handler;
     this.changePanel = props.changePanel;
     this.renewContract = props.renewContract;
     this.changeFocus = props.changeFocus;
@@ -32,7 +33,7 @@ export default class TeamHomePanelNewSalary extends React.Component {
   }
 
   componentWillUnmount() {
-    localStorage.setItem('teamHomePanelNewSalarySavedState', JSON.stringify(this.state))
+    this.handler.set("Saved State", 0, 'teamHomePanelNewSalary', JSON.stringify(this.state));
   }
 
   updateSalary(event){

@@ -14,7 +14,7 @@ export default class TeamInfo extends React.Component {
     this.state = {
       panel: "match",
       team: props.team,
-      selectedPlayer: null,
+      selectedPlayer: props.player,
       teamInfoFixturesModalShow: false,
       colors: {
         background: props.handler.get("Team",props.team,"color1"),
@@ -28,7 +28,9 @@ export default class TeamInfo extends React.Component {
       division: props.handler.get("Team",props.team,"league division") > 0 ? "Division "+props.handler.get("Team",props.team,"league division") : "No division",
     };
     this.handler = props.handler;
+    this.humanTeam = props.humanTeam;
     this.showTeamInfo = props.showTeamInfo;
+    this.showMarket = props.showMarket;
     this.selectOfTeams = this.handler.get("Team",0,"id").sort((e1,e2)=>this.handler.get("Team",e1,"name").localeCompare(this.handler.get("Team",e2,"name"))).map(e=><option key={e} value={e}>{this.handler.get("Team",e,"name")}</option>)
   }
 
@@ -89,7 +91,7 @@ export default class TeamInfo extends React.Component {
         border: '1px solid '+this.state.colors.background
       }
       teamPlayers.push(
-        <tbody style={bodyColor}>
+        <tbody key={pos} style={bodyColor}>
           {players}
         </tbody>
       )
@@ -110,6 +112,14 @@ export default class TeamInfo extends React.Component {
   }
 
   render(){
+    const cash = this.handler.get("Team",this.humanTeam,"finances")[0];
+    const rosterLength = this.handler.get("Team",this.humanTeam,"players").length;
+    const playerContract = this.handler.get("Player",this.state.selectedPlayer,"contract");
+    const disabled = this.state.selectedPlayer ?
+                     playerContract[0] === 0 ?
+                     playerContract[2] <= cash ?
+                     rosterLength < 26 ?
+                     '' : 'disabled' : 'disabled' : 'disabled' : 'disabled';
     return (
       <div
         style={this.state.colors}
@@ -142,8 +152,8 @@ export default class TeamInfo extends React.Component {
             </div>
             <div className = {"teamInfoInfButtons"}>
               <div>
-                <button> {Icons.search} <span>Search</span> </button>
-                <button> {Icons.buy} <span>Buy</span> </button>
+                <button onClick={()=>this.showMarket()}> {Icons.search} <span>Search</span> </button>
+                <button disabled={disabled} onClick={()=>this.handler.set("Team",this.humanTeam,"purchase",this.state.selectedPlayer)}> {Icons.buy} <span>Buy</span> </button>
                 <button> {Icons.bank} <span>Loan</span> </button>
               </div>
               <div>

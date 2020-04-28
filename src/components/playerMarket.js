@@ -14,8 +14,8 @@ const countries = require('./countries.json')
 export default class PlayerMarket extends React.Component {
   constructor(props){
     super(props);
-    this.state = localStorage.getItem('hasMarketSavedState') === "true" ?
-    JSON.parse(localStorage.getItem('marketSavedState')) : 
+    this.state = props.handler.get("Saved State", 0, 'hasMarket') ?
+    JSON.parse(props.handler.get("Saved State", 0, 'market')) :
     {
       team: props.team,
       selectedPlayer: null,
@@ -35,8 +35,8 @@ export default class PlayerMarket extends React.Component {
   }
 
   componentWillUnmount() {
-    localStorage.setItem('hasMarketSavedState', "true");
-    localStorage.setItem('marketSavedState', JSON.stringify(this.state))
+    this.handler.set("Saved State", 0, 'hasMarket', true);
+    this.handler.set("Saved State", 0, 'market', JSON.stringify(this.state));
   }
 
   handleChange = (event, state) => this.setState({
@@ -166,7 +166,7 @@ export default class PlayerMarket extends React.Component {
           <div className = {"playersMarketButtons"}>
             <div>
               <button onClick={()=>this.updatePlayersList()}> {} <span>Search</span> </button>
-              <button> {} <span>Team</span> </button>
+              <button onClick={()=>this.showTeamInfo(this.handler.get("Player",this.state.selectedPlayer,"teamID"),this.state.selectedPlayer)} disabled={this.state.selectedPlayer ? '' : "disabled"}> {} <span>Team</span> </button>
               <button onClick={()=>this.close()}> {} <span>Close</span> </button>
             </div>
           </div>

@@ -12,8 +12,8 @@ import countryInfo from "./countryFunctions";
 export default class TeamHome extends React.Component {
   constructor(props){
     super(props);
-    this.state = localStorage.getItem('hasTeamHomeSavedState') === "true" ?
-    JSON.parse(localStorage.getItem('teamHomeSavedState')) : 
+    this.state = props.handler.get("Saved State", 0, 'hasTeamHome') ?
+    JSON.parse(props.handler.get("Saved State", 0, 'teamHome')) : 
     {
       panel: "match",
       selectedPlayer: null,
@@ -38,12 +38,12 @@ export default class TeamHome extends React.Component {
     this.showOpponentInfo = props.showTeamInfo;
     this.ready = props.ready;
     this.countryInfo = countryInfo(this.handler.get("Team",this.team,"nationality"));
-    localStorage.setItem('hasTeamHomeSavedState', "false");
+    this.handler.set("Saved State", 0, 'hasTeamHome', false);
   }
 
   componentWillUnmount() {
-    localStorage.setItem('hasTeamHomeSavedState', "true");
-    localStorage.setItem('teamHomeSavedState', JSON.stringify(this.state))
+    this.handler.set("Saved State", 0, 'hasTeamHome', true);
+    this.handler.set("Saved State", 0, 'teamHome', JSON.stringify(this.state));
   }
 
   selectPlayer(player, event){
