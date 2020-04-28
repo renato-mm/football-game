@@ -230,8 +230,8 @@ export class InfoHandler {
             if (!(this.inArray(x, this.teamsPlaying))) { continue }
             let team = this.baseInfo[x]
             let processed_team = team
-            let new_properties = ["moral", "finances", "stadium", "cash", "wins"]
-            let new_values = [this.randomInt(1, 100), [0, 0, 0, 0, 0, 0], 1, this.randomInt(1, 100000), [0, 0, 0]]
+            let new_properties = ["moral", "finances", "stadium", "wins"]
+            let new_values = [this.randomInt(1, 100), [1000000, 0, 0, 0, 0, 0], 1, [0, 0, 0]]
             for (let l = 0 ; l < new_properties.length ; l++) {
                 processed_team[new_properties[l]] = new_values[l]
             } 
@@ -444,7 +444,7 @@ export class InfoHandler {
             this.currentMatchesReturnHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
             this.currentMatchesExtras.push({ extra : -1, lastPossession: 0, subs: [0, 0] })
         }
-        console.log(this.currentMatches)
+        //console.log(this.currentMatches)
     }
 
     runSeason(action) {
@@ -540,6 +540,7 @@ export class InfoHandler {
                 for (let x = 0 ; x < this.playersPlaying.length ; x++) {
                     let p = this.playersPlaying[x]
                     let g = this.sessionInfo[p]["season history"][1]
+                    //console.log(p, g)
                     if (g > goals) { goals = g ; topGoalScorer = p}
                 }
                 this.seasonWinProcesser(topGoalScorer, "Goalscorer")
@@ -572,7 +573,7 @@ export class InfoHandler {
             cash = 3000000
             i = 2
             players = [id]
-            tID = this.sessionInfo[id]["TeamID"]
+            tID = this.sessionInfo[id]["teamID"]
         }
         this.sessionInfo[tID]["finances"][0] += cash
         this.sessionInfo[tID]["wins"][i] += 1
