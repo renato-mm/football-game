@@ -1,5 +1,6 @@
 /*
-Get API (section, id, property)
+Get API (section, id, property, extras = [])
+Set API (section, id, property, value, extras = [])
 
 (int* denotes its an id to be used with Get again)
 
@@ -30,9 +31,13 @@ calendar = list of lists
     [[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = round, 8 = season, 9 = match played bool ], [], [] ...]
 next opponent = list [opponent id = int, Home/Away = string]
 league division = int
+is human = bool
+current matches id = int index of the current match of the team
+purchase check = returns list [bool = purchase success, string = info about purchase(e.g. "Too expensive")]  ***extras[0] = player id to be purchased
 
 SET
-purchase = input player id to be purchased by the team, returns list [bool = purchase success, string = info about purchase(e.g. "Too expensive")]
+formation value = [defense = int, midfield = int, forward = int]
+purchase = input player id to be purchased by the team
 
 ---Player
 (id = 0 -> list of ints*) all players
@@ -47,12 +52,35 @@ behaviour = str
 contract = list [(int = number of matches), (int = salary), (int = contract break fine)]
 history = list of ints [0 = matches, 1 = goals, 2 = yellows, 3 = reds, 4 = injuries]
 season history = list of ints [0 = matches, 1 = goals, 2 = yellows, 3 = reds, 4 = injuries]
+teamID = int*
+
+---Match (id = index of the match)
+home = int
+away = int
+history = [list of history elements of interest, home score = int, away score = int]
+current matches = list of matches
+tournament = string (name of the tournament, "League" or "Cup")
+sub = int (number of substitutions made by the team thats the given id)
+notice = list [notice type = string ("Injury", "Suspended"), point of interest]
+
+SET
+sub = adds the value given to the substitutions of the team thats the given id
 
 ---League (id = league division)
 teams = list of ints*
+division sizes  = [int numbers of divisions, teams per division divided by 2]
+round = int
 
 ---Season
 day = [tournament name = string, tournament round = int]
+year = int
+latest news = list of news [news type = string, [points of interest]]
+
+---Human 
+team = int*
+current = int 
+team colors = list of strings [color1, color2]
+
 */
 
 export class InfoHandler {
@@ -85,14 +113,14 @@ export class InfoHandler {
         this.cupTeams = []
         this.cupRoundTeams = [] 
         //this.next_tourn = "League"
-        this.season = 2020
-        this.seasonGames = {League: [], Cup: []}
-        this.currentMatches = []
-        this.allNews = [[["Text", "The " + this.season + " season has started!"]]]
-        this.extremesStrengths = [50, 1]
-        this.currentDayState = 0
+        //this.season = 2020
         this.startingSeason = 2020
         this.currentSeason = this.startingSeason
+        this.seasonGames = {League: [], Cup: []}
+        this.currentMatches = []
+        this.allNews = [[["Text", "The " + this.currentSeason + " season has started!"]]]
+        this.extremesStrengths = [50, 1]
+        this.currentDayState = 0
         this.seasonDay = 0
         this.leagueStandings = {}
         this.pastSeasons = {}
@@ -425,7 +453,17 @@ export class InfoHandler {
             this.divisionsTeams[this.divisions].push(team)
             count += 1
         }
-        this.cupTeams = this.rankedTeams.slice(0, this.cupSize)
+        this.last5yearRanking = {}
+        for (let x = this.currentSeason - 1 ; x >= this.startingSeason && x >= this.currentSeason - 5 ; x--) {
+            for (let y = 0 ; y < this.teamsPlaying ; y++) {
+                let team = this.teamsPlaying[y]
+                this.last5yearRanking[team] += this.pastSeasons[x]["ranking"][team]
+            }
+        }
+        this.tempTeams = this.teamsPlaying.slice()
+        this.tempTeams.sort((a, b) => {return this.last5yearRanking[b] - this.last5yearRanking[a]})
+        this.cupTeams = this.tempTeams.slice(0, this.cupSize)
+        this.cupRoundTeams = this.cupTeams.slice()
     }
 
     nextMatches() {
@@ -496,6 +534,8 @@ export class InfoHandler {
                 let home = match[0]
                 let away = match[1]
                 let winner = match[4]
+                let loser = 0
+                if (winner !== 0) {loser = (winner === home) ? away : home}
                 if (match[5] === "League") {
                     this.leagueStandings[home][0] += 1
                     this.leagueStandings[away][0] += 1
@@ -503,21 +543,16 @@ export class InfoHandler {
                     this.leagueStandings[away][4] += match[3]
                     this.leagueStandings[home][5] += match[3]
                     this.leagueStandings[away][5] += match[2]
-                    if (home === winner) { 
-                        this.leagueStandings[home][1] += 1
-                        this.leagueStandings[home][6] += 3
-                        this.leagueStandings[away][3] += 1
-                        this.seasonRanking[home] += 1
-                    } else if (away === winner) { 
-                        this.leagueStandings[away][1] += 1
-                        this.leagueStandings[away][6] += 3
-                        this.leagueStandings[home][3] += 1
-                        this.seasonRanking[away] += 1
-                    } else {
+                    if (winner === 0) {
                         this.leagueStandings[away][2] += 1
                         this.leagueStandings[home][2] += 1
                         this.leagueStandings[away][6] += 1
                         this.leagueStandings[home][6] += 1
+                    } else {
+                        this.leagueStandings[winner][1] += 1
+                        this.leagueStandings[winner][6] += 3
+                        this.leagueStandings[loser][3] += 1
+                        this.seasonRanking[winner] += 1
                     }
                 } else if (match[5] === "Cup") {
                     if (winner === 0) { match[4] = match[0] }
@@ -753,7 +788,8 @@ export class InfoHandler {
             } else if (property === "tournament") {
                 return this.seasonCalendar[this.seasonDay][0]
             } else if (property === "sub") {
-                let teamID = this.sessionInfo[id]["teamID"]
+                let teamID = id
+                if (id >= 10000) {teamID = this.sessionInfo[id]["teamID"]}
                 let match = this.searchTeamMatches(teamID, "day")[0]
                 let i = this.findInArray(match, this.currentMatches)
                 return this.currentMatchesExtras[i]["subs"][(teamID === match[0]) ? 0 : 1]
@@ -837,7 +873,8 @@ export class InfoHandler {
         }
         else if (section === "Match") {
             if (property === "sub") {
-                let teamID = this.sessionInfo[id]["teamID"]
+                let teamID = id
+                if (id >= 10000) {teamID = this.sessionInfo[id]["teamID"]}
                 let match = this.searchTeamMatches(teamID, "day")[0]
                 let i = this.findInArray(match, this.currentMatches)
                 this.currentMatchesExtras[i]["subs"][(teamID === match[0]) ? 0 : 1] += value
