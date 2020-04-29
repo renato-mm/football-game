@@ -121,6 +121,8 @@ export class InfoHandler {
         this.allNews = [[["Text", "The " + this.currentSeason + " season has started!"]]]
         this.extremesStrengths = [50, 1]
         this.currentDayState = 0
+        this.matchTime = 0
+        this.matchHalf = 1
         this.seasonDay = 0
         this.leagueStandings = {}
         this.pastSeasons = {}
@@ -480,7 +482,7 @@ export class InfoHandler {
         for (let y = 0 ; y < this.currentMatches.length ; y++) {
             this.currentMatchesHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
             this.currentMatchesReturnHistory.push([{time: 0,  stat:'Start',  text: "Match Start", teamID: '0', playerID: '0', player:'0'}])
-            this.currentMatchesExtras.push({ extra : -1, lastPossession: 0, subs: [0, 0] })
+            this.currentMatchesExtras.push({ extra : -1, lastPossession: 0, subs: [0, 0], finished: false })
         }
         //console.log(this.currentMatches)
     }
@@ -555,7 +557,7 @@ export class InfoHandler {
                         this.seasonRanking[winner] += 1
                     }
                 } else if (match[5] === "Cup") {
-                    if (winner === 0) { match[4] = match[0] }
+                    if (winner === 0) { match[4] = match[this.randomInt(0, 1)] }
                     this.cupRoundTeams.push(match[4])
                 } else {
                     console.log("ERROR")
@@ -913,32 +915,56 @@ export class InfoHandler {
         }
       }
 
-    runMatches(time, half) {
-        if (time >= 1 && this.currentDayState < 2) {
-            let endSwitch = true
-            this.currentDayState = 1
+    runMatches(running = true) {
+        this.matchTime += 1
+        if (this.matchTime >= 1 && running) {
+            let endSwitch = [true, true]
             for (let x = 0 ; x < this.currentMatches.length ; x++) {
-                let done = this.runMatch(x, time, half)
-                if (!done) { endSwitch = false }
+                let done = this.runMatch(x)
+                if (!done[0]) { endSwitch[0] = false }
+                if (!done[1]) { endSwitch[1] = false }
             }
-            return endSwitch
-        } else if (time === -1) {
-            this.currentDayState = 2
-        } else if (time === -2) {
+
+            if (endSwitch[0]) {
+                this.matchTime = 0
+                if (!endSwitch[1]) { this.matchHalf += 1}
+                else { this.matchHalf = 1 }
+            }
+
+            return [this.matchTime, endSwitch[0], endSwitch[1], this.matchHalf]
+        } else if (!running) {
+            this.matchTime = 0
             this.currentDayState = 0
             this.runSeason("End day")
         }
     }
       
-    runMatch(matchID, time, half){
+    runMatch(matchID){
         //{time: 0,  stat:'S',  text: goalIcon, teamID:'cruzeiro1921', playerID: '0', player:'0'}
         //console.log("running match", matchID)
+        //[0 = home team id, 1 = away team id, 2 = home score, 3 = away score, 4 = winner id (0 if draw), 5 = tournament name, 6 = phase/division, 7 = round, 8 = season, 9 = match played bool ]
+
+        let halfDone = false
+        let matchDone = false
+
         let history = this.currentMatchesHistory[matchID] 
-        let cMatch = this.currentMatches[matchID]
+        let cMatch = this.currentMatches[matchID] 
+        let scoreEven = (cMatch[2] === cMatch[3]) ? true : false
+        let time = 0
         let cMatchExtras = this.currentMatchesExtras[matchID]
-        if (time === 45) { cMatchExtras["extra"] = this.randomInt(0,5) }
-        if (45 + cMatchExtras["extra"] < time) { return true }
-        time = time + (half - 1) * 45
+        if (cMatchExtras["finished"]) {return [true, true]}
+        if (this.matchHalf <= 2) {
+            if (this.matchTime === 45) { cMatchExtras["extra"] = this.randomInt(0,5) }
+            if (45 + cMatchExtras["extra"] < this.matchTime) { halfDone = true }
+            time = this.matchTime + (this.matchHalf - 1) * 45
+        } else {
+            if (this.matchTime === 15) { cMatchExtras["extra"] = this.randomInt(0,5) }
+            if (15 + cMatchExtras["extra"] < this.matchTime) { halfDone = true }
+            time = this.matchTime + 90 + (this.matchHalf - 3) * 15
+        }
+        if (cMatch[5] === "League" && ((this.matchHalf >= 2 && halfDone) || this.matchHalf >= 3)) {cMatchExtras["finished"] = true ; return [true, true]}
+        if (cMatch[5] === "Cup" && ((this.matchHalf >= 2 && halfDone && !scoreEven) || (this.matchHalf === 4 && halfDone) || (this.matchHalf >= 5))) {cMatchExtras["finished"] = true ; return [true, true]}
+        if (halfDone) { return [true, false] }
         //console.log(cMatch)
         let teams = cMatch.slice(0, 2) //[home, away]
         //console.log(teams)
@@ -1018,6 +1044,6 @@ export class InfoHandler {
         for (let z = 0 ; z< returnHistoryElements.length ; z++) {
             this.currentMatchesReturnHistory[matchID].push(returnHistoryElements[z])
         }
-        return false
+        return [halfDone, matchDone]
     }
 }
