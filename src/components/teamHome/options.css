@@ -1,0 +1,58 @@
+
+.optionsGeneralSelection{
+  cursor: default;
+  margin: 5px 5px;
+  height: 120px;
+}
+
+.optionsGeneralSelection div{
+  cursor: default;
+  margin: 10px 5px;
+}
+
+.optionsGeneralSelection select{
+  width: 50%;
+  margin: 0px 5px;
+}
+
+.optionsGeneralSelection div span{
+  width: 180px;
+  display: inline-block;
+}
+
+.optionsGameSelection{
+  cursor: default;
+  margin: 5px 5px;
+  height: 120px;
+}
+
+.optionsGameSelection div{
+  cursor: default;
+  margin: 10px 5px;
+}
+
+.optionsGameSelection select{
+  width: 50%;
+  margin: 0px 5px;
+}
+
+.optionsGameSelection div span{
+  width: 180px;
+  display: inline-block;
+}
+
+.optionsControl{
+  cursor: default;
+  margin: 5px 5px;
+  height: 120px;
+}
+
+.optionsControl div{
+  width: 150px;
+  text-align: center;
+  margin: 10px auto;
+}
+
+.optionsControl button{
+  width: 100%;
+}

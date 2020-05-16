@@ -2,6 +2,7 @@ import React from 'react';
 import './teamHomeMenu.css';
 import onClickOutside from "react-onclickoutside";
 import FixturesInfo from './fixturesInfo';
+import Options from './options';
 import Bank from './bank';
 import Stadium from './stadium';
 
@@ -14,6 +15,7 @@ class TeamHomeMenu extends React.Component {
       teamFixturesModalShow: false,
       bankModalShow: false,
       stadiumModalShow: false,
+      optionsModalShow: false,
     };
     this.handler = props.handler;
     this.team = props.team;
@@ -27,7 +29,7 @@ class TeamHomeMenu extends React.Component {
 
   renderFreefoot(){
     if(this.state.showMenu && this.state.menu === "freefoot"){
-      return <TeamHomeMenuFreefoot />;
+      return <TeamHomeMenuFreefoot handleShow={(modal)=>this.handleShow(modal)} />;
     }
     else{
       return null;
@@ -135,17 +137,26 @@ class TeamHomeMenu extends React.Component {
           {this.renderCoach()}
         </div>
       </div>
+      <Options
+      handler={this.handler}
+      handleClose={()=>this.handleClose('optionsModalShow')}
+      show={this.state.optionsModalShow}/>
       <FixturesInfo
       handler={this.handler}
       team={this.team}
       handleClose={()=>this.handleClose('teamFixturesModalShow')}
       show={this.state.teamFixturesModalShow}/>
       <Bank
+      handler={this.handler}
+      team={this.team}
       handleClose={()=>this.handleClose('bankModalShow')}
       show={this.state.bankModalShow}/>
       <Stadium
+      handler={this.handler}
+      team={this.team}
       handleClose={()=>this.handleClose('stadiumModalShow')}
-      show={this.state.stadiumModalShow}/>
+      show={this.state.stadiumModalShow}
+      openLoan={()=>{this.handleShow("bankModalShow")}}/>
       </>
     );
   }
@@ -232,11 +243,11 @@ function TeamHomeMenuFormation(props) {
   );
 }
 
-function TeamHomeMenuFreefoot(){
+function TeamHomeMenuFreefoot(props){
   return (
     <table className = {"teamHomeMenuTable"}>
       <tbody>
-        <tr>
+        <tr onClick={()=>props.handleShow('optionsModalShow')}>
           <td>Options</td>
         </tr>
         <tr>

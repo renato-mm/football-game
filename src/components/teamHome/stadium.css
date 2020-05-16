@@ -1,5 +1,5 @@
 
-.teamInfoIconSize{
+.stadiumIconSize{
   font-size: 2em;
 }
 
@@ -19,7 +19,6 @@
 .stadiumInfo p{
   float: left;
   height: 80px;
-  padding: 20px 0px;
   margin: 10px 10px;
 }
 

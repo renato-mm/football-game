@@ -10,7 +10,6 @@
 }
 
 .bankButtons{
-  width: 100%;
   margin: 10px 100px;
 }
 
@@ -22,4 +21,10 @@
 
 .bankButtons button span{
   font-size: .8em;
+  display: block;
+}
+
+.bankIcon{
+  font-size: 2em;
+  color: green;
 }
