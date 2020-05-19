@@ -1,0 +1,42 @@
+
+.profileGeneralSelection{
+  cursor: default;
+  margin: 5px 5px;
+  height: 120px;
+}
+
+.profileGeneralSelection span{
+  font-size: 1.25em;
+}
+
+.profileGeneralSelection label{
+  display: block;
+  margin-top: 5px;
+}
+
+.profileGeneralSelection label input{
+  margin: 10px 5px 0px;
+}
+
+.profileGameSelection{
+  cursor: default;
+  margin: 5px 5px;
+  height: 120px;
+}
+
+.profileGameSelection div{
+  cursor: default;
+  margin: 10px 5px;
+}
+
+.profileGameSelection div label{
+  display: block;
+}
+
+.profileGameSelection div label input{
+  margin: 0px 5px 0px;
+}
+
+.profileGameSelection div span{
+  font-size: 1.25em;
+}

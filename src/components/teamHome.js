@@ -145,6 +145,25 @@ export default class TeamHome extends React.Component {
     }
   }
 
+  loan = () => {
+    const finances = this.handler.get("Team",this.team,"finances");
+    finances[0] += 500000;
+    finances[4] += 500000;
+    finances[3] = finances[4]/20;
+    this.handler.set("Team",this.team,"finances",finances);
+    this.forceUpdate();
+  }
+
+  pay = () => {
+    const finances = this.handler.get("Team",this.team,"finances");
+    const least = Math.min(500000, finances[4])
+    finances[0] -= least;
+    finances[4] -= least;
+    finances[3] = finances[4]/20;
+    this.handler.set("Team",this.team,"finances",finances);
+    this.forceUpdate();
+  }
+
   renderMenu(){
     return(
       <TeamHomeMenu
@@ -152,7 +171,9 @@ export default class TeamHome extends React.Component {
       team={this.team}
       formationSelected={(key) => this.formationSelected(key)}
       showStandings={this.showStandings}
-      showMarket={this.showMarket}/>
+      showMarket={this.showMarket}
+      loan={this.loan}
+      pay={this.pay}/>
     );
   }
 
@@ -184,7 +205,7 @@ export default class TeamHome extends React.Component {
         <b>{this.handler.get("Team",this.team,"fullName")}</b>
       </div>
       {this.renderMenu()}
-      <div className = {"row col-md-12"}>
+      <div className = {"row col-md-12 teamHomeContent"}>
         <div className = {"col-md-6"}>
           <div className = {"row teamHomeCoach"}> <b>{this.coach}</b> </div>
           <div className = {"row teamHomeInfo"}>

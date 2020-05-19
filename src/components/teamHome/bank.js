@@ -30,11 +30,11 @@ export default function Bank(props){
   return (
       <Modal show={show} onHide={handleClose} animation={false} centered>
         <Modal.Body>
-          <div className = {"bankMoney"}><b>Debt</b><span>{cashFormat(finances[5])}</span></div>
-          <div className = {"bankMoney"}><b>Interest</b><span>{cashFormat(finances[4])}</span></div>
+          <div className = {"bankMoney"}><b>Debt</b><span>{cashFormat(finances[4])}</span></div>
+          <div className = {"bankMoney"}><b>Interest</b><span>{cashFormat(finances[3])}</span></div>
           <div className = {"bankButtons"}>
-            <button>{plus} <span>500 thousand euros</span></button>
-            <button>{minus} <span>500 thousand euros</span></button>
+            <button onClick={props.loan}>{plus} <span>500 thousand euros</span></button>
+            <button onClick={props.pay}>{minus} <span>500 thousand euros</span></button>
           </div>
           <div className = {"bankMoney"}><b>Current cash</b><span>{cashFormat(finances[0])}</span></div>
           <hr/>

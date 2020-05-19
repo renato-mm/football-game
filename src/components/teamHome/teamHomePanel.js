@@ -245,15 +245,15 @@ function TeamHomePanelFinance(props){
           </tr>
           <tr>
             <td>Loan interest</td>
-            <td>{cashFormat(0)}</td>
+            <td>{cashFormat(props.finances[3])}</td>
           </tr>
           <tr>
             <td>Current cash</td>
-            <td>{cashFormat(0)}</td>
+            <td>{cashFormat(props.finances[0])}</td>
           </tr>
           <tr>
             <td>Tickets cost</td>
-            <td>{cashFormat(0)}</td>
+            <td>{cashFormat(props.finances[5])}</td>
           </tr>
         </tbody>
       </table>

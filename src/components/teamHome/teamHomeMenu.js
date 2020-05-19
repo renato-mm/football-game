@@ -5,6 +5,7 @@ import FixturesInfo from './fixturesInfo';
 import Options from './options';
 import Bank from './bank';
 import Stadium from './stadium';
+import Profile from './coachProfile';
 
 class TeamHomeMenu extends React.Component {
   constructor(props){
@@ -16,12 +17,15 @@ class TeamHomeMenu extends React.Component {
       bankModalShow: false,
       stadiumModalShow: false,
       optionsModalShow: false,
+      profileModalShow: false,
     };
     this.handler = props.handler;
     this.team = props.team;
     this.formationSelected = props.formationSelected;
     this.showStandings = props.showStandings;
     this.showMarket = props.showMarket;
+    this.loan = props.loan;
+    this.pay = props.pay;
   }
 
   handleClose = (modal) => this.setState({[modal]: false,});
@@ -77,7 +81,7 @@ class TeamHomeMenu extends React.Component {
 
   renderCoach(){
     if(this.state.showMenu && this.state.menu === "coach"){
-      return <TeamHomeMenuCoach />;
+      return <TeamHomeMenuCoach handleShow={(modal)=>this.handleShow(modal)} />;
     }
     else{
       return null;
@@ -150,13 +154,19 @@ class TeamHomeMenu extends React.Component {
       handler={this.handler}
       team={this.team}
       handleClose={()=>this.handleClose('bankModalShow')}
-      show={this.state.bankModalShow}/>
+      show={this.state.bankModalShow}
+      loan={this.loan}
+      pay={this.pay}/>
       <Stadium
       handler={this.handler}
       team={this.team}
       handleClose={()=>this.handleClose('stadiumModalShow')}
       show={this.state.stadiumModalShow}
       openLoan={()=>{this.handleShow("bankModalShow")}}/>
+      <Profile
+      handler={this.handler}
+      handleClose={()=>this.handleClose('profileModalShow')}
+      show={this.state.profileModalShow}/>
       </>
     );
   }
@@ -191,7 +201,7 @@ function TeamHomeMenuChampionship(props){
   );
 }
 
-function TeamHomeMenuCoach(){
+function TeamHomeMenuCoach(props){
   return (
     <table className = {"teamHomeMenuTable"}>
       <tbody>
@@ -204,7 +214,7 @@ function TeamHomeMenuCoach(){
         <tr>
           <td>Ranking</td>
         </tr>
-        <tr>
+        <tr onClick={()=>props.handleShow('profileModalShow')}>
           <td>Profile</td>
         </tr>
       </tbody>

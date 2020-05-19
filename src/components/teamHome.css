@@ -18,6 +18,11 @@
   padding-left: 1px;
 }
 
+.teamHomeContent{
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
 .teamHomeCoach{
   margin-left: 60px;
   font-size: 1.5em;
